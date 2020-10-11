@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # A Linux program to create bootable Windows USB stick from a real Windows DVD or an image
 # Copyright © 2013 Colin GILLE / congelli501
-# Copyright © 2018 slacka et. al.
+# Copyright © 2020 slacka et. al.
 #
 # This file is part of WoeUSB.
 #
@@ -137,7 +137,7 @@ init(){
 
 	local -r \
 		application_site_url='https://github.com/slacka/WoeUSB' \
-		application_copyright_declaration="Copyright © Colin GILLE / congelli501 2013\\nCopyright © slacka et.al. 2017" \
+		application_copyright_declaration="Copyright © Colin GILLE / congelli501 2013\\nCopyright © slacka et.al. 2020" \
 		application_copyright_notice="${application_name} is free software licensed under the GNU General Public License version 3(or any later version of your preference) that gives you THE 4 ESSENTIAL FREEDOMS\\nhttps://www.gnu.org/philosophy/"
 	local install_mode
 
