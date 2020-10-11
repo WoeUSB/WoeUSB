@@ -124,7 +124,7 @@ init(){
 	local -n only_for_gui_ref="$1"
 
 	declare -r application_name='WoeUSB'
-	declare -r application_version='3.2.10-2-ge2a7468'
+	declare -r application_version='@@WOEUSB_VERSION@@'
 
 	declare -r DEFAULT_NEW_FS_LABEL='Windows USB'
 
