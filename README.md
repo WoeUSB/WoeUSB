@@ -41,7 +41,7 @@ WoeUSB will not be able to function without these software installed in their pr
   For installing the bootstrap code used in a Legacy PC boot
 * [GNU Parted](https://www.gnu.org/software/parted/)  
   For manipulating disk partition table and partitions
-* [GNU Wget](https://www.gnu.org/software/wget/)
+* [GNU Wget](https://www.gnu.org/software/wget/)  
   For acquiring [Pete Batard](https://pete.akeo.ie/)'s [UEFI:NTFS](https://github.com/pbatard/uefi-ntfs) UEFI bootloader
 
 ### Optional
