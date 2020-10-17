@@ -8,7 +8,6 @@ A Microsoft Windows® USB installation media preparer for GNU+Linux
 * Support Legacy PC/UEFI booting
 * Support FAT32 and NTFS filesystems
 * Support using physical installtion disc or disk image as source
-* Compatible with non-ASCII filenames
 
 ## Supported Windows® installation images
 
