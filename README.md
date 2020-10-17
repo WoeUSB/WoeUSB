@@ -48,7 +48,8 @@ WoeUSB will not be able to function without these software installed in their pr
 Without the following dependencies WoeUSB will still able to run, but some functionalities will be unavailable:
 
 * [p7zip](https://sourceforge.net/projects/p7zip/)  
-  For workaround the problem where the Windows 7 installation media doesn't ship their UEFI bootloader in the proper location.
+  For workaround the problem where the Windows 7 installation media doesn't ship their UEFI bootloader in the proper location
+  
 
 ## Installation
 
