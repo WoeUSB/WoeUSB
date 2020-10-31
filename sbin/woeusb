@@ -1362,6 +1362,8 @@ mount_target_filesystem(){
 		;;
 	esac
 
+	# false-positive: The fstype_options are expected to be expanded verbatim
+	# shellcheck disable=SC2086
 	mount \
 		--options "${mount_options}" \
 		${fstype_options} \
