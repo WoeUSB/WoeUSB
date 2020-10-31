@@ -1,0 +1,56 @@
+# Git tracking ignore rules
+# https://git-scm.com/docs/gitignore
+
+# Don't track hidden files by default
+.*
+
+# Track in-repo Git configurations
+!.git*
+
+# Track EditorConfig configuration
+# https://editorconfig.org/
+!.editorconfig
+
+# Track Drone CI configuration
+# https://docs.drone.io/
+!/.drone.yml
+
+# Track pre-commit Configuration
+# https://pre-commit.com/
+!/.pre-commit-config.yaml
+
+# Don't track common backup files
+*~
+*.bak
+*.backup*
+*.old
+*.bk*
+*.orig
+
+# Don't track common archive formats
+*.tar*
+*.7z
+*.bz2
+*.gz
+*.xz
+*.zip
+
+# Don't track picture files unless it's in the documentation
+*.bmp
+*.jpg
+*.png
+!doc-assets/*
+
+# Don't track common Markdown export documents
+*.doc?
+*.pdf
+
+# Don't track common logs filenames
+*.log
+*.out
+*.output
+*.err
+*.error
+
+# Don't track snap packages
+*.snap
