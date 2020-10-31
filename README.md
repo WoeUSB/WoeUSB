@@ -37,7 +37,8 @@ WoeUSB will not be able to function without these software installed in their pr
 * [The GNU Find Utilities](https://www.gnu.org/software/findutils/)  
   For enumerating files required for operation
 * [GNU GRUB](https://www.gnu.org/software/grub/)  
-  For installing the bootstrap code used in a Legacy PC boot
+  For installing the bootstrap code used in a Legacy PC boot  
+  We specifically requires modules of the i386-pc architecture, for Debian-based distributions these are provided via the grub-pc-bin package
 * [GNU Parted](https://www.gnu.org/software/parted/)  
   For manipulating disk partition table and partitions
 * [GNU Wget](https://www.gnu.org/software/wget/)  
