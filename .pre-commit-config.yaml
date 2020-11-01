@@ -1,0 +1,41 @@
+# Pre-commit framework Configuration
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+
+# This file is based on The Common Pre-commit Framework Configuration Template
+# https://github.com/Lin-Buo-Ren/common-precommit-config-template
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.3.0
+    hooks:
+      - id: check-added-large-files
+      - id: check-ast
+      - id: check-case-conflict
+      - id: check-docstring-first
+      - id: check-executables-have-shebangs
+      - id: check-json
+      - id: check-merge-conflict
+      - id: check-symlinks
+      - id: check-toml
+      - id: check-vcs-permalinks
+      - id: check-xml
+      - id: check-yaml
+      #- id: debug-statements
+      - id: detect-aws-credentials
+        args:
+          - --allow-missing-credentials
+      - id: detect-private-key
+      - id: end-of-file-fixer
+      #- id: file-contents-sorter
+      - id: fix-byte-order-marker
+      - id: fix-encoding-pragma
+      #- id: forbid-new-submodules
+      - id: mixed-line-ending
+      #- id: name-tests-test
+      #- id: pretty-format-json
+      #- id: requirements-txt-fixer
+      #- id: sort-simple-yaml
+      - id: trailing-whitespace
+        args:
+          - --markdown-linebreak-ext=md
