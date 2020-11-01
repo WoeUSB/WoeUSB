@@ -354,7 +354,7 @@ print_help(){
 	echo -e "${application_name} ${application_version} Help Information"
 	echo -e "======================================"
 	echo -e "${application_name} can create a bootable Microsoft Windows(R) USB storage device from an existing Windows optical disk or an ISO disk image."
-	echo -e 
+	echo -e
 	echo -e 'Currently two creation methods are supported:'
 	echo -e
 	echo -e '	--device, -d'
@@ -402,7 +402,7 @@ print_help(){
 	echo -e
 	echo -e '	--workaround-bios-boot-flag'
 	echo -e '		'"Workaround BIOS bug that won't include the device in boot menu if non of the partition's boot flag is toggled"
-	echo -e 
+	echo -e
 	echo -e '	--debugging-internal-function-call <function name> (function_argument)...'
 	echo -e '		''Development option for developers to test certain function without running the entire build'
 	echo -e
@@ -611,7 +611,7 @@ process_commandline_parameters(){
 		echo_with_color red "${FUNCNAME[0]}: Error: --device and --partition creation method are mutual-exclusive." >&2
 		return 1
 	fi
-	
+
 	# --label option is no use with --partition creation method
 	if \
 		[ "${enable_partition}" == true ] \
@@ -1173,7 +1173,7 @@ install_uefi_ntfs_support_partition(){
 			"Warning: Unable to download UEFI:NTFS partition image from GitHub, installation skipped.  Target device might not be bootable if the UEFI firmware doesn't support NTFS filesystem."
 		return 0
 	fi
-	
+
 	# Write partition image to partition
 	dd \
 		if="${download_directory}/uefi-ntfs.img" \
@@ -1194,7 +1194,7 @@ workaround_buggy_motherboards_that_ignore_disks_without_boot_flag_toggled(){
 	parted --script \
 		"${target_device}" \
 		set 1 boot on
-	
+
 	return $?
 }; declare -fr workaround_buggy_motherboards_that_ignore_disks_without_boot_flag_toggled
 
@@ -1656,7 +1656,7 @@ workaround_support_windows_7_uefi_boot(){
 }; declare -fr workaround_support_windows_7_uefi_boot
 
 ## Currently WoeUSB indirectly causes severely unresponsive system on 64-bit architecture with large primary memory during file copy process due to a flaw of the writeback buffer size handling in Linux kernel, workaround it before it is fixed
-## Refer: 
+## Refer:
 ## - System lagging while copying data · Issue #113 · slacka/WoeUSB <https://github.com/slacka/WoeUSB/issues/113>
 ## - The pernicious USB-stick stall problem [LWN.net] <https://lwn.net/Articles/572911/>
 workaround_linux_make_writeback_buffering_not_suck(){
