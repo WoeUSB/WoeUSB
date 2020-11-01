@@ -38,3 +38,23 @@ steps:
   image: alpine:3.12
   commands:
     - ./continuous-integration/static-code-analysis.sh
+
+- name: Prepare release
+  when:
+    event: tag
+  depends_on:
+    - Fetching Git tags
+  image: alpine:3.12
+  commands:
+    - ./continuous-integration/prepare-release.sh
+
+- name: Deliver release to GitHub
+  when:
+    event: tag
+  depends_on:
+    - Prepare release
+  image: plugins/github-release
+  settings:
+    api_key:
+      from_secret: github_api_token
+    files: /distribution/standalone/woeusb-standalone-*

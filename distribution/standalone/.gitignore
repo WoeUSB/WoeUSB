@@ -1,0 +1,8 @@
+# Git tracking ignore rules
+# https://git-scm.com/docs/gitignore
+
+# Ignore all files except README and this file
+*
+.*
+!/.gitignore
+!/README.md
