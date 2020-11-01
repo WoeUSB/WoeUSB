@@ -17,7 +17,7 @@ clone:
   depth: 100
 
   # Whether to disable certificate verification over the HTTPS protocol
-  skip_verify: False
+  #skip_verify: False
 
 steps:
 - name: Fetching Git tags
