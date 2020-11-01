@@ -1,0 +1,9 @@
+# Git path attributes configuration file
+#
+# Reference:
+#   - Git - gitattributes Documentation
+#     https://git-scm.com/docs/gitattributes/1.9.0
+
+# Exclude development assets from source archive
+/.* export-ignore
+/continuous-integration/ export-ignore
