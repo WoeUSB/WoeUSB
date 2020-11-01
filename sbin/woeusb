@@ -1732,10 +1732,12 @@ install_legacy_pc_bootloader_grub_config(){
 
     mkdir --parents "$(dirname "${grub_cfg}")"
     {
+        # SC1040 workaround
+        # https://github.com/koalaman/shellcheck/wiki/SC1040
         cat <<- END_OF_FILE
             ntldr /bootmgr
             boot
-        END_OF_FILE
+END_OF_FILE
     } > "${grub_cfg}"; unset target_fs_uuid
 }; declare -fr install_legacy_pc_bootloader_grub_config
 
