@@ -7,9 +7,9 @@ set \
     -o errexit \
     -o nounset
 
-# apk add \
-#     git \
-#     sed
+apk add \
+    git \
+    sed
 
 script_dir="$(
     realpath "${0%/*}"
