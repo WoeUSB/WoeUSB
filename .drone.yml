@@ -57,4 +57,4 @@ steps:
   settings:
     api_key:
       from_secret: github_api_token
-    files: /distribution/standalone/woeusb-standalone-*
+    files: distribution/standalone/woeusb-standalone-*
