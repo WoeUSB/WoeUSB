@@ -28,9 +28,9 @@ product_version="${git_describe#v}"
 
 cp \
     "${product_dir}"/sbin/woeusb \
-    "${product_dir}"/distribution/standalone/woeusb-standalone-"${product_version}"
+    "${product_dir}"/distribution/standalone/woeusb-standalone-"${product_version}".bash
 sed \
     --regexp-extended \
     --in-place \
     "s/@@WOEUSB_VERSION@@/${product_version}/" \
-    "${product_dir}"/distribution/standalone/woeusb-standalone-"${product_version}"
+    "${product_dir}"/distribution/standalone/woeusb-standalone-"${product_version}".bash
