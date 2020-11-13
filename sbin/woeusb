@@ -46,19 +46,19 @@ done
 ## BASHDOC: Shell Variables » Bash Variables
 ## BASHDOC: Basic Shell Features » Shell Parameters » Special Parameters
 if [ -v 'BASH_SOURCE[0]' ]; then
-    RUNTIME_EXECUTABLE_PATH="$(realpath --strip "${BASH_SOURCE[0]}")"
-    RUNTIME_EXECUTABLE_FILENAME="$(basename "${RUNTIME_EXECUTABLE_PATH}")"
-    RUNTIME_EXECUTABLE_NAME="${RUNTIME_EXECUTABLE_FILENAME%.*}"
-    RUNTIME_EXECUTABLE_DIRECTORY="$(dirname "${RUNTIME_EXECUTABLE_PATH}")"
-    RUNTIME_COMMANDLINE_BASECOMMAND="${0}"
+    program_path="$(realpath --strip "${BASH_SOURCE[0]}")"
+    program_filename="$(basename "${program_path}")"
+    program_name="${program_filename%.*}"
+    program_dir="$(dirname "${program_path}")"
+    program_basecommand="${0}"
     # Keep these partially unused variables declared
     # shellcheck disable=SC2034
     declare -r \
-        RUNTIME_EXECUTABLE_PATH \
-        RUNTIME_EXECUTABLE_FILENAME \
-        RUNTIME_EXECUTABLE_NAME \
-        RUNTIME_EXECUTABLE_DIRECTORY \
-        RUNTIME_COMMANDLINE_BASECOMMAND
+        program_path \
+        program_filename \
+        program_name \
+        program_dir \
+        program_basecommand
 fi
 declare -ar RUNTIME_COMMANDLINE_PARAMETERS=("${@}")
 
@@ -120,7 +120,7 @@ declare temp_directory; temp_directory=$(
 ## Entry point of the main code
 init(){
     util_check_function_parameters_quantity 2 $#
-    local -r runtime_executable_name="$1"; shift
+    local -r program_name="$1"; shift
     local -n only_for_gui_ref="$1"
 
     declare -r application_name='WoeUSB'
@@ -191,7 +191,7 @@ init(){
         print_help \
             "${application_name}" \
             "${application_version}" \
-            "${runtime_executable_name}"
+            "${program_name}"
         exit 1
 
     fi
@@ -205,7 +205,7 @@ init(){
         "${application_site_url}" \
         "${application_copyright_declaration}" \
         "${application_copyright_notice}" \
-        "${runtime_executable_name}"
+        "${program_name}"
 
     printf -- \
         '%s\n%s\n' \
@@ -223,7 +223,7 @@ init(){
         print_help \
             "${application_name}" \
             "${application_version}" \
-            "${runtime_executable_name}"
+            "${program_name}"
         exit 1
     fi
 
@@ -348,7 +348,7 @@ print_help(){
 
     local -r application_name="$1"; shift 1
     local -r application_version="$1"; shift 1
-    local -r runtime_executable_name="$1"
+    local -r program_name="$1"
 
     set +o xtrace
     echo -e "${application_name} ${application_version} Help Information"
@@ -362,20 +362,20 @@ print_help(){
     echo -e '        ''Completely WIPE the entire USB storage device, then build a bootable Windows USB device from scratch.'
     echo -e '        ''WARNING: All previous data on the device will be gone!'
     echo -e
-    echo -e '        '"${runtime_executable_name} --device <source media path> <device>"
+    echo -e '        '"${program_name} --device <source media path> <device>"
     echo -e '        ''Examples:'
-    echo -e '        '"- ${runtime_executable_name} --device Windows7_x64.iso /dev/sdX"
-    echo -e '        '"- ${runtime_executable_name} --device /dev/sr0 /dev/sdX"
+    echo -e '        '"- ${program_name} --device Windows7_x64.iso /dev/sdX"
+    echo -e '        '"- ${program_name} --device /dev/sr0 /dev/sdX"
     echo -e
     echo -e '    --partition, -p'
     echo -e
     echo -e '        ''Copy Windows files to an existing partition of a USB storage device and make it bootable.  This allows files to coexist as long as no filename conflict exists.'
     echo -e '        ''WARNING: All files that has the same name will be overwritten!'
     echo -e
-    echo -e '        '"${runtime_executable_name} --partition <source media path> <partition>"
+    echo -e '        '"${program_name} --partition <source media path> <partition>"
     echo -e '        ''Examples:'
-    echo -e '        '"- ${runtime_executable_name} --partition Windows7_x64.iso /dev/sdX1"
-    echo -e '        '"- ${runtime_executable_name} --partition /dev/sr0 /dev/sdX1"
+    echo -e '        '"- ${program_name} --partition Windows7_x64.iso /dev/sdX1"
+    echo -e '        '"- ${program_name} --partition /dev/sr0 /dev/sdX1"
     echo -e
     echo -e '## ''Command-line Options'' ##'
     echo -e '    --verbose, -v'
@@ -673,13 +673,13 @@ process_miscellaneous_requests(){
     local -r application_site_url="${1}"; shift
     local -r application_copyright_declaration="${1}"; shift
     local -r application_copyright_notice="${1}"; shift
-    local -r runtime_executable_name="${1}"; shift
+    local -r program_name="${1}"; shift
 
     if [ "${flag_print_help}" == true ]; then
         print_help \
             "${application_name}" \
             "${application_version}" \
-            "${runtime_executable_name}"
+            "${program_name}"
         exit 0
     fi
 
@@ -2168,5 +2168,5 @@ trap trap_errexit ERR
 trap trap_interrupt INT
 
 init \
-    "${RUNTIME_EXECUTABLE_NAME}" \
+    "${program_name}" \
     global_only_for_gui
