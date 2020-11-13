@@ -36,7 +36,11 @@ set \
 # Enable aliases for easy access to functions
 shopt -s expand_aliases
 
-for critical_command in realpath basename dirname mktemp; do
+for critical_command in \
+    basename \
+    dirname \
+    mktemp \
+    realpath; do
     if ! command -v "${critical_command}" &> /dev/null; then
         echo 'Fatal: This program requires GNU Coreutils in the executable search path'
         exit 1
@@ -723,7 +727,6 @@ check_runtime_dependencies(){
         id \
         lsblk \
         mkdir \
-        mktemp \
         mount \
         parted \
         partprobe \
