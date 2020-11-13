@@ -65,7 +65,7 @@ if [ -v 'BASH_SOURCE[0]' ]; then
         program_dir \
         program_basecommand
 fi
-declare -ar RUNTIME_COMMANDLINE_PARAMETERS=("${@}")
+declare -ar program_args=("${@}")
 
 # Global Parameters
 # Only set parameters global when there's no other way around(like passing in function as a function argument), usually when the variable is directly or indirectly referenced by traps
@@ -458,12 +458,12 @@ process_commandline_parameters(){
     local -n target_filesystem_type_ref="${1}"; shift
     local -n only_for_gui_ref="${1}"
 
-    if [ "${#RUNTIME_COMMANDLINE_PARAMETERS[@]}" -eq 0 ]; then
+    if [ "${#program_args[@]}" -eq 0 ]; then
         flag_print_help_ref=true
         return 0
     fi
 
-    local -a parameters=("${RUNTIME_COMMANDLINE_PARAMETERS[@]}")
+    local -a parameters=("${program_args[@]}")
     local \
         enable_debug=false \
         enable_device=false \
