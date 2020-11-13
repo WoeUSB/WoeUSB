@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # A Linux program to create bootable Windows USB stick from a real Windows DVD or an image
+#
 # Copyright © 2013 Colin GILLE / congelli501
 # Copyright © 2020 slacka et. al.
 #
