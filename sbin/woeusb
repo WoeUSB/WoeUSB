@@ -24,15 +24,15 @@
 # We use indirections and primitive variables, which is false positive of this rule
 # shellcheck disable=SC2034
 
-## Makes debuggers' life easier - Unofficial Bash Strict Mode
-## BASHDOC: Shell Builtin Commands - Modifying Shell Behavior - The Set Builtin
+# Makes debuggers' life easier - Unofficial Bash Strict Mode
+# BASHDOC: Shell Builtin Commands - Modifying Shell Behavior - The Set Builtin
 set \
     -o errexit \
     -o errtrace \
     -o nounset \
     -o pipefail
 
-## Enable aliases for easy access to functions
+# Enable aliases for easy access to functions
 shopt -s expand_aliases
 
 for critical_command in realpath basename dirname mktemp; do
@@ -42,9 +42,9 @@ for critical_command in realpath basename dirname mktemp; do
     fi
 done
 
-## Non-overridable Primitive Variables
-## BASHDOC: Shell Variables » Bash Variables
-## BASHDOC: Basic Shell Features » Shell Parameters » Special Parameters
+# Non-overridable Primitive Variables
+# BASHDOC: Shell Variables » Bash Variables
+# BASHDOC: Basic Shell Features » Shell Parameters » Special Parameters
 if [ -v 'BASH_SOURCE[0]' ]; then
     program_path="$(realpath --strip "${BASH_SOURCE[0]}")"
     program_filename="$(basename "${program_path}")"
@@ -62,44 +62,44 @@ if [ -v 'BASH_SOURCE[0]' ]; then
 fi
 declare -ar RUNTIME_COMMANDLINE_PARAMETERS=("${@}")
 
-## Global Parameters
-## Only set parameters global when there's no other way around(like passing in function as a function argument), usually when the variable is directly or indirectly referenced by traps
-## Even when the parameter is set global, you should pass it in as function argument when it's possible for better code reusability.
-## TODO: Global parameter cleanup
-### Doing GUI-specific stuff when set to `true`, set by --only-for-gui
-### Requires to be set to global due to indirectly referenced by trap
+# Global Parameters
+# Only set parameters global when there's no other way around(like passing in function as a function argument), usually when the variable is directly or indirectly referenced by traps
+# Even when the parameter is set global, you should pass it in as function argument when it's possible for better code reusability.
+# TODO: Global parameter cleanup
+# Doing GUI-specific stuff when set to `true`, set by --only-for-gui
+# Requires to be set to global due to indirectly referenced by trap
 declare global_only_for_gui=false
 
-### Increase verboseness, provide more information when required
+# Increase verboseness, provide more information when required
 declare verbose=false
 
-### Disable message coloring when set to `true`, set by --no-color
+# Disable message coloring when set to `true`, set by --no-color
 declare no_color=false
 
 declare -ir DD_BLOCK_SIZE="((4 * 1024 * 1024))" # 4MiB
 
-## NOTE: Need to pass to traps, so need to be global
+# NOTE: Need to pass to traps, so need to be global
 declare \
     source_fs_mountpoint \
     target_fs_mountpoint \
     target_device
 
-## FIXME: No documentation for this non-trivial parameter
+# FIXME: No documentation for this non-trivial parameter
 declare -i pulse_current_pid=0
 
-## Execution state for cleanup functions to determine if clean up is required
-## VALUE: Dash-seperated, lowercased words, no quoting
-## NOTE: Need to pass to traps, so need to be global
+# Execution state for cleanup functions to determine if clean up is required
+# VALUE: Dash-seperated, lowercased words, no quoting
+# NOTE: Need to pass to traps, so need to be global
 declare current_state=pre-init
 
-## Supported filesystems
-## A associated array with supported filesystem's identifier as key and its description as value
+# Supported filesystems
+# A associated array with supported filesystem's identifier as key and its description as value
 declare -A ENUM_SUPPORTED_FILESYSTEMS=(
     [FS_FAT]='File Allocation Table(FAT)'
     [FS_NTFS]='New Technology File System(NTFS)'
 )
 
-## For some reason alias won't be recognized in function if it's definition's LINENO is greater then it's reference in function, so we define it here:
+# For some reason alias won't be recognized in function if it's definition's LINENO is greater then it's reference in function, so we define it here:
 alias \
     echo_with_color=util_echo_with_color \
     switch_terminal_text_color=util_switch_terminal_text_color \
@@ -117,7 +117,7 @@ declare temp_directory; temp_directory=$(
         WoeUSB.XXXXXX.tempdir
 ); declare -r temp_directory
 
-## Entry point of the main code
+# Entry point of the main code
 init(){
     util_check_function_parameters_quantity 2 $#
     local -r program_name="$1"; shift
@@ -412,8 +412,8 @@ print_help(){
     echo -e
 }; declare -fr print_help
 
-## Print application version then exit, for debugging purpose.
-## application_version: Version of the application
+# Print application version then exit, for debugging purpose.
+# application_version: Version of the application
 print_version(){
     util_check_function_parameters_quantity 1 $#
 
@@ -620,7 +620,7 @@ process_commandline_parameters(){
         return 1
     fi
 
-    ## --target-filesystem option is no use with --partition creation method
+    # --target-filesystem option is no use with --partition creation method
     if \
         [ "${enable_target_filesystem}" == true ] \
         && [ "${enable_partition}" == true ]; then
@@ -628,7 +628,7 @@ process_commandline_parameters(){
         return 1
     fi
 
-    ## --target-filesystem should be supported
+    # --target-filesystem should be supported
     if \
         [ "${enable_target_filesystem}" = true ]; then
         case "${target_filesystem_type_input}" in
@@ -951,8 +951,8 @@ wipe_existing_partition_table_and_filesystem_signatures(){
     return $?
 }; declare -fr wipe_existing_partition_table_and_filesystem_signatures
 
-## Some broken locked-down flash drive will appears to be successfully wiped but actually nothing is written into it and will shown previous partition scheme afterwards.  This is the detection of the case and will bail out if such things happened
-## target_device: The target device file to be checked
+# Some broken locked-down flash drive will appears to be successfully wiped but actually nothing is written into it and will shown previous partition scheme afterwards.  This is the detection of the case and will bail out if such things happened
+# target_device: The target device file to be checked
 check_if_the_drive_is_really_wiped(){
     util_check_function_parameters_quantity 1 $#
     local -r target_device="$1"
@@ -1126,11 +1126,11 @@ create_target_partition(){
     esac
 }; declare -fr create_target_partition
 
-## Create UEFI:NTFS partition to support booting UEFI bootloader in NTFS filesystem where some UEFI firmwares are not able to do so
-## https://github.com/pbatard/uefi-ntfs
-## This routine assumes that there's only one partition on the disk, and the trailing 512KiB space is not partitioned
-## This routine should be run after create_target_partition and only on target partition's filesystem is NTFS
-## target_device: The target device's entire deice file
+# Create UEFI:NTFS partition to support booting UEFI bootloader in NTFS filesystem where some UEFI firmwares are not able to do so
+# https://github.com/pbatard/uefi-ntfs
+# This routine assumes that there's only one partition on the disk, and the trailing 512KiB space is not partitioned
+# This routine should be run after create_target_partition and only on target partition's filesystem is NTFS
+# target_device: The target device's entire deice file
 create_uefi_ntfs_support_partition(){
     util_check_function_parameters_quantity 1 $#
 
@@ -1152,11 +1152,11 @@ create_uefi_ntfs_support_partition(){
     return "$?"
 }; declare -fr create_uefi_ntfs_support_partition
 
-## Install UEFI:NTFS partition by writing the partition image into the created partition
-## FIXME: Currently this requires internet access to download the image from GitHub directly, it should be replaced by including the image in our datadir
-## uefi_ntfs_partition: The previously allocated partition for installing UEFI:NTFS, requires at least 512KiB
-## download_directory: The temporary directory for downloading UEFI:NTFS image from GitHub
-## target_device: For workaround_make_system_realize_partition_table_changed
+# Install UEFI:NTFS partition by writing the partition image into the created partition
+# FIXME: Currently this requires internet access to download the image from GitHub directly, it should be replaced by including the image in our datadir
+# uefi_ntfs_partition: The previously allocated partition for installing UEFI:NTFS, requires at least 512KiB
+# download_directory: The temporary directory for downloading UEFI:NTFS image from GitHub
+# target_device: For workaround_make_system_realize_partition_table_changed
 install_uefi_ntfs_support_partition(){
     util_check_function_parameters_quantity 3 $#
 
@@ -1181,7 +1181,7 @@ install_uefi_ntfs_support_partition(){
 
 }; declare -fr install_uefi_ntfs_support_partition
 
-## Some buggy BIOSes won't put detected device with valid MBR but no partitions with boot flag toggled into the boot menu, workaround this by setting the first partition's boot flag(which partition doesn't matter as GNU GRUB doesn't depend on it anyway
+# Some buggy BIOSes won't put detected device with valid MBR but no partitions with boot flag toggled into the boot menu, workaround this by setting the first partition's boot flag(which partition doesn't matter as GNU GRUB doesn't depend on it anyway
 workaround_buggy_motherboards_that_ignore_disks_without_boot_flag_toggled(){
     util_check_function_parameters_quantity 1 $#
 
@@ -1198,7 +1198,7 @@ workaround_buggy_motherboards_that_ignore_disks_without_boot_flag_toggled(){
     return $?
 }; declare -fr workaround_buggy_motherboards_that_ignore_disks_without_boot_flag_toggled
 
-## Check every file in source directory for files bigger than max fat32 file size (~4GB)
+# Check every file in source directory for files bigger than max fat32 file size (~4GB)
 check_fat32_filesize_limitation(){
     util_check_function_parameters_quantity 1 $#
     local -r source_fs_mountpoint="${1}"
@@ -1218,10 +1218,10 @@ check_fat32_filesize_limitation(){
     return 0
 }; declare -fr check_fat32_filesize_limitation
 
-## Check target partition for potential problems before mounting them for --partition creation mode as we don't know about the existing partition
-## target_partition: The target partition to check
-## install_mode: The usb storage creation method to be used
-## target_device: The parent device of the target partition, this is passed in to check UEFI:NTFS filesystem's existence on check_uefi_ntfs_support_partition
+# Check target partition for potential problems before mounting them for --partition creation mode as we don't know about the existing partition
+# target_partition: The target partition to check
+# install_mode: The usb storage creation method to be used
+# target_device: The parent device of the target partition, this is passed in to check UEFI:NTFS filesystem's existence on check_uefi_ntfs_support_partition
 check_target_partition(){
     util_check_function_parameters_quantity 3 $#
     local target_partition="${1}"; shift
@@ -1254,9 +1254,9 @@ check_target_partition(){
     return 0
 }; declare -fr check_target_partition
 
-## Check if the UEFI:NTFS support partition exists
-## Currently it depends on the fact that this partition has a label of "UEFI_NTFS"
-## target_device: The UEFI:NTFS partition residing entier device file
+# Check if the UEFI:NTFS support partition exists
+# Currently it depends on the fact that this partition has a label of "UEFI_NTFS"
+# target_device: The UEFI:NTFS partition residing entier device file
 check_uefi_ntfs_support_partition(){
     util_check_function_parameters_quantity 1 $#
 
@@ -1422,7 +1422,7 @@ check_target_filesystem_free_space(){
     fi
 }; declare -fr check_target_filesystem_free_space
 
-## Copying all files from one filesystem to another, with progress reporting
+# Copying all files from one filesystem to another, with progress reporting
 copy_filesystem_files(){
     util_check_function_parameters_quantity 3 "${#}"
     local source_fs_mountpoint="${1}"; shift
@@ -1498,9 +1498,9 @@ copy_filesystem_files(){
     return 0
 }; declare -fr copy_filesystem_files
 
-## Companion function of copy_filesystem_files for copying large files
-## Copy source_file to dest_file, overwrite file if dest_file exists
-## Also report copy_filesystem_files progress during operation
+# Companion function of copy_filesystem_files for copying large files
+# Copy source_file to dest_file, overwrite file if dest_file exists
+# Also report copy_filesystem_files progress during operation
 copy_large_file(){
     util_check_function_parameters_quantity 4 "${#}"
     local -r source_file="${1}"; shift
@@ -1547,10 +1547,10 @@ copy_large_file(){
     return 0
 }; declare -fr copy_large_file
 
-## As Windows 7's installation media doesn't place the required EFI
-## bootloaders in the right location, we extract them from the
-## system image manually
-## TODO: Functionize Windows 7 checking
+# As Windows 7's installation media doesn't place the required EFI
+# bootloaders in the right location, we extract them from the
+# system image manually
+# TODO: Functionize Windows 7 checking
 workaround_support_windows_7_uefi_boot(){
     util_check_function_parameters_quantity 2 "${#}"
     local source_fs_mountpoint="${1}"; shift
@@ -1655,10 +1655,10 @@ workaround_support_windows_7_uefi_boot(){
         > "${efi_boot_directory}/bootx64.efi"
 }; declare -fr workaround_support_windows_7_uefi_boot
 
-## Currently WoeUSB indirectly causes severely unresponsive system on 64-bit architecture with large primary memory during file copy process due to a flaw of the writeback buffer size handling in Linux kernel, workaround it before it is fixed
-## Refer:
-## - System lagging while copying data · Issue #113 · slacka/WoeUSB <https://github.com/slacka/WoeUSB/issues/113>
-## - The pernicious USB-stick stall problem [LWN.net] <https://lwn.net/Articles/572911/>
+# Currently WoeUSB indirectly causes severely unresponsive system on 64-bit architecture with large primary memory during file copy process due to a flaw of the writeback buffer size handling in Linux kernel, workaround it before it is fixed
+# Refer:
+# - System lagging while copying data · Issue #113 · slacka/WoeUSB <https://github.com/slacka/WoeUSB/issues/113>
+# - The pernicious USB-stick stall problem [LWN.net] <https://lwn.net/Articles/572911/>
 workaround_linux_make_writeback_buffering_not_suck(){
     util_check_function_parameters_quantity 1 "${#}"
     local -r mode="${1}"
@@ -1706,9 +1706,9 @@ install_legacy_pc_bootloader_grub(){
 
 }; declare -fr install_legacy_pc_bootloader_grub
 
-## Install a GRUB config file to chainload Microsoft Windows's bootloader in Legacy PC bootmode
-## target_fs_mountpoint: Target filesystem's mountpoint(where GRUB is installed)
-## name_grub_prefix: May be different between distributions, so need to be specified (grub/grub2)
+# Install a GRUB config file to chainload Microsoft Windows's bootloader in Legacy PC bootmode
+# target_fs_mountpoint: Target filesystem's mountpoint(where GRUB is installed)
+# name_grub_prefix: May be different between distributions, so need to be specified (grub/grub2)
 install_legacy_pc_bootloader_grub_config(){
     util_check_function_parameters_quantity 2 $#
 
@@ -1741,8 +1741,8 @@ END_OF_FILE
     } > "${grub_cfg}"; unset target_fs_uuid
 }; declare -fr install_legacy_pc_bootloader_grub_config
 
-## Unmount mounted filesystem and clean-up mountpoint before exiting program
-## return_value: 1 - Failed to unmount / 2 - Failed to remove mountpoint
+# Unmount mounted filesystem and clean-up mountpoint before exiting program
+# return_value: 1 - Failed to unmount / 2 - Failed to remove mountpoint
 cleanup_mountpoint(){
     util_check_function_parameters_quantity 2 "${#}"
     local -r fs_mountpoint="${1}"; shift
@@ -1779,10 +1779,10 @@ cleanup_mountpoint(){
     return 0
 }; declare -fr cleanup_mountpoint
 
-## This function continuously moves the GUI creation dialog's progressing bar bit by bit, by running `echo pulse` every 0.05 seconds until the next call chooses to turn off
-## Refer src/MainPanel.cpp MainPanel::OnInstall(wxCommandEvent& event) method for more info
-## http://docs.wxwidgets.org/trunk/classwx_generic_progress_dialog.html#ab5ecf227eebaa1aadb5f5c553e4a4ee5
-## switch: To enable or not enable this function(on/off)
+# This function continuously moves the GUI creation dialog's progressing bar bit by bit, by running `echo pulse` every 0.05 seconds until the next call chooses to turn off
+# Refer src/MainPanel.cpp MainPanel::OnInstall(wxCommandEvent& event) method for more info
+# http://docs.wxwidgets.org/trunk/classwx_generic_progress_dialog.html#ab5ecf227eebaa1aadb5f5c553e4a4ee5
+# switch: To enable or not enable this function(on/off)
 trigger_wxGenericProgressDialog_pulse(){
     util_check_function_parameters_quantity 2 $#
 
@@ -1824,8 +1824,8 @@ trigger_wxGenericProgressDialog_pulse(){
     return 0
 }; declare -fr trigger_wxGenericProgressDialog_pulse
 
-## Traps: Functions that are triggered when certain condition occurred
-## Shell Builtin Commands » Bourne Shell Builtins » trap
+# Traps: Functions that are triggered when certain condition occurred
+# Shell Builtin Commands » Bourne Shell Builtins » trap
 trap_errexit(){
     echo_with_color red "The command \"${BASH_COMMAND}\" failed with exit status \"${?}\", program is prematurely aborted" 1>&2
 
@@ -1936,8 +1936,8 @@ trap_return(){
     echo_with_color green "${FUNCNAME[0]}: INFO: returning from ${returning_function}" 1>&2
 }; declare -fr trap_return
 
-## FIXME: Debug trap never work as expected, it always
-## prints two identical lines somehow.
+# FIXME: Debug trap never work as expected, it always
+# prints two identical lines somehow.
 trap_debug(){
     util_check_function_parameters_quantity 1 $#
     local -r command_to_be_executed="${1}"
@@ -1965,8 +1965,8 @@ trap_debug(){
     return 0
 }; declare -fr trap_debug
 
-## An utility function for inhibiting command call output and
-## only show them to user when error occurred
+# An utility function for inhibiting command call output and
+# only show them to user when error occurred
 util_call_external_command(){
     local -ar command=("${@}")
 
@@ -2006,9 +2006,9 @@ util_call_external_command(){
     return "${command_exit_status}"
 }; declare -fr util_call_external_command
 
-## Configure the terminal to print future messages with certain color
-## Parameters:
-## - color: color of the next message, or `none` to reset to default color
+# Configure the terminal to print future messages with certain color
+# Parameters:
+# - color: color of the next message, or `none` to reset to default color
 util_switch_terminal_text_color(){
     util_check_function_parameters_quantity 1 $#
     local -r color="$1"
@@ -2045,7 +2045,7 @@ util_switch_terminal_text_color(){
     esac
 }; declare -fr util_switch_terminal_text_color
 
-## Print message with color
+# Print message with color
 util_echo_with_color(){
     util_check_function_parameters_quantity 2 "${#}"
     local -r message_color="${1}"; shift
@@ -2060,7 +2060,7 @@ util_echo_with_color(){
     fi
 }; declare -fr util_echo_with_color
 
-## Print formatted message with color
+# Print formatted message with color
 util_printf_with_color(){
     if [ ${#} -lt 2 ]; then
         if [ "${no_color}" == false ]; then
@@ -2132,8 +2132,8 @@ util_is_parameter_set_and_not_empty(){
     fi
 }; declare -fr util_is_parameter_set_and_not_empty
 
-## Utility function to check if function parameters quantity is legal
-## NOTE: non-static function parameter quantity(e.g. either 2 or 3) is not supported
+# Utility function to check if function parameters quantity is legal
+# NOTE: non-static function parameter quantity(e.g. either 2 or 3) is not supported
 util_check_function_parameters_quantity(){
     if [ "${#}" -ne 2 ]; then
         printf_with_color \
