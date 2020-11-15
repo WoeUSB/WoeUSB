@@ -31,10 +31,10 @@ init(){
     check_function_parameters_quantity 1 $#
     local -r program_name="$1"; shift
 
-    declare -r application_name='WoeUSB'
-    declare -r application_version='@@WOEUSB_VERSION@@'
+    local -r application_name='WoeUSB'
+    local -r application_version='@@WOEUSB_VERSION@@'
 
-    declare -r DEFAULT_NEW_FS_LABEL='Windows USB'
+    local -r DEFAULT_NEW_FS_LABEL='Windows USB'
 
     current_state=enter-init
 
