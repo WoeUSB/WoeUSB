@@ -68,15 +68,9 @@ To be addressed.  For now refer [Run from source](#run-from-source).
 
 WoeUSB is a program that can be run without installation(excluding its [dependencies](#dependencies)):
 
-```sh
-curl \
-    --location \
-    --remote-name \
-    --remote-header-name \
-    https://github.com/WoeUSB/WoeUSB/raw/master/sbin/woeusb
-chmod +x woeusb
-./woeusb --help
-```
+1. Download the program(woeusb-N.N.N.bash) from [the Releases page](https://github.com/WoeUSB/WoeUSB/releases)
+1. Fix the missing executable file permission (`chmod +x path/to/woeusb-N.N.N.bash`)
+1. Launch a terminal application and run the program via the appropriate path(`sudo path/to/woeusb-N.N.N.bash --help`)
 
 ## License
 
