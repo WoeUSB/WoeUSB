@@ -238,7 +238,7 @@ init(){
     current_state=finished
 
     exit 0
-}; declare -fr init
+}
 
 print_help(){
     check_function_parameters_quantity 3 "${#}"
@@ -310,7 +310,7 @@ print_help(){
     echo -e '    --for-gui'
     echo -e '        ''No longer supported, reserved for compatibility with the wrapper programs'
     echo -e
-}; declare -fr print_help
+}
 
 # Print application version then exit, for debugging purpose.
 # application_version: Version of the application
@@ -322,7 +322,7 @@ print_version(){
     printf -- \
         '%s\n' \
         "${application_version}"
-}; declare -fr print_version
+}
 
 print_application_info(){
     check_function_parameters_quantity 5 $#
@@ -337,7 +337,7 @@ print_application_info(){
     echo -e "${application_copyright_declaration}"
     echo -e "${application_copyright_notice}"
 
-}; declare -fr print_application_info
+}
 
 process_commandline_parameters(){
     check_function_parameters_quantity 10 "${#}"
@@ -559,7 +559,7 @@ process_commandline_parameters(){
         set -o xtrace
     fi
     return 0
-}; declare -fr process_commandline_parameters
+}
 
 process_miscellaneous_requests(){
     check_function_parameters_quantity 9 $#
@@ -597,7 +597,7 @@ process_miscellaneous_requests(){
         exit 0
     fi
 
-}; declare -fr process_miscellaneous_requests
+}
 
 check_runtime_dependencies(){
     check_function_parameters_quantity 5 $#
@@ -678,7 +678,7 @@ check_runtime_dependencies(){
     else
         return 0
     fi
-}; declare -fr check_runtime_dependencies
+}
 
 check_permission(){
     check_function_parameters_quantity 1 $#
@@ -692,7 +692,7 @@ check_permission(){
             'Warning: This might be the reason of the following failure.' >&2
     fi
     return 0
-}; declare -fr check_permission
+}
 
 check_runtime_parameters(){
     check_function_parameters_quantity 4 $#
@@ -726,7 +726,7 @@ check_runtime_parameters(){
     fi
 
     return 0
-}; declare -fr check_runtime_parameters
+}
 
 determine_target_parameters(){
     check_function_parameters_quantity 5 $#
@@ -782,7 +782,7 @@ determine_target_parameters(){
         fi
     fi
     return 0
-}; declare -fr determine_target_parameters
+}
 
 is_target_busy(){
     check_function_parameters_quantity 1 $#
@@ -798,7 +798,7 @@ is_target_busy(){
     else
         return 1
     fi
-}; declare -fr is_target_busy
+}
 
 check_source_and_target_not_busy(){
     check_function_parameters_quantity 4 $#
@@ -833,7 +833,7 @@ check_source_and_target_not_busy(){
             exit 1
         fi
     fi
-}; declare -fr check_source_and_target_not_busy
+}
 
 wipe_existing_partition_table_and_filesystem_signatures(){
     check_function_parameters_quantity 1 $#
@@ -846,7 +846,7 @@ wipe_existing_partition_table_and_filesystem_signatures(){
         "${target_device}"
 
     return $?
-}; declare -fr wipe_existing_partition_table_and_filesystem_signatures
+}
 
 # Some broken locked-down flash drive will appears to be successfully wiped but actually nothing is written into it and will shown previous partition scheme afterwards.  This is the detection of the case and will bail out if such things happened
 # target_device: The target device file to be checked
@@ -878,7 +878,7 @@ check_if_the_drive_is_really_wiped(){
     else
         return 0
     fi
-}; declare -fr check_if_the_drive_is_really_wiped
+}
 
 create_target_partition_table(){
     check_function_parameters_quantity 2 $#
@@ -913,7 +913,7 @@ create_target_partition_table(){
         "${target_device}" \
         mklabel \
         "${parted_partiton_table_argument}"
-}; declare -fr create_target_partition_table
+}
 
 # NOTE: This really should be done automatically by GNU Parted after every operation
 workaround_make_system_realize_partition_table_changed(){
@@ -932,7 +932,7 @@ workaround_make_system_realize_partition_table_changed(){
     echo 'Wait 3 seconds for block device nodes to populate...'
     sleep 3
 
-}; declare -fr workaround_make_system_realize_partition_table_changed
+}
 
 create_target_partition(){
     check_function_parameters_quantity 5 $#
@@ -1021,7 +1021,7 @@ create_target_partition(){
             exit 1
             ;;
     esac
-}; declare -fr create_target_partition
+}
 
 # Create UEFI:NTFS partition to support booting UEFI bootloader in NTFS filesystem where some UEFI firmwares are not able to do so
 # https://github.com/pbatard/uefi-ntfs
@@ -1047,7 +1047,7 @@ create_uefi_ntfs_support_partition(){
         -1s
 
     return "$?"
-}; declare -fr create_uefi_ntfs_support_partition
+}
 
 # Install UEFI:NTFS partition by writing the partition image into the created partition
 # FIXME: Currently this requires internet access to download the image from GitHub directly, it should be replaced by including the image in our datadir
@@ -1076,7 +1076,7 @@ install_uefi_ntfs_support_partition(){
         if="${download_directory}/uefi-ntfs.img" \
         of="${uefi_ntfs_partition}"
 
-}; declare -fr install_uefi_ntfs_support_partition
+}
 
 # Some buggy BIOSes won't put detected device with valid MBR but no partitions with boot flag toggled into the boot menu, workaround this by setting the first partition's boot flag(which partition doesn't matter as GNU GRUB doesn't depend on it anyway
 workaround_buggy_motherboards_that_ignore_disks_without_boot_flag_toggled(){
@@ -1093,7 +1093,7 @@ workaround_buggy_motherboards_that_ignore_disks_without_boot_flag_toggled(){
         set 1 boot on
 
     return $?
-}; declare -fr workaround_buggy_motherboards_that_ignore_disks_without_boot_flag_toggled
+}
 
 # Check every file in source directory for files bigger than max fat32 file size (~4GB)
 check_fat32_filesize_limitation(){
@@ -1113,7 +1113,7 @@ check_fat32_filesize_limitation(){
         fi
     done < <(find "${source_fs_mountpoint}" -type f -print0)
     return 0
-}; declare -fr check_fat32_filesize_limitation
+}
 
 # Check target partition for potential problems before mounting them for --partition creation mode as we don't know about the existing partition
 # target_partition: The target partition to check
@@ -1149,7 +1149,7 @@ check_target_partition(){
             ;;
     esac
     return 0
-}; declare -fr check_target_partition
+}
 
 # Check if the UEFI:NTFS support partition exists
 # Currently it depends on the fact that this partition has a label of "UEFI_NTFS"
@@ -1178,7 +1178,7 @@ check_uefi_ntfs_support_partition(){
             "${FUNCNAME[0]}" \
             'Info: You may recreate disk with an UEFI:NTFS partition by using the --device creation method'
     fi
-}; declare -fr check_uefi_ntfs_support_partition
+}
 
 mount_source_filesystem(){
     check_function_parameters_quantity 2 $#
@@ -1214,7 +1214,7 @@ mount_source_filesystem(){
             return 1
         )
     fi
-}; declare -fr mount_source_filesystem
+}
 
 # Mount target filesystem to existing path as mountpoint
 # target_partition: The partition device file target filesystem resides, for example /dev/sdX1
@@ -1270,7 +1270,7 @@ mount_target_filesystem(){
             echo_with_color red "${FUNCNAME[0]}: Error: Unable to mount target partition"
             return 1
         )
-}; declare -fr mount_target_filesystem
+}
 
 check_target_filesystem_free_space(){
     check_function_parameters_quantity 2 $#
@@ -1317,7 +1317,7 @@ check_target_filesystem_free_space(){
         echo "Error: We required ${needed_space_human_readable}(${needed_space} bytes) but '${target_partition}' only has ${free_space_human_readable}(${free_space} bytes)." >&2
         return 1
     fi
-}; declare -fr check_target_filesystem_free_space
+}
 
 # Copying all files from one filesystem to another, with progress reporting
 copy_filesystem_files(){
@@ -1383,7 +1383,7 @@ copy_filesystem_files(){
     popd >/dev/null
 
     return 0
-}; declare -fr copy_filesystem_files
+}
 
 # Companion function of copy_filesystem_files for copying large files
 # Copy source_file to dest_file, overwrite file if dest_file exists
@@ -1432,7 +1432,7 @@ copy_large_file(){
     done; unset i copied_size_total percentage
 
     return 0
-}; declare -fr copy_large_file
+}
 
 # As Windows 7's installation media doesn't place the required EFI
 # bootloaders in the right location, we extract them from the
@@ -1540,7 +1540,7 @@ workaround_support_windows_7_uefi_boot(){
         "${source_fs_mountpoint}/sources/install.wim" \
         "Windows/Boot/EFI/bootmgfw.efi" \
         > "${efi_boot_directory}/bootx64.efi"
-}; declare -fr workaround_support_windows_7_uefi_boot
+}
 
 # Currently WoeUSB indirectly causes severely unresponsive system on 64-bit architecture with large primary memory during file copy process due to a flaw of the writeback buffer size handling in Linux kernel, workaround it before it is fixed
 # Refer:
@@ -1576,7 +1576,7 @@ workaround_linux_make_writeback_buffering_not_suck(){
                 "${FUNCNAME[0]}"
         ;;
     esac
-}; declare -fr workaround_linux_make_writeback_buffering_not_suck
+}
 
 install_legacy_pc_bootloader_grub(){
     check_function_parameters_quantity 3 "${#}"
@@ -1591,7 +1591,7 @@ install_legacy_pc_bootloader_grub(){
         --force "${target_device}"
 
 
-}; declare -fr install_legacy_pc_bootloader_grub
+}
 
 # Install a GRUB config file to chainload Microsoft Windows's bootloader in Legacy PC bootmode
 # target_fs_mountpoint: Target filesystem's mountpoint(where GRUB is installed)
@@ -1626,7 +1626,7 @@ install_legacy_pc_bootloader_grub_config(){
             boot
 END_OF_FILE
     } > "${grub_cfg}"; unset target_fs_uuid
-}; declare -fr install_legacy_pc_bootloader_grub_config
+}
 
 # Unmount mounted filesystem and clean-up mountpoint before exiting program
 # return_value: 1 - Failed to unmount / 2 - Failed to remove mountpoint
@@ -1663,7 +1663,7 @@ cleanup_mountpoint(){
     fi
 
     return 0
-}; declare -fr cleanup_mountpoint
+}
 
 # Traps: Functions that are triggered when certain condition occurred
 # Shell Builtin Commands » Bourne Shell Builtins » trap
@@ -1671,7 +1671,7 @@ trap_errexit(){
     echo_with_color red "The command \"${BASH_COMMAND}\" failed with exit status \"${?}\", program is prematurely aborted" 1>&2
 
     return 0
-}; declare -fr trap_errexit
+}
 
 trap_exit(){
     # Mountpoints aren't successfully removed
@@ -1745,13 +1745,13 @@ trap_exit(){
     fi
 
     return 0
-}; declare -fr trap_exit
+}
 
 trap_interrupt(){
     printf '\n' # Separate message with previous output
     echo_with_color yellow 'Recieved SIGINT, program is interrupted.' 1>&2
     return 1
-}; declare -fr trap_interrupt
+}
 
 trap_return(){
     check_function_parameters_quantity 1 "${#}"
@@ -1768,7 +1768,7 @@ trap_return(){
     done
 
     echo_with_color green "${FUNCNAME[0]}: INFO: returning from ${returning_function}" 1>&2
-}; declare -fr trap_return
+}
 
 # FIXME: Debug trap never work as expected, it always
 # prints two identical lines somehow.
@@ -1797,7 +1797,7 @@ trap_debug(){
     esac
 
     return 0
-}; declare -fr trap_debug
+}
 
 # An utility function for inhibiting command call output and
 # only show them to user when error occurred
@@ -1838,7 +1838,7 @@ util_call_external_command(){
     fi
 
     return "${command_exit_status}"
-}; declare -fr util_call_external_command
+}
 
 # Configure the terminal to print future messages with certain color
 # Parameters:
@@ -1877,7 +1877,7 @@ switch_terminal_text_color(){
             exit 1
             ;;
     esac
-}; declare -fr switch_terminal_text_color
+}
 
 # Print message with color
 echo_with_color(){
@@ -1892,7 +1892,7 @@ echo_with_color(){
         echo -e "${message_body}"
         switch_terminal_text_color none
     fi
-}; declare -fr echo_with_color
+}
 
 # Print formatted message with color
 printf_with_color(){
@@ -1924,7 +1924,7 @@ printf_with_color(){
             "${printf_parameters[@]}"
         switch_terminal_text_color none
     fi
-}; declare -fr printf_with_color
+}
 
 shift_array(){
     check_function_parameters_quantity 1 "${#}"
@@ -1945,7 +1945,7 @@ shift_array(){
     fi
 
     return 0
-}; declare -fr shift_array
+}
 
 util_is_parameter_set_and_not_empty(){
     check_function_parameters_quantity 1 $#
@@ -1964,7 +1964,7 @@ util_is_parameter_set_and_not_empty(){
             return 0
         fi
     fi
-}; declare -fr util_is_parameter_set_and_not_empty
+}
 
 # Utility function to check if function parameters quantity is legal
 # NOTE: non-static function parameter quantity(e.g. either 2 or 3) is not supported
@@ -1995,7 +1995,7 @@ check_function_parameters_quantity(){
         exit 1
     fi
     return 0
-}; declare -fr check_function_parameters_quantity
+}
 
 # Makes debuggers' life easier - Unofficial Bash Strict Mode
 # BASHDOC: Shell Builtin Commands - Modifying Shell Behavior - The Set Builtin
