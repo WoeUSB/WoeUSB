@@ -19,6 +19,9 @@
 # https://pre-commit.com/
 !/.pre-commit-config.yaml
 
+# Track Markdownlint configuration file
+!/.markdownlint.yml
+
 # Don't track common backup files
 *~
 *.bak
