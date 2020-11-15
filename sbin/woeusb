@@ -23,7 +23,7 @@
 # * realpath: Use `--strip` instead of `--no-symlinks` for realpath(1) for compatibility of Ubuntu 14.04(EoL: April 2019)
 # * mktemp: Use short options(-d, -t) for Slackware 14.2 (EoL: Unknown)
 #
-# We use indirections and primitive variables, which is false positive of this rule
+# lint: We use indirections and primitive variables, which is false positive of this rule
 # shellcheck disable=SC2034
 
 # Entry point of the main code
