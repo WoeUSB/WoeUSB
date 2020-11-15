@@ -25,14 +25,6 @@
 # We use indirections and primitive variables, which is false positive of this rule
 # shellcheck disable=SC2034
 
-# For some reason alias won't be recognized in function if it's definition's LINENO is greater then it's reference in function, so we define it here:
-alias \
-    echo_with_color=util_echo_with_color \
-    switch_terminal_text_color=util_switch_terminal_text_color \
-    shift_array=util_shift_array \
-    is_target_busy=check_is_target_device_busy \
-    printf_with_color=util_printf_with_color
-
 # Entry point of the main code
 init(){
     util_check_function_parameters_quantity 1 $#
@@ -186,10 +178,10 @@ init(){
         if [ "${target_filesystem_type}" == FS_NTFS ]; then
             create_uefi_ntfs_support_partition \
                 "${target_device}"
-            install_uefi_ntfs_support_partition \
-                "${target_device}2" \
-                "${temp_directory}" \
-                "${target_device}"
+            # install_uefi_ntfs_support_partition \
+            #     "${target_device}2" \
+            #     "${temp_directory}" \
+            #     "${target_device}"
         fi
     fi
 
@@ -791,7 +783,7 @@ determine_target_parameters(){
     return 0
 }; declare -fr determine_target_parameters
 
-check_is_target_device_busy(){
+is_target_busy(){
     util_check_function_parameters_quantity 1 $#
     local device="${1}"
 
@@ -805,7 +797,7 @@ check_is_target_device_busy(){
     else
         return 1
     fi
-}; declare -fr check_is_target_device_busy
+}; declare -fr is_target_busy
 
 check_source_and_target_not_busy(){
     util_check_function_parameters_quantity 4 $#
@@ -1850,7 +1842,7 @@ util_call_external_command(){
 # Configure the terminal to print future messages with certain color
 # Parameters:
 # - color: color of the next message, or `none` to reset to default color
-util_switch_terminal_text_color(){
+switch_terminal_text_color(){
     util_check_function_parameters_quantity 1 $#
     local -r color="$1"
 
@@ -1884,10 +1876,10 @@ util_switch_terminal_text_color(){
             exit 1
             ;;
     esac
-}; declare -fr util_switch_terminal_text_color
+}; declare -fr switch_terminal_text_color
 
 # Print message with color
-util_echo_with_color(){
+echo_with_color(){
     util_check_function_parameters_quantity 2 "${#}"
     local -r message_color="${1}"; shift
     local -r message_body="${1}"
@@ -1899,10 +1891,10 @@ util_echo_with_color(){
         echo -e "${message_body}"
         switch_terminal_text_color none
     fi
-}; declare -fr util_echo_with_color
+}; declare -fr echo_with_color
 
 # Print formatted message with color
-util_printf_with_color(){
+printf_with_color(){
     if [ ${#} -lt 2 ]; then
         if [ "${no_color}" == false ]; then
             switch_terminal_text_color red
@@ -1931,9 +1923,9 @@ util_printf_with_color(){
             "${printf_parameters[@]}"
         switch_terminal_text_color none
     fi
-}; declare -fr util_printf_with_color
+}; declare -fr printf_with_color
 
-util_shift_array(){
+shift_array(){
     util_check_function_parameters_quantity 1 "${#}"
 
     local -n array_ref="${1}"
@@ -1952,7 +1944,7 @@ util_shift_array(){
     fi
 
     return 0
-}; declare -fr util_shift_array
+}; declare -fr shift_array
 
 util_is_parameter_set_and_not_empty(){
     util_check_function_parameters_quantity 1 $#
@@ -2004,7 +1996,6 @@ util_check_function_parameters_quantity(){
     return 0
 }; declare -fr util_check_function_parameters_quantity
 
-
 # Makes debuggers' life easier - Unofficial Bash Strict Mode
 # BASHDOC: Shell Builtin Commands - Modifying Shell Behavior - The Set Builtin
 set \
@@ -2012,9 +2003,6 @@ set \
     -o errtrace \
     -o nounset \
     -o pipefail
-
-# Enable aliases for easy access to functions
-shopt -s expand_aliases
 
 # Check critical dependencies for WoeUSB
 for critical_command in \
