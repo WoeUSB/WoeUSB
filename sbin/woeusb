@@ -51,18 +51,18 @@ done
 # BASHDOC: Shell Variables » Bash Variables
 # BASHDOC: Basic Shell Features » Shell Parameters » Special Parameters
 if [ -v 'BASH_SOURCE[0]' ]; then
-    program_path="$(realpath --strip "${BASH_SOURCE[0]}")"
-    program_filename="$(basename "${program_path}")"
-    program_name="${program_filename%.*}"
-    program_dir="$(dirname "${program_path}")"
+    script_path="$(realpath --strip "${BASH_SOURCE[0]}")"
+    script_filename="$(basename "${script_path}")"
+    script_name="${script_filename%.*}"
+    script_dir="$(dirname "${script_path}")"
     program_basecommand="${0}"
     # Keep these partially unused variables declared
     # shellcheck disable=SC2034
     declare -r \
-        program_path \
-        program_filename \
-        program_name \
-        program_dir \
+        script_path \
+        script_filename \
+        script_name \
+        script_dir \
         program_basecommand
 fi
 declare -ar program_args=("${@}")
@@ -2172,5 +2172,5 @@ trap trap_errexit ERR
 trap trap_interrupt INT
 
 init \
-    "${program_name}" \
+    "${script_name}" \
     global_only_for_gui
