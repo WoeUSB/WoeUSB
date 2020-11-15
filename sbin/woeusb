@@ -71,9 +71,6 @@ declare -ar program_args=("${@}")
 # Only set parameters global when there's no other way around(like passing in function as a function argument), usually when the variable is directly or indirectly referenced by traps
 # Even when the parameter is set global, you should pass it in as function argument when it's possible for better code reusability.
 # TODO: Global parameter cleanup
-# Doing GUI-specific stuff when set to `true`, set by --only-for-gui
-# Requires to be set to global due to indirectly referenced by trap
-declare global_only_for_gui=false
 
 # Increase verboseness, provide more information when required
 declare verbose=false
@@ -124,9 +121,8 @@ declare temp_directory; temp_directory=$(
 
 # Entry point of the main code
 init(){
-    util_check_function_parameters_quantity 2 $#
+    util_check_function_parameters_quantity 1 $#
     local -r program_name="$1"; shift
-    local -n only_for_gui_ref="$1"
 
     declare -r application_name='WoeUSB'
     declare -r application_version='@@WOEUSB_VERSION@@'
@@ -191,8 +187,7 @@ init(){
             target_media \
             new_file_system_label \
             workaround_bios_boot_flag \
-            target_filesystem_type \
-            global_only_for_gui; then
+            target_filesystem_type; then
         print_help \
             "${application_name}" \
             "${application_version}" \
@@ -231,11 +226,6 @@ init(){
             "${program_name}"
         exit 1
     fi
-
-    # FIXME: Why `trigger_wxGenericProgressDialog_pulse on` here?
-    trigger_wxGenericProgressDialog_pulse \
-        on \
-        "${only_for_gui_ref}"
 
     determine_target_parameters \
         "${install_mode}" \
@@ -318,8 +308,7 @@ init(){
 
     copy_filesystem_files \
         "${source_fs_mountpoint}" \
-        "${target_fs_mountpoint}" \
-        "${only_for_gui_ref}"
+        "${target_fs_mountpoint}"
 
     workaround_support_windows_7_uefi_boot \
         "${source_fs_mountpoint}" \
@@ -340,10 +329,6 @@ init(){
     fi
 
     current_state=finished
-
-    trigger_wxGenericProgressDialog_pulse \
-        off \
-        "${only_for_gui_ref}"
 
     exit 0
 }; declare -fr init
@@ -415,6 +400,9 @@ print_help(){
     echo -e '        '"Specify the filesystem to use as the target partition's filesystem."
     echo -e '        ''Currently supported: FAT(default)/NTFS'
     echo -e
+    echo -e '    --for-gui'
+    echo -e '        ''No longer supported, reserved for compatibility with the wrapper programs'
+    echo -e
 }; declare -fr print_help
 
 # Print application version then exit, for debugging purpose.
@@ -445,7 +433,7 @@ print_application_info(){
 }; declare -fr print_application_info
 
 process_commandline_parameters(){
-    util_check_function_parameters_quantity 11 "${#}"
+    util_check_function_parameters_quantity 10 "${#}"
     local -r application_name="${1}"; shift
     local -n flag_print_help_ref="${1}"; shift
     local -n flag_print_version_ref="${1}"; shift
@@ -456,7 +444,6 @@ process_commandline_parameters(){
     local -n new_file_system_label_ref="${1}"; shift
     local -n workaround_bios_boot_flag_ref="${1}"; shift
     local -n target_filesystem_type_ref="${1}"; shift
-    local -n only_for_gui_ref="${1}"
 
     if [ "${#program_args[@]}" -eq 0 ]; then
         flag_print_help_ref=true
@@ -534,7 +521,6 @@ process_commandline_parameters(){
                 ;;
             --for-gui)
                 no_color=true
-                only_for_gui_ref=true
                 ;;
             --no-color)
                 no_color=true
@@ -1428,10 +1414,9 @@ check_target_filesystem_free_space(){
 
 # Copying all files from one filesystem to another, with progress reporting
 copy_filesystem_files(){
-    util_check_function_parameters_quantity 3 "${#}"
+    util_check_function_parameters_quantity 2 "${#}"
     local source_fs_mountpoint="${1}"; shift
     local target_fs_mountpoint="${1}"; shift
-    local -r only_for_gui="${1}"
 
     local -i total_size
     total_size=$(
@@ -1441,11 +1426,6 @@ copy_filesystem_files(){
             "${source_fs_mountpoint}" \
         | awk '{print $1}'
     )
-
-    # FIXME: Why do we `trigger_wxGenericProgressDialog_pulse off` and on here?
-    trigger_wxGenericProgressDialog_pulse \
-        off \
-        "${only_for_gui}"
 
     echo_with_color green 'Copying files from source media...'
 
@@ -1494,10 +1474,6 @@ copy_filesystem_files(){
     ); unset source_file dest_file source_file_size copied_size percentage
 
     popd >/dev/null
-
-    trigger_wxGenericProgressDialog_pulse \
-        on \
-        "${only_for_gui}"
 
     return 0
 }; declare -fr copy_filesystem_files
@@ -1748,9 +1724,8 @@ END_OF_FILE
 # Unmount mounted filesystem and clean-up mountpoint before exiting program
 # return_value: 1 - Failed to unmount / 2 - Failed to remove mountpoint
 cleanup_mountpoint(){
-    util_check_function_parameters_quantity 2 "${#}"
+    util_check_function_parameters_quantity 1 "${#}"
     local -r fs_mountpoint="${1}"; shift
-    local -r only_for_gui="${1}"; shift
 
     # In copy_filesystem_files, we use `pushd` to changed the working directory into source_fs_mountpoint in order to get proper source and target file path, proactively `popd` to ensure we are not in source_fs_mountpoint and preventing source filesystem to unmount
     popd &>/dev/null \
@@ -1783,51 +1758,6 @@ cleanup_mountpoint(){
     return 0
 }; declare -fr cleanup_mountpoint
 
-# This function continuously moves the GUI creation dialog's progressing bar bit by bit, by running `echo pulse` every 0.05 seconds until the next call chooses to turn off
-# Refer src/MainPanel.cpp MainPanel::OnInstall(wxCommandEvent& event) method for more info
-# http://docs.wxwidgets.org/trunk/classwx_generic_progress_dialog.html#ab5ecf227eebaa1aadb5f5c553e4a4ee5
-# switch: To enable or not enable this function(on/off)
-trigger_wxGenericProgressDialog_pulse(){
-    util_check_function_parameters_quantity 2 $#
-
-    local switch="$1"; shift
-    local -r only_for_gui="$1"
-
-    if [ "${only_for_gui}" = false ]; then
-        return 0
-    fi
-
-    case "${switch}" in
-        on)
-            # Don't do anything if it is already turned on
-            if [ "${pulse_current_pid}" -ne 0 ]; then
-                return 0
-            fi
-
-            while true; do
-                sleep 0.05
-                echo pulse
-            done &
-            pulse_current_pid="$!"
-            disown
-            ;;
-        off)
-            # Don't do anything if it is already turned off
-            if [ "${pulse_current_pid}" -eq 0 ]; then
-                return 0
-            fi
-
-            kill "${pulse_current_pid}"
-            wait "${pulse_current_pid}" 2>/dev/null || true
-            pulse_current_pid=0
-            ;;
-        *)
-            echo "${FUNCNAME[0]}: FATAL: Illegal parameter \"$1\"" >&2
-            exit 1
-    esac
-    return 0
-}; declare -fr trigger_wxGenericProgressDialog_pulse
-
 # Traps: Functions that are triggered when certain condition occurred
 # Shell Builtin Commands » Bourne Shell Builtins » trap
 trap_errexit(){
@@ -1843,11 +1773,6 @@ trap_exit(){
     # Target filesystem failed to unmount
     local flag_unsafe=false
 
-    # FIXME: Why `trigger_wxGenericProgressDialog_pulse off` here?
-    trigger_wxGenericProgressDialog_pulse \
-        off \
-        "${global_only_for_gui}"
-
     case "${current_state}" in
         copying-filesystem|finished)
             workaround_linux_make_writeback_buffering_not_suck \
@@ -1858,8 +1783,7 @@ trap_exit(){
     if util_is_parameter_set_and_not_empty \
         source_fs_mountpoint; then
         if ! cleanup_mountpoint  \
-            "${source_fs_mountpoint}"  \
-            "${global_only_for_gui}"; then
+            "${source_fs_mountpoint}"; then
             flag_unclean=true
         fi
     fi
@@ -1867,8 +1791,7 @@ trap_exit(){
     if util_is_parameter_set_and_not_empty \
         target_fs_mountpoint; then
         if ! cleanup_mountpoint \
-            "${target_fs_mountpoint}" \
-            "${global_only_for_gui}"; then
+            "${target_fs_mountpoint}"; then
             local -i return_value="${?}"
 
             flag_unclean=true
@@ -2172,5 +2095,4 @@ trap trap_errexit ERR
 trap trap_interrupt INT
 
 init \
-    "${script_name}" \
-    global_only_for_gui
+    "${script_name}"
