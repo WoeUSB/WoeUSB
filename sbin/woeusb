@@ -2016,6 +2016,7 @@ set \
 # Enable aliases for easy access to functions
 shopt -s expand_aliases
 
+# Check critical dependencies for WoeUSB
 for critical_command in \
     basename \
     dirname \
