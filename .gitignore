@@ -15,7 +15,7 @@
 # https://docs.drone.io/
 !/.drone.yml
 
-# Track pre-commit Configuration
+# Track pre-commit configuration
 # https://pre-commit.com/
 !/.pre-commit-config.yaml
 
