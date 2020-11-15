@@ -34,9 +34,9 @@ If applicable, add terminal output to help explain your problem.  Please avoid p
 
 ## Environment ##
 
- - OS: [e.g. Ubuntu]
- - Bash: [e.g. `bash --version`]
- - WoeUSB: [e.g. 5.0.1]
+- OS: [e.g. Ubuntu]
+- Bash: [e.g. `bash --version`]
+- WoeUSB: [e.g. 5.0.1]
 
 ## Additional context ##
 Add any other context about the problem here.
