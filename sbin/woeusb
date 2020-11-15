@@ -25,82 +25,6 @@
 # We use indirections and primitive variables, which is false positive of this rule
 # shellcheck disable=SC2034
 
-# Makes debuggers' life easier - Unofficial Bash Strict Mode
-# BASHDOC: Shell Builtin Commands - Modifying Shell Behavior - The Set Builtin
-set \
-    -o errexit \
-    -o errtrace \
-    -o nounset \
-    -o pipefail
-
-# Enable aliases for easy access to functions
-shopt -s expand_aliases
-
-for critical_command in \
-    basename \
-    dirname \
-    mktemp \
-    realpath; do
-    if ! command -v "${critical_command}" &> /dev/null; then
-        echo 'Fatal: This program requires GNU Coreutils in the executable search path'
-        exit 1
-    fi
-done
-
-# Non-overridable Primitive Variables
-# BASHDOC: Shell Variables » Bash Variables
-# BASHDOC: Basic Shell Features » Shell Parameters » Special Parameters
-if [ -v 'BASH_SOURCE[0]' ]; then
-    script_path="$(realpath --strip "${BASH_SOURCE[0]}")"
-    script_filename="$(basename "${script_path}")"
-    script_name="${script_filename%.*}"
-    script_dir="$(dirname "${script_path}")"
-    program_basecommand="${0}"
-    # Keep these partially unused variables declared
-    # shellcheck disable=SC2034
-    declare -r \
-        script_path \
-        script_filename \
-        script_name \
-        script_dir \
-        program_basecommand
-fi
-declare -ar program_args=("${@}")
-
-# Global Variables #
-# Only set variables global when there's no other way around(like passing
-# in function as a function argument), usually when the variable is directly
-# or indirectly referenced by traps
-#
-# Even when the parameter is set global, you should pass it in as function
-# argument when it's possible for better code reusability.
-
-# Increase verboseness, provide more information when required
-declare verbose=false
-
-# Disable message coloring when set to `true`, set by --no-color
-declare no_color=false
-
-declare -ir DD_BLOCK_SIZE="((4 * 1024 * 1024))" # 4MiB
-
-# NOTE: Need to pass to traps, so need to be global
-declare \
-    source_fs_mountpoint \
-    target_fs_mountpoint \
-    target_device
-
-# Execution state for cleanup functions to determine if clean up is required
-# VALUE: Dash-seperated, lowercased words, no quoting
-# NOTE: Need to pass to traps, so need to be global
-declare current_state=pre-init
-
-# Supported filesystems
-# A associated array with supported filesystem's identifier as key and its description as value
-declare -A ENUM_SUPPORTED_FILESYSTEMS=(
-    [FS_FAT]='File Allocation Table(FAT)'
-    [FS_NTFS]='New Technology File System(NTFS)'
-)
-
 # For some reason alias won't be recognized in function if it's definition's LINENO is greater then it's reference in function, so we define it here:
 alias \
     echo_with_color=util_echo_with_color \
@@ -108,16 +32,6 @@ alias \
     shift_array=util_shift_array \
     is_target_busy=check_is_target_device_busy \
     printf_with_color=util_printf_with_color
-
-declare temp_directory; temp_directory=$(
-    # COMPATIBILITY: Use short option for Slackware 14.2
-    #    -d: --directory
-    #    -t: --tmpdir
-    mktemp \
-        -d \
-        -t \
-        WoeUSB.XXXXXX.tempdir
-); declare -r temp_directory
 
 # Entry point of the main code
 init(){
@@ -2090,9 +2004,96 @@ util_check_function_parameters_quantity(){
     return 0
 }; declare -fr util_check_function_parameters_quantity
 
+
+# Makes debuggers' life easier - Unofficial Bash Strict Mode
+# BASHDOC: Shell Builtin Commands - Modifying Shell Behavior - The Set Builtin
+set \
+    -o errexit \
+    -o errtrace \
+    -o nounset \
+    -o pipefail
+
+# Enable aliases for easy access to functions
+shopt -s expand_aliases
+
+for critical_command in \
+    basename \
+    dirname \
+    mktemp \
+    realpath; do
+    if ! command -v "${critical_command}" &> /dev/null; then
+        echo 'Fatal: This program requires GNU Coreutils in the executable search path'
+        exit 1
+    fi
+done
+
+# Non-overridable Primitive Variables
+# BASHDOC: Shell Variables » Bash Variables
+# BASHDOC: Basic Shell Features » Shell Parameters » Special Parameters
+if [ -v 'BASH_SOURCE[0]' ]; then
+    script_path="$(realpath --strip "${BASH_SOURCE[0]}")"
+    script_filename="$(basename "${script_path}")"
+    script_name="${script_filename%.*}"
+    script_dir="$(dirname "${script_path}")"
+    program_basecommand="${0}"
+    # Keep these partially unused variables declared
+    # shellcheck disable=SC2034
+    declare -r \
+        script_path \
+        script_filename \
+        script_name \
+        script_dir \
+        program_basecommand
+fi
+declare -ar program_args=("${@}")
+
+# Global Variables #
+# Only set variables global when there's no other way around(like passing
+# in function as a function argument), usually when the variable is directly
+# or indirectly referenced by traps
+#
+# Even when the parameter is set global, you should pass it in as function
+# argument when it's possible for better code reusability.
+
+# Increase verboseness, provide more information when required
+declare verbose=false
+
+# Disable message coloring when set to `true`, set by --no-color
+declare no_color=false
+
+declare -ir DD_BLOCK_SIZE="((4 * 1024 * 1024))" # 4MiB
+
+# NOTE: Need to pass to traps, so need to be global
+declare \
+    source_fs_mountpoint \
+    target_fs_mountpoint \
+    target_device
+
+# Execution state for cleanup functions to determine if clean up is required
+# VALUE: Dash-seperated, lowercased words, no quoting
+# NOTE: Need to pass to traps, so need to be global
+declare current_state=pre-init
+
+# Supported filesystems
+# A associated array with supported filesystem's identifier as key and its description as value
+declare -A ENUM_SUPPORTED_FILESYSTEMS=(
+    [FS_FAT]='File Allocation Table(FAT)'
+    [FS_NTFS]='New Technology File System(NTFS)'
+)
+
 trap trap_exit EXIT
 trap trap_errexit ERR
 trap trap_interrupt INT
+
+declare temp_directory; temp_directory=$(
+    # COMPATIBILITY: Use short option for Slackware 14.2
+    #    -d: --directory
+    #    -t: --tmpdir
+    mktemp \
+        -d \
+        -t \
+        WoeUSB.XXXXXX.tempdir
+); declare -r temp_directory
 
 init \
     "${script_name}"
