@@ -65,13 +65,13 @@ init(){
         mktemp \
             -d \
             -t \
-            woeusb-source-$(generate_timestamp).XXXXXX
+            woeusb-source-"$(generate_timestamp)".XXXXXX
     )"
     target_fs_mountpoint="$(
         mktemp \
             -d \
             -t \
-            woeusb-target-$(generate_timestamp).XXXXXX
+            woeusb-target-"$(generate_timestamp)".XXXXXX
     )"
 
     # Parameters that needs to be determined in runtime
