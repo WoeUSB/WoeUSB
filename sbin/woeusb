@@ -179,10 +179,10 @@ init(){
         if [ "${target_filesystem_type}" == FS_NTFS ]; then
             create_uefi_ntfs_support_partition \
                 "${target_device}"
-            # install_uefi_ntfs_support_partition \
-            #     "${target_device}2" \
-            #     "${temp_directory}" \
-            #     "${target_device}"
+            install_uefi_ntfs_support_partition \
+                "${target_device}2" \
+                "${temp_directory}" \
+                "${target_device}"
         fi
     fi
 
