@@ -44,7 +44,7 @@ init(){
         flag_print_about=false \
 
     local -r \
-        application_site_url='https://github.com/slacka/WoeUSB' \
+        application_site_url='https://github.com/WoeUSB/WoeUSB' \
         application_copyright_declaration="Copyright © Colin GILLE / congelli501 2013\\nCopyright © slacka et.al. 2020" \
         application_copyright_notice="${application_name} is free software licensed under the GNU General Public License version 3(or any later version of your preference) that gives you THE 4 ESSENTIAL FREEDOMS\\nhttps://www.gnu.org/philosophy/"
     local install_mode
@@ -1108,7 +1108,7 @@ check_fat32_filesize_limitation(){
                 "${file}"
             printf_with_color \
                 red \
-                'Refer: https://github.com/slacka/WoeUSB/wiki/Limitations#fat32-filesystem-4gib-single-file-size-limitation for more info.\n'
+                'Refer: https://github.com/WoeUSB/WoeUSB/wiki/Limitations#fat32-filesystem-4gib-single-file-size-limitation for more info.\n'
             return 1
         fi
     done < <(find "${source_fs_mountpoint}" -type f -print0)
