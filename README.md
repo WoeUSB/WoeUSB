@@ -46,6 +46,10 @@ WoeUSB will not be able to function without these software installed in their pr
   For manipulating disk partition table and partitions
 * [GNU Wget](https://www.gnu.org/software/wget/)  
   For acquiring [Pete Batard](https://pete.akeo.ie/)'s [UEFI:NTFS](https://github.com/pbatard/uefi-ntfs) UEFI bootloader
+* [dosfstools](https://github.com/dosfstools/dosfstools)  
+  For creating FAT filesystem in `--device` creation method
+* [NTFS-3G](https://www.tuxera.com/community/open-source-ntfs-3g/)  
+  For creating NTFS filesystem in `--device` creation method
 
 ### Optional
 
