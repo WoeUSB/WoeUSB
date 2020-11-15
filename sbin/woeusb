@@ -86,9 +86,6 @@ declare \
     target_fs_mountpoint \
     target_device
 
-# FIXME: No documentation for this non-trivial parameter
-declare -i pulse_current_pid=0
-
 # Execution state for cleanup functions to determine if clean up is required
 # VALUE: Dash-seperated, lowercased words, no quoting
 # NOTE: Need to pass to traps, so need to be global
