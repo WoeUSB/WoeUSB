@@ -61,8 +61,18 @@ init(){
 
     local target_filesystem_type=FS_FAT
 
-    source_fs_mountpoint="/media/woeusb_source_$(date +%s)_$$"
-    target_fs_mountpoint="/media/woeusb_target_$(date +%s)_$$"
+    source_fs_mountpoint="$(
+        mktemp \
+            -d \
+            -t \
+            woeusb-source-$(generate_timestamp).XXXXXX
+    )"
+    target_fs_mountpoint="$(
+        mktemp \
+            -d \
+            -t \
+            woeusb-target-$(generate_timestamp).XXXXXX
+    )"
 
     # Parameters that needs to be determined in runtime
     # due to different names in distributions
@@ -1995,6 +2005,17 @@ check_function_parameters_quantity(){
         exit 1
     fi
     return 0
+}
+
+# Generate reliable and user-friendly timestamps
+generate_timestamp(){
+    printf \
+        %s \
+        "$(
+            LC_TIME=C.UTF-8 \
+                date \
+                +%Y%m%d-%H%M%S-%A
+        )"
 }
 
 # Makes debuggers' life easier - Unofficial Bash Strict Mode
