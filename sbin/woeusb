@@ -317,6 +317,8 @@ print_help(){
     echo -e
     echo -e '    --for-gui'
     echo -e '        ''No longer supported, reserved for compatibility with the wrapper programs'
+    echo -e '    --uefi-ntfs-img, -u'
+    echo -e '        ''Specify uefi_ntfs.img location. This will make WoeUSB work without requiring internet access. The user is required to download that image from https://github.com/pbatard/rufus/raw/master/res/uefi/uefi-ntfs.img before running WoeUSB.'
     echo -e
 }
 
@@ -492,6 +494,23 @@ process_commandline_parameters(){
                         '[:upper:]' \
                     <<< "${parameters[0]}"
                 )"
+                ;;
+            --uefi-ntfs-img \
+            |-u)
+                shift_array parameters
+                uefi_ntfs_img="${parameters[0]}"
+
+                if \
+                    [[ \
+                        ( "${parameters[*]}" =~ '--tgt-fs NTFS' \
+                        || ( -z "$target_filesystem_type_input" && "$target_filesystem_type_input" = 'NTFS') ) \
+                    ]] \
+                    && [ ! -f "$uefi_ntfs_img" ]; then
+                    echo_with_color \
+                        yellow \
+                        "WARNING: $uefi_ntfs_img does not exist or is not a file. Falling back to downloading the uefi-ntfs.img from the internet."
+                    unset uefi_ntfs_img
+                fi
                 ;;
             *)
                 echo_with_color red "ERROR: Unknown command-line argument \"${parameters[0]}\"" >&2
@@ -1070,20 +1089,28 @@ install_uefi_ntfs_support_partition(){
     local -r download_directory="$1"; shift
     local -r target_device="$1"
 
-    if ! wget \
-        --directory-prefix="${download_directory}" \
-        https://github.com/pbatard/rufus/raw/master/res/uefi/uefi-ntfs.img; then
-        printf_with_color yellow \
-            '%s: %s\n' \
-            "${FUNCNAME[0]}" \
-            "Warning: Unable to download UEFI:NTFS partition image from GitHub, installation skipped.  Target device might not be bootable if the UEFI firmware doesn't support NTFS filesystem."
-        return 0
+    if [ ! "$uefi_ntfs_img" ]; then
+        if ! wget \
+            --directory-prefix="${download_directory}" \
+            https://github.com/pbatard/rufus/raw/master/res/uefi/uefi-ntfs.img; then
+            printf_with_color yellow \
+                '%s: %s\n' \
+                "${FUNCNAME[0]}" \
+                "Warning: Unable to download UEFI:NTFS partition image from GitHub, installation skipped.  Target device might not be bootable if the UEFI firmware doesn't support NTFS filesystem."
+            return 0
+        fi
     fi
 
     # Write partition image to partition
-    dd \
-        if="${download_directory}/uefi-ntfs.img" \
-        of="${uefi_ntfs_partition}"
+    if [ "$uefi_ntfs_img" ]; then
+        dd \
+            if="${uefi_ntfs_img}" \
+            of="${uefi_ntfs_partition}"
+    else
+        dd \
+            if="${download_directory}/uefi-ntfs.img" \
+            of="${uefi_ntfs_partition}"
+    fi
 
 }
 
