@@ -67,10 +67,13 @@ if [ -v 'BASH_SOURCE[0]' ]; then
 fi
 declare -ar program_args=("${@}")
 
-# Global Parameters
-# Only set parameters global when there's no other way around(like passing in function as a function argument), usually when the variable is directly or indirectly referenced by traps
-# Even when the parameter is set global, you should pass it in as function argument when it's possible for better code reusability.
-# TODO: Global parameter cleanup
+# Global Variables #
+# Only set variables global when there's no other way around(like passing
+# in function as a function argument), usually when the variable is directly
+# or indirectly referenced by traps
+#
+# Even when the parameter is set global, you should pass it in as function
+# argument when it's possible for better code reusability.
 
 # Increase verboseness, provide more information when required
 declare verbose=false
