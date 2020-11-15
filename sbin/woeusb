@@ -19,8 +19,9 @@
 # You should have received a copy of the GNU General Public License
 # along with WoeUSB  If not, see <http://www.gnu.org/licenses/>.
 #
-# Notes:
-# * Use `--strip` instead of `--no-symlinks` for realpath(1) for compatibility of Ubuntu 14.04(EoL: April 2019)
+# Compatibility notes:
+# * realpath: Use `--strip` instead of `--no-symlinks` for realpath(1) for compatibility of Ubuntu 14.04(EoL: April 2019)
+# * mktemp: Use short options(-d, -t) for Slackware 14.2 (EoL: Unknown)
 #
 # We use indirections and primitive variables, which is false positive of this rule
 # shellcheck disable=SC2034
@@ -2075,9 +2076,6 @@ trap trap_errexit ERR
 trap trap_interrupt INT
 
 declare temp_directory; temp_directory=$(
-    # COMPATIBILITY: Use short option for Slackware 14.2
-    #    -d: --directory
-    #    -t: --tmpdir
     mktemp \
         -d \
         -t \
