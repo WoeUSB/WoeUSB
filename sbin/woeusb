@@ -620,6 +620,7 @@ check_runtime_dependencies(){
     for required_command in \
         awk \
         blockdev \
+        cut \
         dd \
         df \
         du \
