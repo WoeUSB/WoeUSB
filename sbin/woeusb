@@ -62,6 +62,7 @@ init(){
 
     local target_filesystem_type=FS_FAT
 
+    local uefi_ntfs_img_download=true
     local uefi_ntfs_img
 
     source_fs_mountpoint="$(
@@ -92,7 +93,8 @@ init(){
         command_mkdosfs \
         command_mkntfs \
         command_grubinstall \
-        name_grub_prefix; then
+        name_grub_prefix \
+        uefi_ntfs_img_download; then
         exit 1
     fi
 
@@ -107,7 +109,8 @@ init(){
             target_media \
             new_file_system_label \
             workaround_bios_boot_flag \
-            target_filesystem_type; then
+            target_filesystem_type \
+            uefi_ntfs_img; then
         print_help \
             "${application_name}" \
             "${application_version}" \
@@ -195,7 +198,9 @@ init(){
             install_uefi_ntfs_support_partition \
                 "${target_device}2" \
                 "${temp_directory}" \
-                "${target_device}"
+                "${target_device}" \
+                "${uefi_ntfs_img_download}" \
+                "${uefi_ntfs_img}"
         fi
     fi
 
@@ -353,7 +358,7 @@ print_application_info(){
 }
 
 process_commandline_parameters(){
-    check_function_parameters_quantity 10 "${#}"
+    check_function_parameters_quantity 11 "${#}"
     local -r application_name="${1}"; shift
     local -n flag_print_help_ref="${1}"; shift
     local -n flag_print_version_ref="${1}"; shift
@@ -364,6 +369,7 @@ process_commandline_parameters(){
     local -n new_file_system_label_ref="${1}"; shift
     local -n workaround_bios_boot_flag_ref="${1}"; shift
     local -n target_filesystem_type_ref="${1}"; shift
+    local -n uefi_ntfs_img_ref="${1}"; shift
 
     if [ "${#program_args[@]}" -eq 0 ]; then
         flag_print_help_ref=true
@@ -501,21 +507,7 @@ process_commandline_parameters(){
             --uefi-ntfs-img \
             |-u)
                 shift_array parameters
-                uefi_ntfs_img="${parameters[0]}"
-
-                if \
-                    [[ \
-                        ( \
-                            "${parameters[*]}" =~ '--tgt-fs NTFS' \
-                            || "${parameters[*]}" =~ '--target-filesystem NTFS' \
-                        || ( -z "${target_filesystem_type_input}" && "${target_filesystem_type_input}" = NTFS) ) \
-                    ]] \
-                    && [ ! -f "${uefi_ntfs_img}" ]; then
-
-                        echo_with_color \
-                            yellow \
-                            "WARNING: ${uefi_ntfs_img} does not exist or is not a file. Falling back to downloading the uefi-ntfs.img from the internet."
-                fi
+                uefi_ntfs_img_ref="${parameters[0]}"
                 ;;
             *)
                 echo_with_color red "ERROR: Unknown command-line argument \"${parameters[0]}\"" >&2
@@ -632,12 +624,13 @@ process_miscellaneous_requests(){
 }
 
 check_runtime_dependencies(){
-    check_function_parameters_quantity 5 $#
+    check_function_parameters_quantity 6 $#
     local -r application_name="$1"; shift
     local -n command_mkdosfs_ref="$1"; shift
     local -n command_mkntfs_ref="$1"; shift
     local -n command_grubinstall_ref="$1"; shift
-    local -n name_grub_prefix_ref="$1"
+    local -n name_grub_prefix_ref="$1"; shift
+    local -n uefi_ntfs_img_download_ref="$1"
 
     local result=unknown
 
@@ -704,6 +697,23 @@ check_runtime_dependencies(){
         echo_with_color red "${FUNCNAME[0]}: Error: grub-install or grub2-install command not found!" >&2
         echo_with_color red "${FUNCNAME[0]}: Error: Please make sure that GNU GRUB is properly installed!" >&2
         result=failed
+    fi
+
+    if grep -q -- '\(--tgt-fs\|--target-filesystem\) NTFS' <<< "${program_args[*]}"; then
+        for n in $(seq 0 $((${#program_args[@]} - 1)) ); do
+            if [ "${program_args[$n]}" = '-u' ] || [ "${program_args[$n]}" = '--uefi-ntfs-img' ]; then
+                local uefi_ntfs_img="${program_args[$((n+1))]}"
+
+                if [ ! -f "${uefi_ntfs_img}" ]; then
+                    echo_with_color yellow "${FUNCNAME[0]}: Warning: ${uefi_ntfs_img} does not exist or is not a file!" >&2
+                    echo_with_color yellow "${FUNCNAME[0]}: Warning: Falling back to downloading the uefi-ntfs.img from the internet." >&2
+                else
+                    uefi_ntfs_img_download_ref=false
+                fi
+
+                break
+            fi
+        done
     fi
 
     if [ "${result}" == failed ]; then
@@ -1088,13 +1098,15 @@ create_uefi_ntfs_support_partition(){
 # download_directory: The temporary directory for downloading UEFI:NTFS image from GitHub
 # target_device: For workaround_make_system_realize_partition_table_changed
 install_uefi_ntfs_support_partition(){
-    check_function_parameters_quantity 3 $#
+    check_function_parameters_quantity 5 $#
 
     local -r uefi_ntfs_partition="$1"; shift
     local -r download_directory="$1"; shift
-    local -r target_device="$1"
+    local -r target_device="$1"; shift
+    local -r uefi_ntfs_img_download="$1"; shift
+    local -r uefi_ntfs_img="$1"
 
-    if [ -z "${uefi_ntfs_img}" ]; then
+    if [ "${uefi_ntfs_img_download}" = false ]; then
         # Write partition image to partition
         dd \
             if="${uefi_ntfs_img}" \
