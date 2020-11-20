@@ -1982,6 +1982,17 @@ set \
     -o nounset \
     -o pipefail
 
+# Check unsupported Bash version
+if test "${BASH_VERSINFO[0]}" -lt 4 \
+    || { test "${BASH_VERSINFO[0]}" -eq 4 \
+        && test "${BASH_VERSINFO[1]}" -lt 3;}; then
+    printf \
+        'Error: This program requires Bash >= 4.3 to function properly, refer <%s> for more info.\n' \
+        https://github.com/WoeUSB/WoeUSB#dependencies \
+        1>&2
+    exit 1
+fi
+
 # Check critical dependencies for WoeUSB
 for critical_command in \
     basename \
