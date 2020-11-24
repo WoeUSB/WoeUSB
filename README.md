@@ -22,7 +22,7 @@ A Microsoft Windows® USB installation media preparer for GNU+Linux
 
 ## Dependencies
 
-The following are the dependencies that WoeUSB requires, in one way or another:
+The following are the dependencies that WoeUSB requires, in one way or another.  Refer [the wiki](https://github.com/WoeUSB/WoeUSB/wiki/Dependencies) for distro-specific information.
 
 ### Required
 
