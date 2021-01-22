@@ -1067,7 +1067,7 @@ install_uefi_ntfs_support_partition(){
 
     if ! wget \
         --directory-prefix="${download_directory}" \
-        https://github.com/pbatard/rufus/raw/master/res/uefi/uefi-ntfs.img; then
+        https://cdn.jsdelivr.net/gh/pbatard/rufus@3.13/res/uefi/uefi-ntfs.img; then
         print_warning \
             "Unable to download UEFI:NTFS partition image from GitHub, installation skipped.  Target device might not be bootable if the UEFI firmware doesn't support NTFS filesystem.\\n"
         return 0
