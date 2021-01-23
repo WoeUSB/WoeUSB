@@ -1,11 +1,14 @@
 # Drone CI configuration file
+#
 # Reference:
 #   - Drone CI / CD | Drone
 #     https://docs.drone.io/
 #   - Docker Pipelines | Drone
 #     https://docs.drone.io/quickstart/docker/
+#
 # This file is based on The Common Drone CI Configuration Template project:
 # https://github.com/Lin-Buo-Ren/the-common-drone-ci-configuration-template
+# SPDX-License-Identifier: CC-BY-SA-4.0
 
 kind: pipeline
 type: docker
