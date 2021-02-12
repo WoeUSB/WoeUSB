@@ -1,59 +1,74 @@
-# Git tracking ignore rules
+# Version Tracking Ignore Rules for Git VCS
 # https://git-scm.com/docs/gitignore
+#
+# Exclude files not suitable for version tracking in Git
+#
+# This file is based on The Common .gitignore Templates
+# https://github.com/Lin-Buo-Ren/common-gitignore
+# Copyright 2021 林博仁(Buo-ren, Lin) <Buo.Ren.Lin@gmail.com>
+# SPDX-License-Identifier: CC-BY-SA-4.0
 
-# Don't track hidden files by default
+# Don't regular Unix hidden files
 .*
 
-# Track in-repo Git configurations
+# Do track Git configuration files
 !.git*
 
-# Track EditorConfig configuration
+# Do track EditorConfig configuration files
 # https://editorconfig.org/
 !.editorconfig
 
-# Track Drone CI configuration
-# https://docs.drone.io/
-!/.drone.yml
-
-# Track pre-commit configuration
+# Do track pre-commit configuration files
 # https://pre-commit.com/
-!/.pre-commit-config.yaml
+!.pre-commit-config.yaml
 
-# Track Markdownlint configuration file
-!/.markdownlint.yml
+# Do track Markdownlint configuration files
+# https://github.com/DavidAnson/markdownlint
+!.markdownlint.*
 
-# Don't track common backup files
+# Do track Drone CI configuration files
+# https://docs.drone.io/
+!.drone.yml
+
+# Do track REUSE configuration files
+!.reuse
+
+# Don't track common backup filename extensions
 *~
-*.bak
-*.backup*
-*.old
 *.bk*
-*.orig
+*.bak*
+*.backup*
+*.old*
+*.bk*
+*.orig*
 
-# Don't track common archive formats
-*.tar*
+## Don't track common archive files
 *.7z
 *.bz2
 *.gz
+*.tar*
 *.xz
 *.zip
 
-# Don't track picture files unless it's in the documentation
+# Don't track binary image files
 *.bmp
 *.jpg
 *.png
-!doc-assets/*
 
-# Don't track common Markdown export documents
+# Don't track common export formats from Markdown
 *.doc?
 *.pdf
+*.htm?
 
-# Don't track common logs filenames
+# Don't track common program output logs
 *.log
 *.out
 *.output
 *.err
 *.error
 
-# Don't track snap packages
-*.snap
+# Don't track compiled Python code caches
+*.pyc
+
+# Don't track Vagrant runtime directories
+.vagrant/

@@ -1,6 +1,7 @@
 #!/usr/bin/env sh
 # Prepare release for upload
-# 林博仁(Buo-ren, Lin) <Buo.Ren.Lin@gmail.com>
+# Copyright © 2021 林博仁(Buo-ren, Lin) <Buo.Ren.Lin@gmail.com>
+# SPDX-License-Identifier: GPL-3.0-or-later
 
 # Ensure script terminates when problems occurred
 set \

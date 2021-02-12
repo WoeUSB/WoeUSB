@@ -1,8 +1,15 @@
 # Git path attributes configuration file
 #
+# Defining attributes per path
+#
 # Reference:
 #   - Git - gitattributes Documentation
-#     https://git-scm.com/docs/gitattributes/1.9.0
+#     https://git-scm.com/docs/gitattributes
+#
+# This file is based on The Commons Gitattributes Templates
+# https://gitlab.com/brlin/the-commons-gitattributes-templates
+# SPDX-License-Identifier: CC-BY-SA-4.0
+# Copyright © 2020 林博仁(Buo-ren, Lin) <Buo.Ren.Lin@gmail.com>
 
 # Exclude development assets from source archive
 /.* export-ignore
