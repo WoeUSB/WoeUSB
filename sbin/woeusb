@@ -322,15 +322,15 @@ print_help(){
 
 # Print application version then exit, for debugging purpose.
 # application_version: Version of the application
-print_version(){
-    check_function_parameters_quantity 1 $#
+# print_version(){
+#     check_function_parameters_quantity 1 $#
 
-    local -r application_version="$1"
+#     local -r application_version="$1"
 
-    printf -- \
-        '%s\n' \
-        "${application_version}"
-}
+#     printf -- \
+#         '%s\n' \
+#         "${application_version}"
+# }
 
 print_application_info(){
     check_function_parameters_quantity 5 $#
@@ -590,8 +590,11 @@ process_miscellaneous_requests(){
     fi
 
     if [ "${flag_print_version}" == true ]; then
-        print_version \
-            "${application_version}"
+        printf -- \
+               '%s\n' \
+               "${application_version}"
+        # print_version \
+        #     "${application_version}"
         exit 0
     fi
 
