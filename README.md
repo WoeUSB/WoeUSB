@@ -6,8 +6,6 @@ A Microsoft Windows® USB installation media preparer for GNU+Linux
 
 [![Continuous Integration(CI) Status Badge](https://cloud.drone.io/api/badges/WoeUSB/WoeUSB/status.svg "Continuous Integration(CI) Status")](https://cloud.drone.io/WoeUSB/WoeUSB)
 
-![logo](branding%2Ficon%2F%22Gnome%20HIG%20compliant%20icon%22%20by%20Lorenzo%20Ragni%2Fsvg%2Fwoeusb_512_t.svg)
-
 ## Features
 
 * Support Legacy PC/UEFI booting
