@@ -1,51 +1,56 @@
 # Pre-commit framework Configuration
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
-
+#
 # This file is based on The Common Pre-commit Framework Configuration Template
 # https://github.com/Lin-Buo-Ren/common-precommit-config-template
+#
+# Copyright 2020 林博仁(Buo-ren, Lin) <Buo.Ren.Lin@gmail.com>
+# SPDX-License-Identifier: CC-BY-SA-4.0
 
 repos:
+  # Some out-of-the-box hooks for pre-commit
+  # https://github.com/pre-commit/pre-commit-hooks
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v3.3.0
     hooks:
       - id: check-added-large-files
-      - id: check-ast
       - id: check-case-conflict
-      - id: check-docstring-first
       - id: check-executables-have-shebangs
-      - id: check-json
       - id: check-merge-conflict
       - id: check-symlinks
-      - id: check-toml
       - id: check-vcs-permalinks
-      - id: check-xml
       - id: check-yaml
-      #- id: debug-statements
       - id: detect-aws-credentials
         args:
           - --allow-missing-credentials
       - id: detect-private-key
       - id: end-of-file-fixer
-      #- id: file-contents-sorter
       - id: fix-byte-order-marker
-      - id: fix-encoding-pragma
-      #- id: forbid-new-submodules
       - id: mixed-line-ending
-      #- id: name-tests-test
-      #- id: pretty-format-json
-      #- id: requirements-txt-fixer
-      #- id: sort-simple-yaml
       - id: trailing-whitespace
         args:
           - --markdown-linebreak-ext=md
 
+  # Check Markdown documents with Markdownlint(Node.js variant)
+  # https://github.com/DavidAnson/markdownlint
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.23.2
+    hooks:
+      - id: markdownlint
+
+  # Check shell scripts with ShellCheck
+  # NOTE: ShellCheck must be available in the command search PATHs
+  # https://www.shellcheck.net/
+  # https://github.com/jumanjihouse/pre-commit-hooks#shellcheck
   - repo: https://github.com/jumanjihouse/pre-commit-hooks
-    rev: 2.1.4
+    rev: 2.1.5
     hooks:
       - id: shellcheck
 
-  - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.25.0
+  # Check REUSE compliance
+  # https://reuse.software/
+  - repo: https://github.com/fsfe/reuse-tool
+    rev: v0.12.1
     hooks:
-      - id: markdownlint
+      - id: reuse
