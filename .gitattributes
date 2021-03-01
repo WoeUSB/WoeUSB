@@ -8,9 +8,16 @@
 #
 # This file is based on The Commons Gitattributes Templates
 # https://gitlab.com/brlin/the-commons-gitattributes-templates
+#
 # SPDX-License-Identifier: CC-BY-SA-4.0
 # Copyright © 2020 林博仁(Buo-ren, Lin) <Buo.Ren.Lin@gmail.com>
 
 # Exclude development assets from source archive
 /.* export-ignore
 /continuous-integration/ export-ignore
+
+# Exclude development assets exclusive licenses
+/LICENSES/WTFPL.* export-ignore
+
+# Include dep5 declaration file in release archive
+/.reuse/ -export-ignore

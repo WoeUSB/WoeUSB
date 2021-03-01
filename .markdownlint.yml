@@ -3,6 +3,9 @@
 #
 # This file is based on The Common Markdownlint(Node.js variant) Configuration Templates project
 # https://github.com/Lin-Buo-Ren/common-markdownlint-nodejs-config-templates
+#
+# Copyright 2021 林博仁(Buo-ren, Lin) <Buo.Ren.Lin@gmail.com>
+# SPDX-License-Identifier: CC-BY-SA-4.0
 
 # Inherit Markdownlint rules
 default: True
@@ -34,3 +37,8 @@ MD032: False
 
 # Allow using raw HTML markups as workarounds of deficiencies of Markdown
 MD033: False
+
+# Allow using YAML front matter, while not require the definition of the
+# `title` property
+MD041:
+  front_matter_title: '.*'
