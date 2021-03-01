@@ -6,8 +6,10 @@
 #   - Docker Pipelines | Drone
 #     https://docs.drone.io/quickstart/docker/
 #
-# This file is based on The Common Drone CI Configuration Template project:
-# https://github.com/Lin-Buo-Ren/the-common-drone-ci-configuration-template
+# This file is based on The Common Drone CI Configuration Templates project:
+# https://github.com/Lin-Buo-Ren/common-drone-ci-configs
+#
+# Copyright 2021 林博仁(Buo-ren, Lin) <Buo.Ren.Lin@gmail.com>
 # SPDX-License-Identifier: CC-BY-SA-4.0
 
 kind: pipeline
@@ -20,44 +22,44 @@ clone:
   depth: 100
 
   # Whether to disable certificate verification over the HTTPS protocol
-  #skip_verify: False
+  skip_verify: False
 
 steps:
-- name: Fetching Git tags
-  image: alpine/git
-  # Allow failure as this stop won't work when running the build via `drone exec`
-  failure: ignore
-  commands:
-    - git fetch --tags
+  - name: Fetching Git tags
+    image: alpine/git
+    # Allow failure as this stop won't work when running the build via `drone exec`
+    failure: ignore
+    commands:
+      - git fetch --tags
 
-# - name: Fetching Git submodules
-#   image: alpine/git
-#   commands:
-#   - git submodule update --init
+  # - name: Fetching Git submodules
+  #   image: alpine/git
+  #   commands:
+  #   - git submodule update --init
 
-- name: Static code analysis
-  depends_on:
-    - Fetching Git tags
-  image: alpine:3.12
-  commands:
-    - ./continuous-integration/static-code-analysis.sh
+  - name: Static code analysis
+    depends_on:
+      - Fetching Git tags
+    image: alpine:3.12
+    commands:
+      - ./continuous-integration/static-code-analysis.sh
 
-- name: Prepare release
-  when:
-    event: tag
-  depends_on:
-    - Fetching Git tags
-  image: alpine:3.12
-  commands:
-    - ./continuous-integration/prepare-release.sh
+  - name: Prepare release
+    when:
+      event: tag
+    depends_on:
+      - Fetching Git tags
+    image: alpine:3.12
+    commands:
+      - ./continuous-integration/prepare-release.sh
 
-- name: Deliver release to GitHub
-  when:
-    event: tag
-  depends_on:
-    - Prepare release
-  image: plugins/github-release
-  settings:
-    api_key:
-      from_secret: github_api_token
-    files: distribution/standalone/woeusb-*.bash
+  - name: Deliver release to GitHub
+    when:
+      event: tag
+    depends_on:
+      - Prepare release
+    image: plugins/github-release
+    settings:
+      api_key:
+        from_secret: github_api_token
+      files: distribution/standalone/woeusb-*.bash
