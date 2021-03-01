@@ -15,9 +15,11 @@
 # Exclude development assets from source archive
 /.* export-ignore
 /continuous-integration/ export-ignore
+/distribution/ export-ignore
 
 # Exclude development assets exclusive licenses
 /LICENSES/WTFPL.* export-ignore
+/LICENSES/CC-BY-SA-* export-ignore
 
 # Include dep5 declaration file in release archive
 /.reuse/ -export-ignore
