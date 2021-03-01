@@ -6,3 +6,21 @@ Source: https://github.com/WoeUSB/WoeUSB
 Files: README.md */*.md
 Copyright: 2021 林博仁(Buo-ren, Lin) <Buo.Ren.Lin@gmail.com>
 License: GPL-3.0-or-later
+
+Files: share/woeusb/woeusb.svg
+Copyright:
+ This work comprises the following components:
+ .
+ ## Component: Tux
+ .
+ 2016 [gg3po](https://www.pling.com/u/gg3po/), [Iwan Gabovitch](http://qubodup.deviantart.com) - [Tux Flat SVG](http://qubodup.deviantart.com/art/Tux-Flat-SVG-607655623), based on [File:NewTux.svg](https://commons.wikimedia.org/wiki/File:NewTux.svg "File:NewTux.svg") by [gg3po](https://www.pling.com/u/gg3po/) which is based on [File:Tux.png](https://commons.wikimedia.org/wiki/File:Tux.png "File:Tux.png") by [Larry Ewing](http://isc.tamu.edu/~lewing/linux/)
+ .
+ ## Component: "Window"
+ .
+ 2021 Lorenzo Ragni <lorenzo.ragni@outlook.it>
+ 2012 Fry1989 <https://commons.wikimedia.org/wiki/User:Fry1989>
+ 2012 Wikimedia Commons contributors <https://commons.wikimedia.org/wiki/File:Windows_8_logo_and_wordmark.svg>
+ .
+ ## Component: USB pendrive
+ 2021 Lorenzo Ragni <lorenzo.ragni@outlook.it>
+License: GPL-3.0-or-later
