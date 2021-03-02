@@ -1607,7 +1607,10 @@ cleanup_mountpoint(){
     check_function_parameters_quantity 1 "${#}"
     local -r fs_mountpoint="${1}"; shift
 
-    # In copy_filesystem_files, we use `pushd` to changed the working directory into source_fs_mountpoint in order to get proper source and target file path, proactively `popd` to ensure we are not in source_fs_mountpoint and preventing source filesystem to unmount
+    # In copy_filesystem_files, we use `pushd` to changed the working
+    # directory into source_fs_mountpoint in order to get proper source
+    # and target file path, proactively `popd` to ensure we are not in
+    # source_fs_mountpoint and preventing source filesystem to unmount
     popd &>/dev/null \
         || true
 
