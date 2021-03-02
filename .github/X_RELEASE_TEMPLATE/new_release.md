@@ -6,6 +6,12 @@ Changes that cause backward-incompatibilities, thus the bumping of the major ver
 
 * We've...
 
+## :new: New features
+
+Changes that introduces new features or functionalities:
+
+* We've
+
 ## :wrench: Fixes
 
 Fix something that was previously not working, to working:
