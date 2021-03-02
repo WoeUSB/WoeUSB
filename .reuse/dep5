@@ -17,10 +17,16 @@ Copyright:
  .
  ## Component: "Window"
  .
+ NOTE: This component is used according to the fair-use exemption.
+ .
  2021 Lorenzo Ragni <lorenzo.ragni@outlook.it>
  2012 Fry1989 <https://commons.wikimedia.org/wiki/User:Fry1989>
  2012 Wikimedia Commons contributors <https://commons.wikimedia.org/wiki/File:Windows_8_logo_and_wordmark.svg>
+ 2012 Microsoft
  .
  ## Component: USB pendrive
  2021 Lorenzo Ragni <lorenzo.ragni@outlook.it>
+ .
+# FIXME: Should be `License: GPL-3.0-or-later AND LicenseRef-Fairuse` but reuse-tool can't currently handle it
+# https://github.com/fsfe/reuse-tool/issues/325
 License: GPL-3.0-or-later
