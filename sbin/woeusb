@@ -582,6 +582,7 @@ process_miscellaneous_requests(){
     local -r program_name="${1}"; shift
 
     if [ "${flag_print_help}" == true ]; then
+        trap - EXIT
         print_help \
             "${application_name}" \
             "${application_version}" \
@@ -590,12 +591,14 @@ process_miscellaneous_requests(){
     fi
 
     if [ "${flag_print_version}" == true ]; then
+        trap - EXIT
         print_version \
             "${application_version}"
         exit 0
     fi
 
     if [ "${flag_print_about}" == true ]; then
+        trap - EXIT
         print_application_info \
             "${application_name}" \
             "${application_version}" \
