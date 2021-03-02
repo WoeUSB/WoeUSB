@@ -2,7 +2,7 @@
 
 ## :boom: Breaking changes
 
-Changes that cause the bumping of the major version:
+Changes that cause backward-incompatibilities, thus the bumping of the major version:
 
 * We've...
 
