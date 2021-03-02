@@ -1,5 +1,7 @@
 # WoeUSB @@WOEUSB_VERSION@@
 
+This release incorporates the following changes:
+
 ## :boom: Breaking changes
 
 Changes that cause backward-incompatibilities, thus the bumping of the major version:
