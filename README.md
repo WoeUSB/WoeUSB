@@ -76,7 +76,18 @@ WoeUSB is a program that can be run without installation(excluding its [dependen
 
 ## License
 
-GPL-3.0+
+Unless _otherwise specified_, this product is released with [The GNU General Public License, version 3.0](https://www.gnu.org/licenses/gpl-3.0.html), or any of its more recent version of your choice
+
+### Identify _otherwise specified_ licenses applicable to a certain product/development asset
+
+If the asset is in plaintext format:
+
+1. Check the `SPDX-License-Identifier` tag in the file's header
+1. Check the [.reuse/dep5](.reuse/dep5) file from the source tree/release tree directory
+
+If the asset is not in plaintext format:
+
+Check the [.reuse/dep5](.reuse/dep5) file from the source tree/release tree directory
 
 ## Credits
 
