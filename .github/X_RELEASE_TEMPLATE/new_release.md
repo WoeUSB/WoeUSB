@@ -38,6 +38,12 @@ Changes that contribute to the product's documentation:
 
 * We've...
 
+## :paintbrush: Branding
+
+Changes that contribute to the product's promotion:
+
+* We've...
+
 ---
 
 Cheers!  :clinking_glasses:
