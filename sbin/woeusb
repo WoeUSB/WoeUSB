@@ -24,8 +24,6 @@ init(){
     local -r application_name='WoeUSB'
     local -r application_version='@@WOEUSB_VERSION@@'
 
-    local -r DEFAULT_NEW_FS_LABEL='Windows USB'
-
     current_state=enter-init
 
     local \
@@ -49,7 +47,9 @@ init(){
 
     local workaround_bios_boot_flag=false
 
-    local target_filesystem_type=FS_FAT
+    local \
+        target_filesystem_type=FS_FAT \
+        target_fs_label='Windows USB'
 
     source_fs_mountpoint="$(
         mktemp \
@@ -72,8 +72,6 @@ init(){
         command_grubinstall \
         name_grub_prefix
 
-    declare new_file_system_label="${DEFAULT_NEW_FS_LABEL}"
-
     if ! check_runtime_dependencies \
         "${application_name}" \
         command_mkdosfs \
@@ -92,7 +90,7 @@ init(){
             install_mode \
             source_media \
             target_media \
-            new_file_system_label \
+            target_fs_label \
             workaround_bios_boot_flag \
             target_filesystem_type; then
         print_help \
@@ -126,7 +124,7 @@ init(){
         install_mode \
         source_media \
         target_media \
-        "${new_file_system_label}"; then
+        "${target_fs_label}"; then
         print_help \
             "${application_name}" \
             "${application_version}" \
@@ -165,7 +163,7 @@ init(){
         create_target_partition \
             "${target_partition}" \
             "${target_filesystem_type}" \
-            "${new_file_system_label}" \
+            "${target_fs_label}" \
             "${command_mkdosfs}" \
             "${command_mkntfs}"
 
@@ -339,7 +337,7 @@ process_commandline_parameters(){
     local -n install_mode_ref="${1}"; shift
     local -n source_media_ref="${1}"; shift
     local -n target_media_ref="${1}"; shift
-    local -n new_file_system_label_ref="${1}"; shift
+    local -n target_fs_label_ref="${1}"; shift
     local -n workaround_bios_boot_flag_ref="${1}"; shift
     local -n target_filesystem_type_ref="${1}"; shift
 
@@ -434,7 +432,7 @@ process_commandline_parameters(){
                         'ERROR: --label option requires 1 argument.'
                     return 1
                 fi
-                new_file_system_label_ref="${parameters[0]}"
+                target_fs_label_ref="${parameters[0]}"
                 ;;
             --workaround-bios-boot-flag)
                 enable_workaround_bios_boot_flag=true
