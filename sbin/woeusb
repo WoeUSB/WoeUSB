@@ -44,25 +44,13 @@ init(){
         target_media
 
     local target_partition
+    local uefi_ntfs_support_partition
 
     local workaround_bios_boot_flag=false
 
     local \
         target_filesystem_type=FS_FAT \
         target_fs_label='Windows USB'
-
-    source_fs_mountpoint="$(
-        mktemp \
-            -d \
-            -t \
-            woeusb-source-"$(generate_timestamp)".XXXXXX
-    )"
-    target_fs_mountpoint="$(
-        mktemp \
-            -d \
-            -t \
-            woeusb-target-"$(generate_timestamp)".XXXXXX
-    )"
 
     # Parameters that needs to be determined in runtime
     # due to different names in distributions
@@ -132,6 +120,13 @@ init(){
         exit 1
     fi
 
+    target_fs_mountpoint="$(
+        mktemp \
+            -d \
+            -t \
+            woeusb-target-"$(generate_timestamp)".XXXXXX
+    )"
+
     determine_target_parameters \
         "${install_mode}" \
         "${target_media}" \
@@ -147,11 +142,21 @@ init(){
 
     current_state=mount-source-filesystem
 
-    if ! mount_source_filesystem \
-        "${source_media}" \
-        "${source_fs_mountpoint}"; then
-        echo_with_color red 'Error: Unable to mount source filesystem'
-        exit 1
+    if [ -d "${source_media}" ]; then # ${source_media} is a directory
+        source_fs_mountpoint="${source_media}"
+    else
+        source_fs_mountpoint="$(
+            mktemp \
+                -d \
+                -t \
+                woeusb-source-"$(generate_timestamp)".XXXXXX
+        )"
+        if ! mount_source_filesystem \
+            "${source_media}" \
+            "${source_fs_mountpoint}"; then
+            echo_with_color red 'Error: Unable to mount source filesystem'
+            exit 1
+        fi
     fi
 
     if [ "${install_mode}" = device ]; then
@@ -161,7 +166,7 @@ init(){
             "${target_device}" \
             legacy
         create_target_partition \
-            "${target_partition}" \
+            "target_partition" \
             "${target_filesystem_type}" \
             "${target_fs_label}" \
             "${command_mkdosfs}" \
@@ -170,8 +175,12 @@ init(){
         if [ "${target_filesystem_type}" == FS_NTFS ]; then
             create_uefi_ntfs_support_partition \
                 "${target_device}"
+            determine_partition_device \
+                "${target_device}" \
+                2 \
+                uefi_ntfs_support_partition
             install_uefi_ntfs_support_partition \
-                "${target_device}2" \
+                "${uefi_ntfs_support_partition}" \
                 "${temp_directory}" \
                 "${target_device}"
         fi
@@ -239,7 +248,8 @@ print_help(){
     set +o xtrace
     echo -e "${application_name} ${application_version} Help Information"
     echo -e "======================================"
-    echo -e "${application_name} can create a bootable Microsoft Windows(R) USB storage device from an existing Windows optical disk or an ISO disk image."
+    echo -e "${application_name} can create a bootable Microsoft Windows(R) USB storage device"
+    echo -e "from an existing Windows optical disk, ISO disk image or directory."
     echo -e
     echo -e 'Currently two creation methods are supported:'
     echo -e
@@ -695,8 +705,9 @@ check_runtime_parameters(){
     local -n target_media_ref="${1}"
 
     if [ ! -f "${source_media_ref}" ] \
+        && [ ! -d "${source_media_ref}" ] \
         && [ ! -b "${source_media_ref}" ]; then
-        echo_with_color red "${FUNCNAME[0]}: Error: source media \"${source_media_ref}\" not found or not a regular file or a block device file!" >&2
+        echo_with_color red "${FUNCNAME[0]}: Error: source media \"${source_media_ref}\" not found or not a regular file, directory or a block device file!" >&2
         return 1
     fi
 
@@ -705,11 +716,11 @@ check_runtime_parameters(){
         return 1
     fi
 
-    if [ "${install_mode_ref}" = device ] \
-        && [[ "${target_media}" =~ .*[0-9] ]]
-        then
-        echo_with_color red "${FUNCNAME[0]}: Error: Target media \"${target_media_ref}\" is not an entire storage device!"
-        return 1
+    if [ "${install_mode_ref}" = device ]; then
+        if [ "$(lsblk "${target_media}" --output TYPE --noheading)" == "part" ]; then
+            echo_with_color red "${FUNCNAME[0]}: Error: Target media \"${target_media_ref}\" is not an entire storage device!"
+            return 1
+        fi
     fi
 
     if [ "${install_mode_ref}" = partition ] \
@@ -720,6 +731,20 @@ check_runtime_parameters(){
     fi
 
     return 0
+}
+
+determine_partition_device(){
+    check_function_parameters_quantity 3 $#
+    local device="${1}"; shift
+    local partition_number="${1}"; shift
+    local -n partition_device_ref="${1}"; shift
+
+    local line_number
+    ((line_number = partition_number + 1))
+    partition_device_ref=$(lsblk "${device}" --list --output NAME --noheadings --paths | awk "NR==$line_number")
+    if [ "${verbose}" = true ]; then
+        echo "${FUNCNAME[0]}: Info: Partition ${partition_number} on '${device}' is '${partition_device_ref}'."
+    fi
 }
 
 determine_target_parameters(){
@@ -765,12 +790,12 @@ determine_target_parameters(){
         unset target_filesystem_type_libblkid
     else # install_mode = device
         target_device_ref="${target_media}"
-        target_partition_ref="${target_device}1"
+        target_partition_ref="UNKNOWN"
     fi
 
     if [ "${verbose}" = true ]; then
         echo "${FUNCNAME[0]}: Info: Target device is '${target_device_ref}'."
-        echo "${FUNCNAME[0]}: Info: Target partition is '${target_partition_ref}'."
+        #echo "${FUNCNAME[0]}: Info: Target partition is '${target_partition_ref}'."
         if [ "${install_mode}" = partition ]; then
             echo "${FUNCNAME[0]}: Info: Target filesystem is '${ENUM_SUPPORTED_FILESYSTEMS[$target_filesystem_type]}'."
         fi
@@ -807,7 +832,7 @@ check_source_and_target_not_busy(){
             --fixed-strings \
             "${source_media}"
         )" != 0 ]; then
-        echo_with_color red "Error: Source media is currently mounted, unmount the partition then try again"
+        echo_with_color red "Error: Source media (${source_media}) is currently mounted, unmount the partition then try again"
         exit 1
     fi
 
@@ -868,7 +893,7 @@ check_if_the_drive_is_really_wiped(){
             red \
             'Error: %s: Partition is still detected after wiping all signatures, this indicates that the drive might be locked into readonly mode due to end of lifespan.\n' \
             "${FUNCNAME[0]}"
-        return 1
+        #return 1
     else
         return 0
     fi
@@ -930,7 +955,7 @@ workaround_make_system_realize_partition_table_changed(){
 
 create_target_partition(){
     check_function_parameters_quantity 5 $#
-    local -r target_partition="$1"; shift
+    local -n target_partition_ref="$1"; shift
 
     # ENUM_SUPPORTED_FILESYSTEMS
     local -r filesystem_type="$1"; shift
@@ -996,19 +1021,24 @@ create_target_partition(){
     workaround_make_system_realize_partition_table_changed \
         "${target_device}"
 
+    determine_partition_device \
+        "${target_device}" \
+        1 \
+        target_partition_ref
+
     # Format target partition's filesystem
     case "${filesystem_type}" in
         FS_FAT)
             "${command_mkdosfs}" \
                 -F 32 \
                 -n "${filesystem_label}" \
-                "${target_partition}"
+                "${target_partition_ref}"
             ;;
         FS_NTFS)
             "${command_mkntfs}" \
                 --quick \
                 --label "${filesystem_label}" \
-                "${target_partition}"
+                "${target_partition_ref}"
             ;;
         *)
             echo_with_color red "${FUNCNAME[0]}: FATAL: Shouldn't be here"
@@ -1291,6 +1321,11 @@ check_target_filesystem_free_space(){
         echo "Error: We required ${needed_space_human_readable}(${needed_space} bytes) but '${target_partition}' only has ${free_space_human_readable}(${free_space} bytes)." >&2
         return 1
     fi
+
+    if [ "${verbose}" = true ]; then
+        echo -e "\\nINFO: Available space on target: ${free_space_human_readable}"
+    fi
+
 }
 
 # Copying all files from one filesystem to another, with progress reporting
