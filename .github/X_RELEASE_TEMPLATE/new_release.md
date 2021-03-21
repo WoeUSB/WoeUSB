@@ -44,6 +44,12 @@ Changes that contribute to the product's promotion:
 
 * We've...
 
+## :balance_scale: Legal compliance
+
+Changes that ensure that WoeUSB can be legally distributed and (re)used as much as possible.
+
+* We've...
+
 ---
 
 Cheers!  :clinking_glasses:
