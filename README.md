@@ -52,6 +52,8 @@ WoeUSB will not be able to function without these software installed in their pr
   For creating FAT filesystem in `--device` creation method
 * [NTFS-3G](https://www.tuxera.com/community/open-source-ntfs-3g/)  
   For creating NTFS filesystem in `--device` creation method
+* [wimlib](https://wimlib.net/)  
+  For splitting install.wim Windows Imaging (WIM) archive so that archives over 4GiB can be fit in an FAT32 filesystem
 
 ### Optional
 

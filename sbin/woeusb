@@ -3,6 +3,7 @@
 #
 # Copyright © 2013 Colin GILLE / congelli501
 # Copyright © 2020 slacka et. al.
+# Copyright © 2021 WoeUSB project contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
 # This file is part of WoeUSB.
@@ -167,13 +168,6 @@ init(){
         exit 1
     fi
 
-    if [ "${target_filesystem_type}" == FS_FAT ]; then
-        if ! check_fat32_filesize_limitation \
-                "${source_fs_mountpoint}"; then
-            exit 1
-        fi
-    fi
-
     if [ "${install_mode}" = device ]; then
         wipe_existing_partition_table_and_filesystem_signatures \
             "${target_device}"
@@ -223,7 +217,8 @@ init(){
 
     copy_filesystem_files \
         "${source_fs_mountpoint}" \
-        "${target_fs_mountpoint}"
+        "${target_fs_mountpoint}" \
+        "${target_filesystem_type}"
 
     workaround_support_windows_7_uefi_boot \
         "${source_fs_mountpoint}" \
@@ -639,6 +634,7 @@ check_runtime_dependencies(){
         rm \
         stat \
         wget \
+        wimlib-imagex \
         wipefs
         do
         if ! command -v "${required_command}" >/dev/null; then
@@ -1107,26 +1103,6 @@ workaround_buggy_motherboards_that_ignore_disks_without_boot_flag_toggled(){
     return $?
 }
 
-# Check every file in source directory for files bigger than max fat32 file size (~4GB)
-check_fat32_filesize_limitation(){
-    check_function_parameters_quantity 1 $#
-    local -r source_fs_mountpoint="${1}"
-
-    while IFS= read -r -d '' file; do
-        if (( "$(stat -c '%s' "${file}")" > 4294967295 )); then # Max fat32 file size is 2^32 - 1 bytes
-            printf_with_color \
-                red \
-                'Error: File "%s" in source image has exceed the FAT32 Filesystem 4GiB Single File Size Limitation and cannot be installed.  You must specify a different --target-filesystem.\n' \
-                "${file}"
-            printf_with_color \
-                red \
-                'Refer: https://github.com/WoeUSB/WoeUSB/wiki/Limitations#fat32-filesystem-4gib-single-file-size-limitation for more info.\n'
-            return 1
-        fi
-    done < <(find "${source_fs_mountpoint}" -type f -print0)
-    return 0
-}
-
 # Check target partition for potential problems before mounting them for --partition creation mode as we don't know about the existing partition
 # target_partition: The target partition to check
 # install_mode: The usb storage creation method to be used
@@ -1333,9 +1309,10 @@ check_target_filesystem_free_space(){
 
 # Copying all files from one filesystem to another, with progress reporting
 copy_filesystem_files(){
-    check_function_parameters_quantity 2 "${#}"
+    check_function_parameters_quantity 3 "${#}"
     local source_fs_mountpoint="${1}"; shift
     local target_fs_mountpoint="${1}"; shift
+    local target_filesystem_type="${1}"; shift
 
     local -i total_size
     total_size=$(
@@ -1368,11 +1345,30 @@ copy_filesystem_files(){
             if [ "${source_file_size}" -lt "${DD_BLOCK_SIZE}" ]; then
                 cp "${source_file}" "${dest_file}"
             else
-                copy_large_file \
-                    "${source_file}" \
-                    "${dest_file}" \
-                    "${copied_size}" \
-                    "${total_size}"
+                # FS_FAT is not a parameter expansion
+                # shellcheck disable=SC2050
+                if [ "${target_filesystem_type}" == FS_FAT ] \
+                    && [ "${source_file_size}" -gt "${FAT32_FILESIZE_LIMIT}" ]; then
+                    if [[ ! "${source_file}" =~ \.wim$ ]]; then
+                        printf_with_color \
+                            yellow \
+                            '%s: Warning: Unsupported oversized file "%s" detected, this file will NOT be transferred.\n' \
+                            "${FUNCNAME[0]}" \
+                            "${source_file}"
+                    else
+                        copy_oversized_wim_file \
+                            "${source_file}" \
+                            "${dest_file}" \
+                            "${copied_size}" \
+                            "${total_size}"
+                    fi
+                else
+                    copy_large_file \
+                        "${source_file}" \
+                        "${dest_file}" \
+                        "${copied_size}" \
+                        "${total_size}"
+                fi
             fi
         else
             echo_with_color red "${FUNCNAME[0]}: Error: Unknown type of '${source_file}'!" >&2
@@ -1444,6 +1440,66 @@ copy_large_file(){
     done; unset i copied_size_total percentage
 
     return 0
+}
+
+# Copy WIM files that is over 4GiB to a FAT32 filesystem
+# Using wimlib to split file into smaller parts
+copy_oversized_wim_file(){
+    check_function_parameters_quantity 4 "${#}"
+    local source_file="${1}"; shift
+    local dest_file="${1}"; shift
+    local -ir caller_copied_size="${1}"; shift
+    local -ir caller_total_size="${1}"; shift
+
+    local dest_file_basename="${dest_file%.wim}"
+
+    # Split WIM image using wimtools to fit FAT32 restriction
+    # Optimal split file size: 4GiB - 1MiB = 4095MiB
+    wimlib-imagex split \
+        "${source_file}" \
+        "${dest_file_basename}.swm" \
+        4095 \
+        &
+
+    # We simulate progress report via sum-up the destination files
+    local -i \
+        splitted_files_size_total=0 \
+        splitted_file_size=0 \
+        copied_size_current="${caller_copied_size}" \
+        percentage_current=0
+    wimlib_imagex_pid="${!}"
+    while kill -0 "${wimlib_imagex_pid}" 2>/dev/null; do
+        splitted_files_size_total=0
+        splitted_file_size=0
+        copied_size_current="${caller_copied_size}"
+        is_dest_file_available=false
+
+        # Ensure swm file is created by wimlib before accounting sizes
+        while test "${is_dest_file_available}" == false && \
+                ! test -e "${dest_file_basename}".swm; do
+            sleep 1
+        done
+        is_dest_file_available=true
+
+        for splitted_file in "${dest_file_basename}"*.swm; do
+            splitted_file_size="$(
+                stat \
+                    --format=%s \
+                    "${splitted_file}"
+            )"
+            (( splitted_files_size_total += splitted_file_size ))
+        done
+        (( copied_size_current += splitted_files_size_total ))
+        (( percentage = (copied_size_current * 100) / caller_total_size))
+        echo -en "${percentage}%\\r"
+
+        # Use less resource during accounting sizes
+        sleep 0.2s
+    done
+
+    # Let EXIT trap know the process ended so that it won't try to
+    # kill random processes
+    wimlib_imagex_pid=
 }
 
 # As Windows 7's installation media doesn't place the required EFI
@@ -1658,6 +1714,12 @@ trap_exit(){
 
     # Target filesystem failed to unmount
     local flag_unsafe=false
+
+    if [ -n "${wimlib_imagex_pid}" ]; then
+        kill -s SIGKILL "${wimlib_imagex_pid}" || true
+        # Ensure fs is inactive before unmount
+        sleep 1
+    fi
 
     if util_is_parameter_set_and_not_empty \
         source_fs_mountpoint; then
@@ -2046,6 +2108,7 @@ declare verbose=false
 declare no_color=false
 
 declare -ir DD_BLOCK_SIZE="((4 * 1024 * 1024))" # 4MiB
+declare -ir FAT32_FILESIZE_LIMIT=4294967295 # 2^32 - 1
 
 # NOTE: Need to pass to traps, so need to be global
 declare \
@@ -2075,6 +2138,9 @@ declare temp_directory; temp_directory=$(
         -t \
         WoeUSB.XXXXXX.tempdir
 ); declare -r temp_directory
+
+# wimlib's process ID, needed to be killed in EXIT trap
+declare wimlib_imagex_pid=
 
 init \
     "${script_name}"
