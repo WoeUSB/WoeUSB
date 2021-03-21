@@ -78,7 +78,18 @@ WoeUSB is a program that can be run without installation(excluding its [dependen
 
 ## License
 
-Unless _otherwise specified_, this product is released with [The GNU General Public License, version 3.0](https://www.gnu.org/licenses/gpl-3.0.html), or any of its more recent version of your choice
+WoeUSB is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+WoeUSB is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with WoeUSB.  If not, see <http://www.gnu.org/licenses/>.
 
 ### Identify _otherwise specified_ licenses applicable to a certain product/development asset
 
