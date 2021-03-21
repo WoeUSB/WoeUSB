@@ -10,7 +10,7 @@ Changes that cause backward-incompatibilities, thus the bumping of the major ver
 
 ## :new: New features
 
-Changes that introduces new features or functionalities:
+Changes that introduce new features or functionalities:
 
 * We've
 
