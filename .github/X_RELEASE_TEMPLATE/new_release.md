@@ -8,7 +8,7 @@ Changes that cause backward-incompatibilities, thus the bumping of the major ver
 
 * We've...
 
-## :new: New features
+## :star2: New features
 
 Changes that introduce new features or functionalities:
 
