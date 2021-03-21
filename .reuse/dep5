@@ -27,6 +27,4 @@ Copyright:
  ## Component: USB pendrive
  2021 Lorenzo Ragni <lorenzo.ragni@outlook.it>
  .
-# FIXME: Should be `License: GPL-3.0-or-later AND LicenseRef-Fairuse` but reuse-tool can't currently handle it
-# https://github.com/fsfe/reuse-tool/issues/325
-License: GPL-3.0-or-later
+License: GPL-3.0-or-later AND LicenseRef-Fairuse

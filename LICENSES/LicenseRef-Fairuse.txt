@@ -1,0 +1,8 @@
+# LicenseRef-Fairuse
+
+This is a pseudo license which represents that the use of the referring
+resources may only be legal under the Fair Use principle, meaning that
+descretion may be needed when using such material.
+
+Refer [Fair use - Wikipedia](https://en.wikipedia.org/wiki/Fair_use)
+for more info.
