@@ -2187,7 +2187,7 @@ declare temp_directory; temp_directory=$(
     mktemp \
         -d \
         -t \
-        WoeUSB.XXXXXX.tempdir
+        WoeUSB.tempdir.XXXXXX
 ); declare -r temp_directory
 
 # wimlib's process ID, needed to be killed in EXIT trap
