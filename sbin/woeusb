@@ -1723,7 +1723,7 @@ trap_exit(){
         sleep 1
     fi
 
-    if util_is_parameter_set_and_not_empty \
+    if is_var_set_and_not_empty \
         source_fs_mountpoint; then
         if ! cleanup_mountpoint  \
             "${source_fs_mountpoint}"; then
@@ -1731,7 +1731,7 @@ trap_exit(){
         fi
     fi
 
-    if util_is_parameter_set_and_not_empty \
+    if is_var_set_and_not_empty \
         target_fs_mountpoint; then
         if ! cleanup_mountpoint \
             "${target_fs_mountpoint}"; then
@@ -1760,7 +1760,7 @@ trap_exit(){
         flag_unsafe
 
     if \
-        util_is_parameter_set_and_not_empty\
+        is_var_set_and_not_empty\
             target_device; then
         if is_target_busy "${target_device}"; then
             print_warning \
@@ -1791,7 +1791,7 @@ trap_return(){
 
     for ignored_function in \
         check_function_parameters_quantity \
-        util_is_parameter_set_and_not_empty \
+        is_var_set_and_not_empty \
         switch_terminal_text_color \
         printf_with_color \
         print_info \
@@ -2042,7 +2042,7 @@ shift_array(){
     return 0
 }
 
-util_is_parameter_set_and_not_empty(){
+is_var_set_and_not_empty(){
     check_function_parameters_quantity 1 $#
 
     local parameter_name="${1}"
