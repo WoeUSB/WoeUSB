@@ -410,13 +410,13 @@ process_commandline_parameters(){
                 target_media_ref="${parameters[0]}"
                 ;;
             --verbose|-v)
-                verbose=true
+                flag_verbose=true
                 ;;
             --for-gui)
-                no_color=true
+                flag_no_color=true
                 ;;
             --no-color)
-                no_color=true
+                flag_no_color=true
                 ;;
             --label|-l)
                 enable_label=true
@@ -531,7 +531,7 @@ process_commandline_parameters(){
         esac
     fi
 
-    if [ "${verbose}" = true ] && [ "${enable_debug}" != true ]; then
+    if [ "${flag_verbose}" = true ] && [ "${enable_debug}" != true ]; then
         trap 'trap_return "${FUNCNAME[0]}"' RETURN
     fi
 
@@ -772,7 +772,7 @@ determine_target_parameters(){
         target_partition_ref="${target_device}1"
     fi
 
-    if [ "${verbose}" = true ]; then
+    if [ "${flag_verbose}" = true ]; then
         print_info \
             "Target device is '%s'.\\n" \
             "${target_device_ref}"
@@ -1341,7 +1341,7 @@ copy_filesystem_files(){
         if [ -d "${source_file}" ]; then
             mkdir --parents "${dest_file}"
         elif [ -f "${source_file}" ]; then
-            if [ "${verbose}" = true ]; then
+            if [ "${flag_verbose}" = true ]; then
                 print_info \
                     'Copying "%s"...\n' \
                     "${source_file}"
@@ -1544,14 +1544,14 @@ workaround_support_windows_7_uefi_boot(){
     )"
     if [ -z "${test_efi_directory}" ]; then
         efi_directory="${target_fs_mountpoint}/efi"
-        if [ "${verbose}" = true ]; then
+        if [ "${flag_verbose}" = true ]; then
             print_debug \
                 "Can't find efi directory, use %s.\\n" \
                 "${efi_directory}"
         fi
     else # efi directory(case don't care) exists
         efi_directory="${test_efi_directory}"
-        if [ "${verbose}" = true ]; then
+        if [ "${flag_verbose}" = true ]; then
             print_debug \
                 '%s detected.\n' \
                 "${efi_directory}"
@@ -1569,14 +1569,14 @@ workaround_support_windows_7_uefi_boot(){
     )"
     if [ -z "${test_efi_boot_directory}" ]; then
         efi_boot_directory="${efi_directory}/boot"
-        if [ "${verbose}" = true ]; then
+        if [ "${flag_verbose}" = true ]; then
             print_debug \
                 "Can't find efi/boot directory, use %s.\\n" \
                 "${efi_boot_directory}"
         fi
     else # boot directory(case don't care) exists
         efi_boot_directory="${test_efi_boot_directory}"
-        if [ "${verbose}" = true ]; then
+        if [ "${flag_verbose}" = true ]; then
             print_debug \
                 '%s detected.\n' \
                 "${efi_boot_directory}"
@@ -1901,12 +1901,12 @@ printf_with_color(){
     local -r color="${1}"; shift
     local -ar printf_parameters=("${@}")
 
-    if [ "${no_color}" == true ]; then
+    if [ "${flag_no_color}" == true ]; then
         # False positive: not format string(ShellCheck #1028)
         # shellcheck disable=SC2059
         printf -- \
             "${printf_parameters[@]}"
-    else # no_color = false
+    else # flag_no_color = false
         switch_terminal_text_color "${color}"
         # False positive: not format string(ShellCheck #1028)
         # shellcheck disable=SC2059
@@ -2158,10 +2158,10 @@ declare -ar program_args=("${@}")
 # argument whenever it's possible for better code reusability.
 
 # Increase verboseness, provide more information when required
-declare verbose=false
+declare flag_verbose=false
 
 # Disable message coloring when set to `true`, set by --no-color
-declare no_color=false
+declare flag_no_color=false
 
 declare -ir DD_BLOCK_SIZE="((4 * 1024 * 1024))" # 4MiB
 declare -ir FAT32_FILESIZE_LIMIT=4294967295 # 2^32 - 1
