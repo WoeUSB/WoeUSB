@@ -24,8 +24,6 @@ init(){
     local -r application_name='WoeUSB'
     local -r application_version='@@WOEUSB_VERSION@@'
 
-    current_state=enter-init
-
     local \
         flag_print_help=false \
         flag_print_version=false \
@@ -145,8 +143,6 @@ init(){
         "${target_device}" \
         "${target_partition}"
 
-    current_state=mount-source-filesystem
-
     if ! mount_source_filesystem \
         "${source_media}" \
         "${source_fs_mountpoint}"; then
@@ -184,8 +180,6 @@ init(){
             "${target_device}"
     fi
 
-    current_state=mount-target-filesystem
-
     if ! mount_target_filesystem \
         "${target_partition}" \
         "${target_fs_mountpoint}"  \
@@ -198,8 +192,6 @@ init(){
         "${target_fs_mountpoint}" \
         "${source_fs_mountpoint}" \
         || exit 1
-
-    current_state=copying-filesystem
 
     copy_filesystem_files \
         "${source_fs_mountpoint}" \
@@ -224,7 +216,8 @@ init(){
             "${target_device}"
     fi
 
-    current_state=finished
+    echo_with_color green 'Done :)'
+    echo_with_color green 'The target device should be bootable now'
 
     exit 0
 }
@@ -1759,11 +1752,6 @@ trap_exit(){
         --recursive \
         "${temp_directory}"
 
-    if [ "${current_state}" = finished ]; then
-        echo_with_color green 'Done :)'
-        echo_with_color green 'The target device should be bootable now'
-    fi
-
     return 0
 }
 
@@ -2101,11 +2089,6 @@ declare \
     source_fs_mountpoint \
     target_fs_mountpoint \
     target_device
-
-# Execution state for cleanup functions to determine if clean up is required
-# VALUE: Dash-seperated, lowercased words, no quoting
-# NOTE: Need to pass to traps, so need to be global
-declare current_state=pre-init
 
 # Supported filesystems
 # A associated array with supported filesystem's identifier as key and its description as value
