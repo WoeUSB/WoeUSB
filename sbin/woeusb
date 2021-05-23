@@ -32,7 +32,7 @@ init(){
         flag_print_about=false \
 
     local -r \
-        application_site_url='https://github.com/WoeUSB/WoeUSB' \
+        application_site_url=https://github.com/WoeUSB/WoeUSB \
         application_copyright_declaration="Copyright © Colin GILLE / congelli501 2013\\nCopyright © slacka et.al. 2020" \
         application_copyright_notice="${application_name} is free software licensed under the GNU General Public License version 3(or any later version of your preference) that gives you THE 4 ESSENTIAL FREEDOMS\\nhttps://www.gnu.org/philosophy/"
     local install_mode
