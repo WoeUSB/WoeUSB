@@ -533,9 +533,6 @@ process_commandline_parameters(){
 
     if [ "${verbose}" = true ] && [ "${enable_debug}" != true ]; then
         trap 'trap_return "${FUNCNAME[0]}"' RETURN
-
-        # Disabled due to FIXME
-        # trap 'trap_debug "${BASH_COMMAND}"' DEBUG
     fi
 
     # Always be the last condition so that less debug message from this function will be printed
@@ -1810,39 +1807,6 @@ trap_return(){
     print_debug \
         'returning from %s\n' \
         "${returning_function}"
-}
-
-# FIXME: Debug trap never work as expected, it always
-# prints two identical lines somehow.
-trap_debug(){
-    check_function_parameters_quantity 1 $#
-    local -r command_to_be_executed="${1}"
-
-    local -r command_base="${command_to_be_executed%% *}"
-
-    for ignored_command in check_function_parameters_quantity util_is_parameter_set_and_not_empty printf_with_color switch_terminal_text_color tput printf_with_color; do
-        if [ "${command_base}" = "${ignored_command}" ]; then
-            return 0
-        fi
-    done
-
-    case "$(type -t "${command_base}")" in
-        file)
-            print_info \
-                'Executing %s\n' \
-                "${command_to_be_executed}"
-            ;;
-        function)
-            print_info \
-                'Calling %s\n' \
-                "${command_base}"
-            ;;
-        *)
-            :
-            ;;
-    esac
-
-    return 0
 }
 
 # An utility function for inhibiting command call output and
