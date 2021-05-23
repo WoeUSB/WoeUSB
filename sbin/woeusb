@@ -146,7 +146,9 @@ init(){
     if ! mount_source_filesystem \
         "${source_media}" \
         "${source_fs_mountpoint}"; then
-        echo_with_color red 'Error: Unable to mount source filesystem'
+        printf_with_color \
+            red \
+            'Error: Unable to mount source filesystem\n'
         exit 1
     fi
 
@@ -184,7 +186,9 @@ init(){
         "${target_partition}" \
         "${target_fs_mountpoint}"  \
         "${target_filesystem_type}"; then
-        echo_with_color red 'Error: Unable to mount target filesystem'
+        printf_with_color \
+            red \
+            'Error: Unable to mount target filesystem\n'
         exit 1
     fi
 
@@ -216,8 +220,8 @@ init(){
             "${target_device}"
     fi
 
-    echo_with_color green 'Done :)'
-    echo_with_color green 'The target device should be bootable now'
+    printf_with_color green 'Done :)\n'
+    printf_with_color green 'The target device should be bootable now\n'
 
     exit 0
 }
@@ -378,9 +382,10 @@ process_commandline_parameters(){
                 install_mode_ref=partition
                 shift_array parameters
                 if [ "${#parameters[@]}" -lt 2 ]; then
-                    echo_with_color \
+                    printf_with_color \
                         red \
-                        "${FUNCNAME[0]}: Error: --partition option requires 2 arguments!"
+                        '%s: Error: --partition option requires 2 arguments!' \
+                        "${FUNCNAME[0]}"
                     return 1
                 fi
                 source_media_ref="${parameters[0]}"
@@ -396,9 +401,10 @@ process_commandline_parameters(){
                 install_mode_ref=device
                 shift_array parameters
                 if [ "${#parameters[@]}" -lt 2 ]; then
-                    echo_with_color \
+                    printf_with_color \
                         red \
-                        "${FUNCNAME[0]}: Error: --device option requires 2 arguments!"
+                        '%s: Error: --device option requires 2 arguments!' \
+                        "${FUNCNAME[0]}"
                     return 1
                 fi
                 source_media_ref="${parameters[0]}"
@@ -468,7 +474,11 @@ process_commandline_parameters(){
                 )"
                 ;;
             *)
-                echo_with_color red "ERROR: Unknown command-line argument \"${parameters[0]}\"" >&2
+                printf_with_color \
+                    red \
+                    'ERROR: Unknown command-line argument "%s"\n' \
+                    "${parameters[0]}" \
+                    >&2
                 return 1
                 ;;
         esac
@@ -481,14 +491,20 @@ process_commandline_parameters(){
         && [ "${enable_partition}" == false ] \
         && [ "${enable_debugging_internal_function_call}" == false ]; then
         # intentionally don't mention about the internal function call option
-        echo_with_color \
+        printf_with_color \
             red \
-            "${FUNCNAME[0]}: Error: No creation method specified!" >&2
+            '%s: Error: No creation method specified!\n' \
+            "${FUNCNAME[0]}" \
+            >&2
         return 1
     elif \
         [ "${enable_device}" == true ]  \
         && [ "${enable_partition}" == true ]; then
-        echo_with_color red "${FUNCNAME[0]}: Error: --device and --partition creation method are mutual-exclusive." >&2
+        printf_with_color \
+            red \
+            '%s: Error: --device and --partition creation method are mutual-exclusive.\n' \
+            "${FUNCNAME[0]}" \
+            >&2
         return 1
     fi
 
@@ -496,7 +512,10 @@ process_commandline_parameters(){
     if \
         [ "${enable_partition}" == true ] \
         && [ "${enable_label}" == true ]; then
-        echo_with_color red "${FUNCNAME[0]}: Error: --label option only can be used with --device creation method"
+        printf_with_color \
+            red \
+            '%s: Error: --label option only can be used with --device creation method\n' \
+            "${FUNCNAME[0]}"
         return 1
     fi
 
@@ -504,7 +523,10 @@ process_commandline_parameters(){
     if \
         [ "${enable_target_filesystem}" == true ] \
         && [ "${enable_partition}" == true ]; then
-        echo_with_color red "${FUNCNAME[0]}: Error: --target-filesystem option only can be used with --device creation method"
+        printf_with_color \
+            red \
+            '%s: Error: --target-filesystem option only can be used with --device creation method\n' \
+            "${FUNCNAME[0]}"
         return 1
     fi
 
@@ -617,7 +639,12 @@ check_runtime_dependencies(){
         wipefs
         do
         if ! command -v "${required_command}" >/dev/null; then
-            echo_with_color red "${FUNCNAME[0]}: Error: ${application_name} requires ${required_command} command in the executable search path, but it is not found."
+            printf_with_color \
+                red \
+                '%s: Error: %s requires %s command in the executable search path, but it is not found.\n' \
+                "${FUNCNAME[0]}" \
+                "${application_name}" \
+                "${required_command}"
             result=failed
         fi
     done; unset required_command
@@ -631,10 +658,16 @@ check_runtime_dependencies(){
     elif command -v mkfs.fat &>/dev/null; then
         command_mkdosfs_ref=mkfs.fat
     else
-        echo_with_color red \
-            "${FUNCNAME[0]}: Error: mkdosfs/mkfs.msdos/mkfs.vfat/mkfs.fat command not found!" >&2
-        echo_with_color red \
-            "${FUNCNAME[0]}: Error: Please make sure that dosfstools is properly installed!" >&2
+        printf_with_color \
+            red \
+            '%s: Error: mkdosfs/mkfs.msdos/mkfs.vfat/mkfs.fat command not found!\n' \
+            "${FUNCNAME[0]}" \
+            >&2
+        printf_with_color \
+            red \
+            '%s: Error: Please make sure that dosfstools is properly installed!\n' \
+            "${FUNCNAME[0]}" \
+            >&2
         result='failed'
     fi
 
@@ -642,9 +675,13 @@ check_runtime_dependencies(){
         command_mkntfs_ref=mkntfs
     else
         printf_with_color red \
-            '%s\n%s\n' \
-            "${FUNCNAME[0]}: Error: mkntfs command not found!" \
-            "${FUNCNAME[0]}: Error: Please make sure that ntfs-3g is properly installed!"
+            '%s: Error: mkntfs command not found!\n' \
+            "${FUNCNAME[0]}" \
+            >&2
+        printf_with_color red \
+            '%s: Error: Please make sure that ntfs-3g is properly installed!\n' \
+            "${FUNCNAME[0]}" \
+            >&2
         result=failed
     fi
 
@@ -655,8 +692,16 @@ check_runtime_dependencies(){
         command_grubinstall_ref=grub2-install
         name_grub_prefix_ref=grub2
     else
-        echo_with_color red "${FUNCNAME[0]}: Error: grub-install or grub2-install command not found!" >&2
-        echo_with_color red "${FUNCNAME[0]}: Error: Please make sure that GNU GRUB is properly installed!" >&2
+        printf_with_color \
+            red \
+            '%s: Error: grub-install or grub2-install command not found!\n' \
+            "${FUNCNAME[0]}" \
+            >&2
+        printf_with_color \
+            red \
+            '%s: Error: Please make sure that GNU GRUB is properly installed!\n' \
+            "${FUNCNAME[0]}" \
+            >&2
         result=failed
     fi
 
@@ -674,9 +719,13 @@ check_permission(){
     if [ ! "$(id --user)" = 0 ]; then
         printf_with_color \
             yellow \
-            '%s\n%s\n' \
-            "Warning: You are not running ${application_name} as root!" \
-            'Warning: This might be the reason of the following failure.' >&2
+            'Warning: You are not running %s as root!\n' \
+            "${application_name}" \
+            >&2
+        printf_with_color \
+            yellow \
+            'Warning: This might be the reason of the following failure.\n' \
+            >&2
     fi
     return 0
 }
@@ -689,26 +738,45 @@ check_runtime_parameters(){
 
     if [ ! -f "${source_media_ref}" ] \
         && [ ! -b "${source_media_ref}" ]; then
-        echo_with_color red "${FUNCNAME[0]}: Error: source media \"${source_media_ref}\" not found or not a regular file or a block device file!" >&2
+        printf_with_color \
+            red \
+            '%s: Error: source media "%s" not found or not a regular file or a block device file!\n' \
+            "${FUNCNAME[0]}" \
+            "${source_media_ref}" \
+            >&2
         return 1
     fi
 
     if ! [ -b "${target_media_ref}" ]; then
-        echo_with_color red "${FUNCNAME[0]}: Error: Target media \"${target_media_ref}\" is not a block device file!" >&2
+        printf_with_color \
+            red \
+            '%s: Error: Target media "%s" is not a block device file!\n' \
+            "${FUNCNAME[0]}" \
+            "${target_media_ref}" \
+            >&2
         return 1
     fi
 
     if [ "${install_mode_ref}" = device ] \
         && [[ "${target_media}" =~ .*[0-9] ]]
         then
-        echo_with_color red "${FUNCNAME[0]}: Error: Target media \"${target_media_ref}\" is not an entire storage device!"
+        printf_with_color \
+            red \
+            '%s: Error: Target media "%s" is not an entire storage device!\n' \
+            "${FUNCNAME[0]}" \
+            "${target_media_ref}" \
+            >&2
         return 1
     fi
 
     if [ "${install_mode_ref}" = partition ] \
         && ! [[ "${target_media}" =~ .*[0-9] ]]
         then
-        echo_with_color red "${FUNCNAME[0]}: Error: Target media \"${target_media_ref}\" is not an partition!"
+        printf_with_color \
+            red \
+            '%s: Error: Target media "%s" is not an partition!\n' \
+            "${FUNCNAME[0]}" \
+            "${target_media_ref}"
         return 1
     fi
 
@@ -800,7 +868,9 @@ check_source_and_target_not_busy(){
             --fixed-strings \
             "${source_media}"
         )" != 0 ]; then
-        echo_with_color red "Error: Source media is currently mounted, unmount the partition then try again"
+        printf_with_color \
+            red \
+            'Error: Source media is currently mounted, unmount the partition then try again\n'
         exit 1
     fi
 
@@ -811,12 +881,16 @@ check_source_and_target_not_busy(){
                 --fixed-strings \
                 "${target_partition}"
             )" != 0 ]; then
-            echo_with_color red "Error: Target partition is currently mounted, unmount the partition then try again"
+            printf_with_color \
+                red \
+                'Error: Target partition is currently mounted, unmount the partition then try again\n'
             exit 1
         fi
     else # When install_mode = device, all target partitions needs to by unmounted
         if is_target_busy "${target_device}"; then
-            echo_with_color red "Error: Target device is currently busy, unmount all mounted partitions in target device then try again"
+            printf_with_color \
+                red \
+                'Error: Target device is currently busy, unmount all mounted partitions in target device then try again\n'
             exit 1
         fi
     fi
@@ -826,7 +900,10 @@ wipe_existing_partition_table_and_filesystem_signatures(){
     check_function_parameters_quantity 1 $#
     local -r target_device="${1}"
 
-    echo_with_color green "Wiping all existing partition table and filesystem signatures in ${target_device}..."
+    printf_with_color \
+        green \
+        'Wiping all existing partition table and filesystem signatures in %s...\n' \
+        "${target_device}"
     wipefs --all "${target_device}"
 
     check_if_the_drive_is_really_wiped \
@@ -872,7 +949,10 @@ create_target_partition_table(){
     local -r target_device="${1}"; shift
     local -r partition_table_type="${1}"
 
-    echo_with_color green "Creating new partition table on ${target_device}..."
+    printf_with_color \
+        green \
+        'Creating new partition table on %s...\n' \
+        "${target_device}"
 
     local parted_partiton_table_argument
 
@@ -882,15 +962,17 @@ create_target_partition_table(){
             ;;
         gpt|guid)
             parted_partiton_table_argument=gpt
-            echo_with_color \
+            printf_with_color \
                 red \
-                "${FUNCNAME[0]}: Error: Currently GUID partition table is not supported."
+                '%s: Error: Currently GUID partition table is not supported.\n' \
+                "${FUNCNAME[0]}"
             return 2
             ;;
         *)
-            echo_with_color \
+            printf_with_color \
                 red \
-                "${FUNCNAME[0]}: Error: Partition table not supported."
+                '%s: Error: Partition table not supported.\n' \
+                "${FUNCNAME[0]}"
             return 2
             ;;
     esac
@@ -943,7 +1025,10 @@ create_target_partition(){
             parted_mkpart_fs_type=ntfs
             ;;
         *)
-            echo_with_color red "${FUNCNAME[0]}: Error: Filesystem not supported"
+            printf_with_color \
+                red \
+                '%s: Error: Filesystem not supported\n' \
+                "${FUNCNAME[0]}"
             return 2
             ;;
     esac
@@ -1004,7 +1089,10 @@ create_target_partition(){
                 "${target_partition}"
             ;;
         *)
-            echo_with_color red "${FUNCNAME[0]}: FATAL: Shouldn't be here"
+            printf_with_color \
+                red \
+                "%s: FATAL: Shouldn't be here\n" \
+                "${FUNCNAME[0]}"
             exit 1
             ;;
     esac
@@ -1152,13 +1240,19 @@ mount_source_filesystem(){
     local source_media="$1"; shift
     local source_fs_mountpoint="$1"
 
-    echo_with_color green 'Mounting source filesystem...'
+    printf_with_color \
+        green \
+        'Mounting source filesystem...\n'
 
     mkdir \
         --parents \
         "${source_fs_mountpoint}" \
         || (
-            echo_with_color red "${FUNCNAME[0]}: Error: Unable to create \"${source_fs_mountpoint}\" mountpoint directory"
+            printf_with_color \
+                red \
+                '%s: Error: Unable to create "%s" mountpoint directory\n' \
+                "${FUNCNAME[0]}" \
+                "${source_fs_mountpoint}"
             return 1
         )
     if [ -f "${source_media}" ]; then # ${source_media} is an ISO image
@@ -1168,7 +1262,10 @@ mount_source_filesystem(){
             "${source_media}" \
             "${source_fs_mountpoint}" \
         || (
-            echo_with_color red "${FUNCNAME[0]}: Error: Unable to mount source media"
+            printf_with_color \
+                red \
+                '%s: Error: Unable to mount source media\n' \
+                "${FUNCNAME[0]}"
             return 1
         )
     else # ${source_media} is a real optical disk drive (block device)
@@ -1177,7 +1274,10 @@ mount_source_filesystem(){
             "${source_media}" \
             "${source_fs_mountpoint}" \
         || (
-            echo_with_color red "${FUNCNAME[0]}: Error: Unable to mount source media"
+            printf_with_color \
+                red \
+                '%s: Error: Unable to mount source media\n' \
+                "${FUNCNAME[0]}"
             return 1
         )
     fi
@@ -1195,13 +1295,19 @@ mount_target_filesystem(){
     # ENUM_SUPPORTED_FILESYSTEMS
     local target_fs_type="$1"
 
-    echo_with_color green 'Mounting target filesystem...'
+    printf_with_color \
+        green \
+        'Mounting target filesystem...\n'
 
     mkdir \
         --parents \
         "${target_fs_mountpoint}" \
         || (
-            echo_with_color red "${FUNCNAME[0]}: Error: Unable to create \"${target_fs_mountpoint}\" mountpoint directory"
+            printf_with_color \
+                red \
+                '%s: Error: Unable to create "%s" mountpoint directory\n' \
+                "${FUNCNAME[0]}" \
+                "${target_fs_mountpoint}"
             return 1
         )
 
@@ -1234,7 +1340,10 @@ mount_target_filesystem(){
         "${target_partition}" \
         "${target_fs_mountpoint}" \
         || (
-            echo_with_color red "${FUNCNAME[0]}: Error: Unable to mount target partition"
+            printf_with_color \
+                red \
+                '%s: Error: Unable to mount target partition\n' \
+                "${FUNCNAME[0]}"
             return 1
         )
 }
@@ -1302,7 +1411,9 @@ copy_filesystem_files(){
         | awk '{print $1}'
     )
 
-    echo_with_color green 'Copying files from source media...'
+    printf_with_color \
+        green \
+        'Copying files from source media...\n'
 
     pushd "${source_fs_mountpoint}" >/dev/null
 
@@ -1350,7 +1461,12 @@ copy_filesystem_files(){
                 fi
             fi
         else
-            echo_with_color red "${FUNCNAME[0]}: Error: Unknown type of '${source_file}'!" >&2
+            printf_with_color \
+                red \
+                "%s: Error: Unknown type of '%s'!\n" \
+                "${FUNCNAME[0]}" \
+                "${source_file}" \
+                >&2
             exit 1
         fi
 
@@ -1500,9 +1616,14 @@ workaround_support_windows_7_uefi_boot(){
         return 0
     fi
 
-    echo_with_color yellow 'Source media seems to be Windows 7-based with EFI support, applying workaround to make it support UEFI booting'
+    printf_with_color \
+        yellow \
+        'Source media seems to be Windows 7-based with EFI support, applying workaround to make it support UEFI booting\n'
     if ! command -v '7z' >/dev/null 2>&1; then
-        echo_with_color yellow "Warning: '7z' utility not found, workaround is not applied." >&2
+        printf_with_color \
+            yellow \
+            "Warning: '7z' utility not found, workaround is not applied.\n" \
+            >&2
         return 0
     fi
 
@@ -1595,7 +1716,9 @@ install_legacy_pc_bootloader_grub(){
     local -r target_device="${1}"; shift 1
     local -r command_grubinstall="${1}"
 
-    echo_with_color green 'Installing GRUB bootloader for legacy PC booting support...'
+    printf_with_color \
+        green \
+        'Installing GRUB bootloader for legacy PC booting support...\n'
     "${command_grubinstall}" \
         --target=i386-pc \
         --boot-directory="${target_fs_mountpoint}" \
@@ -1613,7 +1736,9 @@ install_legacy_pc_bootloader_grub_config(){
     local -r target_fs_mountpoint="$1"; shift
     local -r name_grub_prefix="$1"
 
-    echo_with_color green 'Installing custom GRUB config for legacy PC booting...'
+    printf_with_color \
+        green \
+        'Installing custom GRUB config for legacy PC booting...\n'
     local -r grub_cfg="${target_fs_mountpoint}/${name_grub_prefix}/grub.cfg"
     local target_fs_uuid; target_fs_uuid=$(
         lsblk \
@@ -1682,7 +1807,12 @@ cleanup_mountpoint(){
 # Traps: Functions that are triggered when certain condition occurred
 # Shell Builtin Commands » Bourne Shell Builtins » trap
 trap_errexit(){
-    echo_with_color red "The command \"${BASH_COMMAND}\" failed with exit status \"${?}\", program is prematurely aborted" 1>&2
+    printf_with_color \
+        red \
+        'The command "%s" failed with exit status "%u", program is prematurely aborted\n'\
+        "${BASH_COMMAND}" \
+        "${?}" \
+        1>&2
 
     return 0
 }
@@ -1723,15 +1853,15 @@ trap_exit(){
     fi
 
     if [ "${flag_unclean}" = true ]; then
-        echo_with_color \
+        printf_with_color \
             yellow \
-            'Some mountpoints are not unmount/cleaned successfully and must be done manually'
+            'Some mountpoints are not unmount/cleaned successfully and must be done manually\n'
     fi
 
     if [ "${flag_unsafe}" = true ]; then
-        echo_with_color \
+        printf_with_color \
             yellow \
-            'We unable to unmount target filesystem for you, please make sure target filesystem is unmounted before detaching to prevent data corruption'
+            'We unable to unmount target filesystem for you, please make sure target filesystem is unmounted before detaching to prevent data corruption\n'
     fi
 
     unset \
@@ -1742,9 +1872,13 @@ trap_exit(){
         util_is_parameter_set_and_not_empty\
             target_device; then
         if is_target_busy "${target_device}"; then
-            echo_with_color yellow 'Target device is busy, please make sure you unmount all filesystems on target device or shutdown the computer before detaching it.'
+            printf_with_color \
+                yellow \
+                'Target device is busy, please make sure you unmount all filesystems on target device or shutdown the computer before detaching it.\n'
         else
-            echo_with_color green 'You may now safely detach the target device'
+            printf_with_color \
+                green \
+                'You may now safely detach the target device\n'
         fi
     fi
 
@@ -1757,7 +1891,10 @@ trap_exit(){
 
 trap_interrupt(){
     printf '\n' # Separate message with previous output
-    echo_with_color yellow 'Recieved SIGINT, program is interrupted.' 1>&2
+    printf_with_color \
+        yellow \
+        'Recieved SIGINT, program is interrupted.\n' \
+        1>&2
     return 1
 }
 
@@ -1769,13 +1906,18 @@ trap_return(){
         check_function_parameters_quantity \
         util_is_parameter_set_and_not_empty \
         switch_terminal_text_color \
-        echo_with_color; do
+        printf_with_color; do
         if [ "${returning_function}" == "${ignored_function}" ]; then
             return 0
         fi
     done
 
-    echo_with_color green "${FUNCNAME[0]}: INFO: returning from ${returning_function}" 1>&2
+    printf_with_color \
+        green \
+        '%s: INFO: returning from %s\n' \
+        "${FUNCNAME[0]}" \
+        "${returning_function}" \
+        1>&2
 }
 
 # FIXME: Debug trap never work as expected, it always
@@ -1786,7 +1928,7 @@ trap_debug(){
 
     local -r command_base="${command_to_be_executed%% *}"
 
-    for ignored_command in check_function_parameters_quantity util_is_parameter_set_and_not_empty echo_with_color switch_terminal_text_color tput printf_with_color; do
+    for ignored_command in check_function_parameters_quantity util_is_parameter_set_and_not_empty printf_with_color switch_terminal_text_color tput printf_with_color; do
         if [ "${command_base}" = "${ignored_command}" ]; then
             return 0
         fi
@@ -1794,10 +1936,18 @@ trap_debug(){
 
     case "$(type -t "${command_base}")" in
         file)
-            echo_with_color green "${FUNCNAME[0]}: INFO: Executing ${command_to_be_executed}"
+            printf_with_color \
+                green \
+                '%s: INFO: Executing %s\n' \
+                "${FUNCNAME[0]}" \
+                "${command_to_be_executed}"
             ;;
         function)
-            echo_with_color green "${FUNCNAME[0]}: INFO: Calling ${command_base}"
+            printf_with_color \
+                green \
+                '%s: INFO: Calling %s\n' \
+                "${FUNCNAME[0]}" \
+                "${command_base}"
             ;;
         *)
             :
@@ -1821,7 +1971,12 @@ util_call_external_command(){
     fi
 
     if [ "${command_exit_status}" -ne 0 ]; then
-        echo_with_color red "Error occurred while running command \"${command[*]}\" (exit status: ${command_exit_status})!" >&2
+        printf_with_color \
+            red \
+            'Error occurred while running command "%s" (exit status: %u)!\n' \
+            "${command[*]}" \
+            "${command_exit_status}" \
+            >&2
 
         local -r read_prompt="Read command output (Y/n)?"
         printf '%s' "${read_prompt}"
@@ -1841,7 +1996,10 @@ util_call_external_command(){
             fi
         done
 
-        echo_with_color red 'Press ENTER to continue' >&2
+        printf_with_color \
+            red \
+            'Press ENTER to continue\n' \
+            >&2
         read -r # catch enter key
     fi
 
@@ -1885,21 +2043,6 @@ switch_terminal_text_color(){
             exit 1
             ;;
     esac
-}
-
-# Print message with color
-echo_with_color(){
-    check_function_parameters_quantity 2 "${#}"
-    local -r message_color="${1}"; shift
-    local -r message_body="${1}"
-
-    if [ "${no_color}" = true ]; then
-        echo -e "${message_body}"
-    else
-        switch_terminal_text_color "${message_color}"
-        echo -e "${message_body}"
-        switch_terminal_text_color none
-    fi
 }
 
 # Print formatted message with color
