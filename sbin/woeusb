@@ -64,7 +64,7 @@ init(){
 
     # Parameters that needs to be determined in runtime
     # due to different names in distributions
-    declare \
+    local \
         command_mkdosfs \
         command_mkntfs \
         command_grubinstall \
@@ -2050,7 +2050,7 @@ util_is_parameter_set_and_not_empty(){
     if [ ! -v "${parameter_name}" ]; then
         return 1
     else
-        declare -n parameter_ref
+        local -n parameter_ref
         parameter_ref="${parameter_name}"
 
         if [ -z "${parameter_ref}" ]; then
