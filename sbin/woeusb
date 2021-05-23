@@ -1905,15 +1905,9 @@ echo_with_color(){
 # Print formatted message with color
 printf_with_color(){
     if [ ${#} -lt 2 ]; then
-        if [ "${no_color}" == false ]; then
-            switch_terminal_text_color red
-        fi
         printf -- \
             'Fatal: %s: Parameter quantity illegal, please report bug.\n' \
             "${FUNCNAME[0]}"
-        if [ "${no_color}" == false ]; then
-            switch_terminal_text_color none
-        fi
         exit 1
     fi
     local -r color="${1}"; shift
