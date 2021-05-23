@@ -49,19 +49,6 @@ init(){
         target_filesystem_type=FS_FAT \
         target_fs_label='Windows USB'
 
-    source_fs_mountpoint="$(
-        mktemp \
-            -d \
-            -t \
-            woeusb-source-"$(generate_timestamp)".XXXXXX
-    )"
-    target_fs_mountpoint="$(
-        mktemp \
-            -d \
-            -t \
-            woeusb-target-"$(generate_timestamp)".XXXXXX
-    )"
-
     # Parameters that needs to be determined in runtime
     # due to different names in distributions
     local \
@@ -142,6 +129,19 @@ init(){
         "${source_media}" \
         "${target_device}" \
         "${target_partition}"
+
+    source_fs_mountpoint="$(
+        mktemp \
+            -d \
+            -t \
+            woeusb-source-"$(generate_timestamp)".XXXXXX
+    )"
+    target_fs_mountpoint="$(
+        mktemp \
+            -d \
+            -t \
+            woeusb-target-"$(generate_timestamp)".XXXXXX
+    )"
 
     if ! mount_source_filesystem \
         "${source_media}" \
@@ -2155,7 +2155,7 @@ declare -ar program_args=("${@}")
 # or indirectly referenced by traps
 #
 # Even when the parameter is set global, you should pass it in as function
-# argument when it's possible for better code reusability.
+# argument whenever it's possible for better code reusability.
 
 # Increase verboseness, provide more information when required
 declare verbose=false
