@@ -169,7 +169,7 @@ init(){
                 "${target_device}"
             install_uefi_ntfs_support_partition \
                 "${target_device}2" \
-                "${temp_directory}" \
+                "${temp_dir}" \
                 "${target_device}"
         fi
     fi
@@ -1773,7 +1773,7 @@ trap_exit(){
 
     rm \
         --recursive \
-        "${temp_directory}"
+        "${temp_dir}"
 
     return 0
 }
@@ -2183,12 +2183,12 @@ trap trap_exit EXIT
 trap trap_errexit ERR
 trap trap_interrupt INT
 
-declare temp_directory; temp_directory=$(
+declare temp_dir; temp_dir=$(
     mktemp \
         -d \
         -t \
         WoeUSB.tempdir.XXXXXX
-); declare -r temp_directory
+); declare -r temp_dir
 
 # wimlib's process ID, needed to be killed in EXIT trap
 declare wimlib_imagex_pid=
