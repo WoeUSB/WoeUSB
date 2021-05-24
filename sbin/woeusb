@@ -2146,6 +2146,13 @@ if [ -v 'BASH_SOURCE[0]' ]; then
         script_name \
         script_dir \
         program_basecommand
+else
+    # sane defaults
+    script_name=_script_
+    program_basecommand=_script_
+    script_filename=_script_
+    script_dir=
+    script_path=
 fi
 declare -ar program_args=("${@}")
 
