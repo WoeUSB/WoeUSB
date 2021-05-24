@@ -2135,9 +2135,7 @@ done
 if [ -v 'BASH_SOURCE[0]' ]; then
     script_path="$(realpath --strip "${BASH_SOURCE[0]}")"
     script_filename="${script_path##*/}"
-    script_filename="$(basename "${script_path}")"
-    script_name="${script_filename%.*}"
-    script_dir="$(dirname "${script_path}")"
+    script_name="${script_filename%%.*}"
     script_dir="${script_path%/*}"
     program_basecommand="${0}"
     # Keep these partially unused variables declared
