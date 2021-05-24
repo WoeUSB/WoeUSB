@@ -402,7 +402,7 @@ process_commandline_parameters(){
                 if [ "${#parameters[@]}" -lt 2 ]; then
                     print_error \
                         -- \
-                        '--device option requires 2 arguments!'
+                        '--device option requires 2 arguments!\n'
                     return 1
                 fi
                 source_media_ref="${parameters[0]}"
@@ -759,7 +759,7 @@ determine_target_parameters(){
             ;;
             *)
                 print_error \
-                    'Unsupported target filesystem "%s", currently supported target filesystems: %s, %s' \
+                    'Unsupported target filesystem "%s", currently supported target filesystems: %s, %s\n' \
                     "${target_filesystem_type_libblkid}" \
                     "${ENUM_SUPPORTED_FILESYSTEMS[FS_FAT]}" \
                     "${ENUM_SUPPORTED_FILESYSTEMS[FS_NTFS]}"
@@ -927,14 +927,14 @@ workaround_make_system_realize_partition_table_changed(){
     local -r target_device="$1"
 
     print_info \
-        'Making system realize that partition table has changed...'
+        'Making system realize that partition table has changed...\n'
 
     blockdev \
         --rereadpt \
         "${target_device}" \
         || true
     print_info \
-        'Wait 3 seconds for block device nodes to populate...'
+        'Wait 3 seconds for block device nodes to populate...\n'
     sleep 3
 
 }
@@ -968,7 +968,7 @@ create_target_partition(){
     esac
 
     print_info \
-        'Creating target partition...'
+        'Creating target partition...\n'
 
     # Create target partition
     # We start at 4MiB for grub (it needs a post-mbr gap for its code) and alignment of flash memery block erase segment in general, for details see http://www.gnu.org/software/grub/manual/grub.html#BIOS-installation and http://lwn.net/Articles/428584/
@@ -1296,9 +1296,9 @@ check_target_filesystem_free_space(){
 
     if [ "${needed_space}" -gt "${free_space}" ]; then
         print_error \
-            'Not enough free space on target partition!'
+            'Not enough free space on target partition!\n'
         print_error \
-            "We required %s(%u bytes) but '%s' only has %s(%u bytes)." \
+            "We required %s(%u bytes) but '%s' only has %s(%u bytes).\n" \
             "${needed_space_human_readable}" \
             "${needed_space}" \
             "${target_partition}" \
