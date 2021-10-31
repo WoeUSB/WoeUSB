@@ -992,8 +992,8 @@ create_target_partition(){
                 primary \
                 "${parted_mkpart_fs_type}" \
                 4MiB \
-                -- -1025s # Leave 512KiB==1024sector in traditional 512bytes/sector disk, disks with sector with more than 512bytes only result in partition size greater than 512KiB and is intentionally let-it-be.
-                # FIXME: Leave exact 512KiB in all circumstances is better, but the algorithm to do so is quite brainkilling.
+                -- -2049s # Leave 1024KiB==2048sector in traditional 512bytes/sector disk, disks with sector with more than 512bytes only result in partition size greater than 1024KiB and is intentionally let-it-be.
+                # FIXME: Leave exact 1024KiB in all circumstances is better, but the algorithm to do so is quite brainkilling.
             ;;
         *)
             print_fatal \
@@ -1029,7 +1029,7 @@ create_target_partition(){
 
 # Create UEFI:NTFS partition to support booting UEFI bootloader in NTFS filesystem where some UEFI firmwares are not able to do so
 # https://github.com/pbatard/uefi-ntfs
-# This routine assumes that there's only one partition on the disk, and the trailing 512KiB space is not partitioned
+# This routine assumes that there's only one partition on the disk, and the trailing 1024KiB space is not partitioned
 # This routine should be run after create_target_partition and only on target partition's filesystem is NTFS
 # target_device: The target device's entire deice file
 create_uefi_ntfs_support_partition(){
@@ -1047,7 +1047,7 @@ create_uefi_ntfs_support_partition(){
         primary \
         fat16 \
         --  \
-        -1024s \
+        -2048s \
         -1s
 
     return "$?"
