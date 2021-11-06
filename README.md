@@ -84,7 +84,7 @@ The following are the environment variables that may change WoeUSB's runtime beh
 
 | Variable name | Usage |
 | :-: | :-- |
-| RUFUS_UEFI_NTFS_VERSION | The release tag/revision of the Rufus source tree to fetch the UEFI:NTFS image from, will use a tested version by default |
+| RUFUS_UEFI_NTFS_VERSION | The release tag/revision of [the Rufus source tree](https://github.com/pbatard/rufus) to fetch the UEFI:NTFS image from, will use a tested version by default |
 
 ## License
 
