@@ -76,6 +76,16 @@ WoeUSB is a program that can be run without installation(excluding its [dependen
 1. Fix the missing executable file permission (`chmod +x path/to/woeusb-N.N.N.bash`)
 1. Launch a terminal application and run the program via the appropriate path(`sudo path/to/woeusb-N.N.N.bash --help`)
 
+## Usage
+
+### Environment variables
+
+The following are the environment variables that may change WoeUSB's runtime behavior:
+
+| Variable name | Usage |
+| :-: | :-- |
+| RUFUS_UEFI_NTFS_VERSION | The release tag/revision of the Rufus source tree to fetch the UEFI:NTFS image from, will use a tested version by default |
+
 ## License
 
 WoeUSB is free software: you can redistribute it and/or modify
