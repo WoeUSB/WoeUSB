@@ -237,7 +237,7 @@ print_help(){
 
     local -r application_name="${1}"; shift 1
     local -r application_version="${1}"; shift 1
-    local -r program_name="${1}"
+    local -r program_name="${1}"; shift
 
     set +o xtrace
     echo -e "${application_name} ${application_version} Help Information"
@@ -309,7 +309,7 @@ print_help(){
 print_version(){
     check_function_parameters_quantity 1 "${#}"
 
-    local -r application_version="${1}"
+    local -r application_version="${1}"; shift
 
     printf -- \
         '%s\n' \
@@ -322,7 +322,7 @@ print_application_info(){
     local -r application_version="${1}"; shift
     local -r application_site_url="${1}"; shift
     local -r application_copyright_declaration="${1}"; shift
-    local -r application_copyright_notice="${1}"
+    local -r application_copyright_notice="${1}"; shift
 
     echo "${application_name} ${application_version}"
     echo -e "${application_site_url}"
@@ -595,7 +595,7 @@ check_runtime_dependencies(){
     local -n command_mkdosfs_ref="${1}"; shift
     local -n command_mkntfs_ref="${1}"; shift
     local -n command_grubinstall_ref="${1}"; shift
-    local -n name_grub_prefix_ref="${1}"
+    local -n name_grub_prefix_ref="${1}"; shift
 
     local result=unknown
 
@@ -679,7 +679,7 @@ check_runtime_dependencies(){
 
 check_permission(){
     check_function_parameters_quantity 1 "${#}"
-    local -r application_name="${1}"
+    local -r application_name="${1}"; shift
 
     if [ ! "$(id --user)" = 0 ]; then
         print_warning \
@@ -695,7 +695,7 @@ check_runtime_parameters(){
     check_function_parameters_quantity 4 "${#}"
     local -n install_mode_ref="${1}"; shift
     local -n source_media_ref="${1}"; shift
-    local -n target_media_ref="${1}"
+    local -n target_media_ref="${1}"; shift
 
     if [ ! -f "${source_media_ref}" ] \
         && [ ! -b "${source_media_ref}" ]; then
@@ -796,7 +796,7 @@ determine_target_parameters(){
 
 is_target_busy(){
     check_function_parameters_quantity 1 "${#}"
-    local device="${1}"
+    local device="${1}"; shift
 
     if [ "$(mount \
             | grep \
@@ -815,7 +815,7 @@ check_source_and_target_not_busy(){
     local install_mode="${1}"; shift
     local source_media="${1}"; shift
     local target_device="${1}"; shift
-    local target_partition="${1}"
+    local target_partition="${1}"; shift
 
     if [ "$(mount \
             | grep \
@@ -850,7 +850,7 @@ check_source_and_target_not_busy(){
 
 wipe_existing_partition_table_and_filesystem_signatures(){
     check_function_parameters_quantity 1 "${#}"
-    local -r target_device="${1}"
+    local -r target_device="${1}"; shift
 
     print_info \
         'Wiping all existing partition table and filesystem signatures in %s...\n' \
@@ -867,7 +867,7 @@ wipe_existing_partition_table_and_filesystem_signatures(){
 # target_device: The target device file to be checked
 check_if_the_drive_is_really_wiped(){
     check_function_parameters_quantity 1 "${#}"
-    local -r target_device="${1}"
+    local -r target_device="${1}"; shift
 
     print_info \
         'Ensure that %s is really wiped...\n' \
@@ -895,7 +895,7 @@ check_if_the_drive_is_really_wiped(){
 create_target_partition_table(){
     check_function_parameters_quantity 2 "${#}"
     local -r target_device="${1}"; shift
-    local -r partition_table_type="${1}"
+    local -r partition_table_type="${1}"; shift
 
     print_info \
         'Creating new partition table on %s...\n' \
@@ -930,7 +930,7 @@ create_target_partition_table(){
 # NOTE: This really should be done automatically by GNU Parted after every operation
 workaround_make_system_realize_partition_table_changed(){
     check_function_parameters_quantity 1 "${#}"
-    local -r target_device="${1}"
+    local -r target_device="${1}"; shift
 
     print_info \
         'Making system realize that partition table has changed...\n'
@@ -954,7 +954,7 @@ create_target_partition(){
 
     local -r filesystem_label="${1}"; shift
     local -r command_mkdosfs="${1}"; shift
-    local -r command_mkntfs="${1}"
+    local -r command_mkntfs="${1}"; shift
 
     # Refer: GNU Parted's (info) manual: Using Parted » Command explanations » mkpart
     # Refer: sudo parted --script /dev/sda help mkpart
@@ -1041,7 +1041,7 @@ create_target_partition(){
 create_uefi_ntfs_support_partition(){
     check_function_parameters_quantity 1 "${#}"
 
-    local -r target_device="${1}"
+    local -r target_device="${1}"; shift
 
     # FIXME: The partition type should be `fat12` but `fat12` isn't recognized by Parted...
     # NOTE: The --align is set to none because this partition is indeed misaligned, but ignored due to it's small size
@@ -1070,7 +1070,7 @@ install_uefi_ntfs_support_partition(){
     local -r rufus_uefi_ntfs_version="${1}"; shift
     local -r uefi_ntfs_partition="${1}"; shift
     local -r download_directory="${1}"; shift
-    local -r target_device="${1}"
+    local -r target_device="${1}"; shift
 
     if ! wget \
         --directory-prefix="${download_directory}" \
@@ -1091,7 +1091,7 @@ install_uefi_ntfs_support_partition(){
 workaround_buggy_motherboards_that_ignore_disks_without_boot_flag_toggled(){
     check_function_parameters_quantity 1 "${#}"
 
-    local -r target_device="${1}"
+    local -r target_device="${1}"; shift
 
     print_warning \
         'Applying workaround for buggy motherboards that will ignore disks with no partitions with the boot flag toggled\n'
@@ -1110,7 +1110,7 @@ check_target_partition(){
     check_function_parameters_quantity 3 "${#}"
     local target_partition="${1}"; shift
     local install_mode="${1}"; shift
-    local target_device="${1}"
+    local target_device="${1}"; shift
 
     local target_filesystem
     target_filesystem="$(
@@ -1143,7 +1143,7 @@ check_target_partition(){
 check_uefi_ntfs_support_partition(){
     check_function_parameters_quantity 1 "${#}"
 
-    local -r target_device="${1}"
+    local -r target_device="${1}"; shift
 
     if \
         ! \
@@ -1165,7 +1165,7 @@ check_uefi_ntfs_support_partition(){
 mount_source_filesystem(){
     check_function_parameters_quantity 2 "${#}"
     local source_media="${1}"; shift
-    local source_fs_mountpoint="${1}"
+    local source_fs_mountpoint="${1}"; shift
 
     print_info \
         'Mounting source filesystem...\n'
@@ -1264,7 +1264,7 @@ mount_target_filesystem(){
 check_target_filesystem_free_space(){
     check_function_parameters_quantity 2 "${#}"
     local -r target_fs_mountpoint="${1}"; shift
-    local -r source_fs_mountpoint="${1}"
+    local -r source_fs_mountpoint="${1}"; shift
 
     free_space=$(
         df \
@@ -1525,7 +1525,7 @@ copy_oversized_wim_file(){
 workaround_support_windows_7_uefi_boot(){
     check_function_parameters_quantity 2 "${#}"
     local source_fs_mountpoint="${1}"; shift
-    local target_fs_mountpoint="${1}"
+    local target_fs_mountpoint="${1}"; shift
 
     # Apply workaround only if the source is based on Windows 7, and EFI version of bootmgr is in place
     if ! grep \
@@ -1628,7 +1628,7 @@ install_legacy_pc_bootloader_grub(){
     check_function_parameters_quantity 3 "${#}"
     local -r target_fs_mountpoint="${1}"; shift 1
     local -r target_device="${1}"; shift 1
-    local -r command_grubinstall="${1}"
+    local -r command_grubinstall="${1}"; shift
 
     print_info \
         'Installing GRUB bootloader for legacy PC booting support...\n'
@@ -1647,7 +1647,7 @@ install_legacy_pc_bootloader_grub_config(){
     check_function_parameters_quantity 2 "${#}"
 
     local -r target_fs_mountpoint="${1}"; shift
-    local -r name_grub_prefix="${1}"
+    local -r name_grub_prefix="${1}"; shift
 
     print_info \
         'Installing custom GRUB config for legacy PC booting...\n'
@@ -1799,7 +1799,7 @@ trap_interrupt(){
 
 trap_return(){
     check_function_parameters_quantity 1 "${#}"
-    local returning_function="${1}"
+    local returning_function="${1}"; shift
 
     for ignored_function in \
         check_function_parameters_quantity \
@@ -1871,7 +1871,7 @@ util_call_external_command(){
 # - color: color of the next message, or `none` to reset to default color
 switch_terminal_text_color(){
     check_function_parameters_quantity 1 "${#}"
-    local -r color="${1}"
+    local -r color="${1}"; shift
 
     case "${color}" in
         black)
@@ -2035,7 +2035,7 @@ print_debug(){
 shift_array(){
     check_function_parameters_quantity 1 "${#}"
 
-    local -n array_ref="${1}"
+    local -n array_ref="${1}"; shift
 
     if [ "${#array_ref[@]}" -eq 0 ]; then
         print_fatal \
@@ -2057,7 +2057,7 @@ shift_array(){
 is_var_set_and_not_empty(){
     check_function_parameters_quantity 1 "${#}"
 
-    local parameter_name="${1}"
+    local parameter_name="${1}"; shift
 
     if [ ! -v "${parameter_name}" ]; then
         return 1
