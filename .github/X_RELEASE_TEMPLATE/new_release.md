@@ -22,7 +22,7 @@ Changes that fix something that was previously not working, to working:
 
 ## :sweat_drops: Refactoring
 
-Changes that are mostly not noticeable, but improves the overall design for future conveniences:
+Changes that are mostly not noticeable, but improve the overall design for future conveniences:
 
 * We've...
 
