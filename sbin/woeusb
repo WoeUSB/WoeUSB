@@ -1319,6 +1319,8 @@ copy_filesystem_files(){
     local target_fs_mountpoint="${1}"; shift
     local target_filesystem_type="${1}"; shift
 
+    local -ir fat32_filesize_limit=4294967295 # 2^32 - 1
+
     local -i total_size
     total_size=$(
         du \
@@ -1356,7 +1358,7 @@ copy_filesystem_files(){
                 # FS_FAT is not a parameter expansion
                 # shellcheck disable=SC2050
                 if [ "${target_filesystem_type}" == FS_FAT ] \
-                    && [ "${source_file_size}" -gt "${FAT32_FILESIZE_LIMIT}" ]; then
+                    && [ "${source_file_size}" -gt "${fat32_filesize_limit}" ]; then
                     if [[ ! "${source_file}" =~ \.wim$ ]]; then
                         print_warning \
                             'Unsupported oversized file "%s" detected, this file will NOT be transferred.\n' \
@@ -2175,7 +2177,6 @@ declare flag_verbose=false
 declare flag_no_color=false
 
 declare -ir DD_BLOCK_SIZE="((4 * 1024 * 1024))" # 4MiB
-declare -ir FAT32_FILESIZE_LIMIT=4294967295 # 2^32 - 1
 
 # NOTE: Need to pass to traps, so need to be global
 declare \
