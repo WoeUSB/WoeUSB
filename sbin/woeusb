@@ -21,9 +21,10 @@ DD_BLOCK_SIZE="${DD_BLOCK_SIZE:-((4 * 1024 * 1024))}" # 4MiB
 
 # Entry point of the main code
 init(){
-    check_function_parameters_quantity 2 $#
+    check_function_parameters_quantity 3 $#
     local -r program_name="$1"; shift
     local -r rufus_uefi_ntfs_version="$1"; shift
+    local -r dd_block_size="$1"; shift
 
     local -r application_name='WoeUSB'
     local -r application_version='@@WOEUSB_VERSION@@'
@@ -202,7 +203,8 @@ init(){
     copy_filesystem_files \
         "${source_fs_mountpoint}" \
         "${target_fs_mountpoint}" \
-        "${target_filesystem_type}"
+        "${target_filesystem_type}" \
+        "${dd_block_size}"
 
     workaround_support_windows_7_uefi_boot \
         "${source_fs_mountpoint}" \
@@ -1315,10 +1317,11 @@ check_target_filesystem_free_space(){
 
 # Copying all files from one filesystem to another, with progress reporting
 copy_filesystem_files(){
-    check_function_parameters_quantity 3 "${#}"
+    check_function_parameters_quantity 4 "${#}"
     local source_fs_mountpoint="${1}"; shift
     local target_fs_mountpoint="${1}"; shift
     local target_filesystem_type="${1}"; shift
+    local dd_block_size="${1}"; shift
 
     local -ir fat32_filesize_limit=4294967295 # 2^32 - 1
 
@@ -1353,7 +1356,7 @@ copy_filesystem_files(){
                     'Copying "%s"...\n' \
                     "${source_file}"
             fi
-            if [ "${source_file_size}" -lt "${DD_BLOCK_SIZE}" ]; then
+            if [ "${source_file_size}" -lt "${dd_block_size}" ]; then
                 cp "${source_file}" "${dest_file}"
             else
                 # FS_FAT is not a parameter expansion
@@ -1376,7 +1379,8 @@ copy_filesystem_files(){
                         "${source_file}" \
                         "${dest_file}" \
                         "${copied_size}" \
-                        "${total_size}"
+                        "${total_size}" \
+                        "${dd_block_size}"
                 fi
             fi
         else
@@ -1408,11 +1412,12 @@ copy_filesystem_files(){
 # Copy source_file to dest_file, overwrite file if dest_file exists
 # Also report copy_filesystem_files progress during operation
 copy_large_file(){
-    check_function_parameters_quantity 4 "${#}"
+    check_function_parameters_quantity 5 "${#}"
     local -r source_file="${1}"; shift
     local -r dest_file="${1}"; shift
     local -ir caller_copied_size="${1}"; shift
-    local -ir caller_total_size="${1}"
+    local -ir caller_total_size="${1}"; shift
+    local -ir dd_block_size="${1}"; shift
 
     local -i source_file_size
     source_file_size=$(
@@ -1423,7 +1428,7 @@ copy_large_file(){
 
     # block count of the source file
     local -i block_number
-    ((block_number = source_file_size / DD_BLOCK_SIZE + 1))
+    ((block_number = source_file_size / dd_block_size + 1))
     unset source_file_size
 
     if [ -f "${dest_file}" ]; then
@@ -1434,7 +1439,7 @@ copy_large_file(){
     local -i i=0 copied_size_total percentage; while [ "${i}" -lt "${block_number}" ]; do
         dd \
             if="${source_file}" \
-            bs="${DD_BLOCK_SIZE}" \
+            bs="${dd_block_size}" \
             skip="${i}" \
             seek="${i}" \
             of="${dest_file}" \
@@ -1445,7 +1450,7 @@ copy_large_file(){
         # Calculate and report progress
         # BASHDOC: Basic Shell Features » Shell Expansions » Arithmetic Expansion
         # BASHDOC: Bash Features » Shell Arithmetic
-        ((copied_size_total = caller_copied_size + DD_BLOCK_SIZE * i)) || true
+        ((copied_size_total = caller_copied_size + dd_block_size * i)) || true
         ((percentage = (copied_size_total * 100) / caller_total_size)) || true
         echo -en "${percentage}%\\r"
     done; unset i copied_size_total percentage
@@ -2206,4 +2211,5 @@ declare wimlib_imagex_pid=
 
 init \
     "${script_name}" \
-    "${RUFUS_UEFI_NTFS_VERSION}"
+    "${RUFUS_UEFI_NTFS_VERSION}" \
+    "${DD_BLOCK_SIZE}"
