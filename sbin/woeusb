@@ -235,8 +235,8 @@ init(){
 print_help(){
     check_function_parameters_quantity 3 "${#}"
 
-    local -r application_name="${1}"; shift 1
-    local -r application_version="${1}"; shift 1
+    local -r application_name="${1}"; shift
+    local -r application_version="${1}"; shift
     local -r program_name="${1}"; shift
 
     set +o xtrace
@@ -1626,8 +1626,8 @@ workaround_support_windows_7_uefi_boot(){
 
 install_legacy_pc_bootloader_grub(){
     check_function_parameters_quantity 3 "${#}"
-    local -r target_fs_mountpoint="${1}"; shift 1
-    local -r target_device="${1}"; shift 1
+    local -r target_fs_mountpoint="${1}"; shift
+    local -r target_device="${1}"; shift
     local -r command_grubinstall="${1}"; shift
 
     print_info \
