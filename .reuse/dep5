@@ -3,7 +3,7 @@ Upstream-Name: WoeUSB
 Upstream-Contact: WoeUSB project issue tracker <https://github.com/WoeUSB/WoeUSB/issues>
 Source: https://github.com/WoeUSB/WoeUSB
 
-Files: README.md */*.md
+Files: *.md */*.md
 Copyright: 2021 林博仁(Buo-ren, Lin) <Buo.Ren.Lin@gmail.com>
 License: GPL-3.0-or-later
 
