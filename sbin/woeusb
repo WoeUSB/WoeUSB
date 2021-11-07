@@ -17,6 +17,7 @@
 # shellcheck disable=SC2034
 
 RUFUS_UEFI_NTFS_VERSION="${RUFUS_UEFI_NTFS_VERSION:-b30e3b387a3ca7a5e2fddebcc2c8f9538a89b868}"
+DD_BLOCK_SIZE="${DD_BLOCK_SIZE:-((4 * 1024 * 1024))}" # 4MiB
 
 # Entry point of the main code
 init(){
@@ -2175,8 +2176,6 @@ declare flag_verbose=false
 
 # Disable message coloring when set to `true`, set by --no-color
 declare flag_no_color=false
-
-declare -ir DD_BLOCK_SIZE="((4 * 1024 * 1024))" # 4MiB
 
 # NOTE: Need to pass to traps, so need to be global
 declare \
