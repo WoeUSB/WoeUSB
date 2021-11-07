@@ -52,4 +52,6 @@ Changes that ensure that WoeUSB can be legally distributed and (re)used as much 
 
 ---
 
+You can find all the details of this release at <https://github.com/WoeUSB/WoeUSB/compare/_previous_version_..._current_version_>
+
 Cheers!  :clinking_glasses:
