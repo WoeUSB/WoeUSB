@@ -30,7 +30,7 @@ init(){
     local \
         flag_print_help=false \
         flag_print_version=false \
-        flag_print_about=false \
+        flag_print_about=false
 
     local -r \
         application_site_url=https://github.com/WoeUSB/WoeUSB \
