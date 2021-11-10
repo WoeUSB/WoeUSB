@@ -40,7 +40,7 @@ init(){
         application_copyright_notice="${application_name} is free software licensed under the GNU General Public License version 3(or any later version of your preference) that gives you THE 4 ESSENTIAL FREEDOMS\\nhttps://www.gnu.org/philosophy/"
     local install_mode
 
-    # source_media may be a optical disk drive or a disk image
+    # source_media may be an optical disk drive or a disk image
     # target_media may be an entire usb storage device or just a partition
     local \
         source_media \
