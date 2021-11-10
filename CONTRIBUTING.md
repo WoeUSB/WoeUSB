@@ -1,6 +1,6 @@
 # Contribution guidelines
 
-Contribution is always welcomed in WoeUSB!  However, please review the following guidelines throughly before contributing to make our lives easier.
+Contribution is always welcomed in WoeUSB!  However, please review the following guidelines thoroughly before contributing to make our lives easier.
 
 ## Reporting bugs
 
