@@ -16,8 +16,8 @@
 # lint: We use indirections and primitive variables, which is false positive of this rule
 # shellcheck disable=SC2034
 
-RUFUS_UEFI_NTFS_VERSION="${RUFUS_UEFI_NTFS_VERSION:-b30e3b387a3ca7a5e2fddebcc2c8f9538a89b868}"
-DD_BLOCK_SIZE="${DD_BLOCK_SIZE:-((4 * 1024 * 1024))}" # 4MiB
+RUFUS_UEFI_NTFS_VERSION="b30e3b387a3ca7a5e2fddebcc2c8f9538a89b868"
+DD_BLOCK_SIZE="4194304" # 4MiB
 
 # Entry point of the main code
 init(){
@@ -173,6 +173,7 @@ init(){
             create_uefi_ntfs_support_partition \
                 "${target_device}"
             install_uefi_ntfs_support_partition \
+                "${rufus_uefi_ntfs_version}" \
                 "${target_device}2" \
                 "${temp_dir}" \
                 "${target_device}"
