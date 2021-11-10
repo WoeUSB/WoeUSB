@@ -1249,16 +1249,26 @@ mount_target_filesystem(){
 
     # false-positive: The fstype_options are expected to be expanded verbatim
     # shellcheck disable=SC2086
-    mount \
-        --options "${mount_options}" \
-        ${fstype_options} \
-        "${target_partition}" \
-        "${target_fs_mountpoint}" \
-        || (
+    if is_guix_system; then
+        ntfs-3g \
+            "${target_partition}" \
+            "${target_fs_mountpoint}" \
+            || (
+            print_error \
+                'Unable to mount target partition\n'
+            )
+    else
+        mount \
+            --options "${mount_options}" \
+            ${fstype_options} \
+            "${target_partition}" \
+            "${target_fs_mountpoint}" \
+            || (
             print_error \
                 'Unable to mount target partition\n'
             return 1
         )
+    fi
 }
 
 check_target_filesystem_free_space(){
@@ -2071,6 +2081,10 @@ is_var_set_and_not_empty(){
             return 0
         fi
     fi
+}
+
+is_guix_system(){
+    [[ -d /gnu/store ]]
 }
 
 # Utility function to check if function parameters quantity is legal
