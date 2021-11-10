@@ -2095,7 +2095,7 @@ check_function_parameters_quantity(){
         print_fatal \
             'Function %s (%s) requires %u parameters, but %u is given\n' \
             "${FUNCNAME[1]}" \
-	    "$(caller 1)" \
+            "$(caller 1)" \
             "${expected_parameter_quantity}" \
             "${given_parameter_quantity}"
         exit 1
