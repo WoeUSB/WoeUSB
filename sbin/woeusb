@@ -21,7 +21,7 @@ DD_BLOCK_SIZE="${DD_BLOCK_SIZE:-((4 * 1024 * 1024))}" # 4MiB
 
 # Entry point of the main code
 init(){
-    check_function_parameters_quantity ${FUNCNAME[0]} 3 "${#}"
+    check_function_parameters_quantity 3 "${#}"
     local -r program_name="${1}"; shift
     local -r rufus_uefi_ntfs_version="${1}"; shift
     local -r dd_block_size="${1}"; shift
@@ -233,7 +233,7 @@ init(){
 }
 
 print_help(){
-    check_function_parameters_quantity ${FUNCNAME[0]} 3 "${#}"
+    check_function_parameters_quantity 3 "${#}"
 
     local -r application_name="${1}"; shift
     local -r application_version="${1}"; shift
@@ -307,7 +307,7 @@ print_help(){
 # Print application version then exit, for debugging purpose.
 # application_version: Version of the application
 print_version(){
-    check_function_parameters_quantity ${FUNCNAME[0]} 1 "${#}"
+    check_function_parameters_quantity 1 "${#}"
 
     local -r application_version="${1}"; shift
 
@@ -317,7 +317,7 @@ print_version(){
 }
 
 print_application_info(){
-    check_function_parameters_quantity ${FUNCNAME[0]} 5 "${#}"
+    check_function_parameters_quantity 5 "${#}"
     local -r application_name="${1}"; shift
     local -r application_version="${1}"; shift
     local -r application_site_url="${1}"; shift
@@ -332,7 +332,7 @@ print_application_info(){
 }
 
 process_commandline_parameters(){
-    check_function_parameters_quantity ${FUNCNAME[0]} 10 "${#}"
+    check_function_parameters_quantity 10 "${#}"
     local -r application_name="${1}"; shift
     local -n flag_print_help_ref="${1}"; shift
     local -n flag_print_version_ref="${1}"; shift
@@ -549,7 +549,7 @@ process_commandline_parameters(){
 }
 
 process_miscellaneous_requests(){
-    check_function_parameters_quantity ${FUNCNAME[0]} 9 "${#}"
+    check_function_parameters_quantity 9 "${#}"
     local -r flag_print_help="${1}"; shift
     local -r flag_print_version="${1}"; shift
     local -r flag_print_about="${1}"; shift
@@ -590,7 +590,7 @@ process_miscellaneous_requests(){
 }
 
 check_runtime_dependencies(){
-    check_function_parameters_quantity ${FUNCNAME[0]} 5 "${#}"
+    check_function_parameters_quantity 5 "${#}"
     local -r application_name="${1}"; shift
     local -n command_mkdosfs_ref="${1}"; shift
     local -n command_mkntfs_ref="${1}"; shift
@@ -678,7 +678,7 @@ check_runtime_dependencies(){
 }
 
 check_permission(){
-    check_function_parameters_quantity ${FUNCNAME[0]} 1 "${#}"
+    check_function_parameters_quantity 1 "${#}"
     local -r application_name="${1}"; shift
 
     if [ ! "$(id --user)" = 0 ]; then
@@ -692,7 +692,7 @@ check_permission(){
 }
 
 check_runtime_parameters(){
-    check_function_parameters_quantity ${FUNCNAME[0]} 4 "${#}"
+    check_function_parameters_quantity 4 "${#}"
     local -n install_mode_ref="${1}"; shift
     local -n source_media_ref="${1}"; shift
     local -n target_media_ref="${1}"; shift
@@ -734,7 +734,7 @@ check_runtime_parameters(){
 }
 
 determine_target_parameters(){
-    check_function_parameters_quantity ${FUNCNAME[0]} 5 "${#}"
+    check_function_parameters_quantity 5 "${#}"
     local install_mode="${1}"; shift
     local target_media="${1}"; shift
     local -n target_device_ref="${1}"; shift
@@ -795,7 +795,7 @@ determine_target_parameters(){
 }
 
 is_target_busy(){
-    check_function_parameters_quantity ${FUNCNAME[0]} 1 "${#}"
+    check_function_parameters_quantity 1 "${#}"
     local device="${1}"; shift
 
     if [ "$(mount \
@@ -811,7 +811,7 @@ is_target_busy(){
 }
 
 check_source_and_target_not_busy(){
-    check_function_parameters_quantity ${FUNCNAME[0]} 4 "${#}"
+    check_function_parameters_quantity 4 "${#}"
     local install_mode="${1}"; shift
     local source_media="${1}"; shift
     local target_device="${1}"; shift
@@ -849,7 +849,7 @@ check_source_and_target_not_busy(){
 }
 
 wipe_existing_partition_table_and_filesystem_signatures(){
-    check_function_parameters_quantity ${FUNCNAME[0]} 1 "${#}"
+    check_function_parameters_quantity 1 "${#}"
     local -r target_device="${1}"; shift
 
     print_info \
@@ -866,7 +866,7 @@ wipe_existing_partition_table_and_filesystem_signatures(){
 # Some broken locked-down flash drive will appears to be successfully wiped but actually nothing is written into it and will shown previous partition scheme afterwards.  This is the detection of the case and will bail out if such things happened
 # target_device: The target device file to be checked
 check_if_the_drive_is_really_wiped(){
-    check_function_parameters_quantity ${FUNCNAME[0]} 1 "${#}"
+    check_function_parameters_quantity 1 "${#}"
     local -r target_device="${1}"; shift
 
     print_info \
@@ -893,7 +893,7 @@ check_if_the_drive_is_really_wiped(){
 }
 
 create_target_partition_table(){
-    check_function_parameters_quantity ${FUNCNAME[0]} 2 "${#}"
+    check_function_parameters_quantity 2 "${#}"
     local -r target_device="${1}"; shift
     local -r partition_table_type="${1}"; shift
 
@@ -929,7 +929,7 @@ create_target_partition_table(){
 
 # NOTE: This really should be done automatically by GNU Parted after every operation
 workaround_make_system_realize_partition_table_changed(){
-    check_function_parameters_quantity ${FUNCNAME[0]} 1 "${#}"
+    check_function_parameters_quantity 1 "${#}"
     local -r target_device="${1}"; shift
 
     print_info \
@@ -946,7 +946,7 @@ workaround_make_system_realize_partition_table_changed(){
 }
 
 create_target_partition(){
-    check_function_parameters_quantity ${FUNCNAME[0]} 5 "${#}"
+    check_function_parameters_quantity 5 "${#}"
     local -r target_partition="${1}"; shift
 
     # ENUM_SUPPORTED_FILESYSTEMS
@@ -1039,7 +1039,7 @@ create_target_partition(){
 # This routine should be run after create_target_partition and only on target partition's filesystem is NTFS
 # target_device: The target device's entire deice file
 create_uefi_ntfs_support_partition(){
-    check_function_parameters_quantity ${FUNCNAME[0]} 1 "${#}"
+    check_function_parameters_quantity 1 "${#}"
 
     local -r target_device="${1}"; shift
 
@@ -1065,7 +1065,7 @@ create_uefi_ntfs_support_partition(){
 # download_directory: The temporary directory for downloading UEFI:NTFS image from GitHub
 # target_device: For workaround_make_system_realize_partition_table_changed
 install_uefi_ntfs_support_partition(){
-    check_function_parameters_quantity ${FUNCNAME[0]} 4 "${#}"
+    check_function_parameters_quantity 4 "${#}"
 
     local -r rufus_uefi_ntfs_version="${1}"; shift
     local -r uefi_ntfs_partition="${1}"; shift
@@ -1089,7 +1089,7 @@ install_uefi_ntfs_support_partition(){
 
 # Some buggy BIOSes won't put detected device with valid MBR but no partitions with boot flag toggled into the boot menu, workaround this by setting the first partition's boot flag(which partition doesn't matter as GNU GRUB doesn't depend on it anyway
 workaround_buggy_motherboards_that_ignore_disks_without_boot_flag_toggled(){
-    check_function_parameters_quantity ${FUNCNAME[0]} 1 "${#}"
+    check_function_parameters_quantity 1 "${#}"
 
     local -r target_device="${1}"; shift
 
@@ -1107,7 +1107,7 @@ workaround_buggy_motherboards_that_ignore_disks_without_boot_flag_toggled(){
 # install_mode: The usb storage creation method to be used
 # target_device: The parent device of the target partition, this is passed in to check UEFI:NTFS filesystem's existence on check_uefi_ntfs_support_partition
 check_target_partition(){
-    check_function_parameters_quantity ${FUNCNAME[0]} 3 "${#}"
+    check_function_parameters_quantity 3 "${#}"
     local target_partition="${1}"; shift
     local install_mode="${1}"; shift
     local target_device="${1}"; shift
@@ -1141,7 +1141,7 @@ check_target_partition(){
 # Currently it depends on the fact that this partition has a label of "UEFI_NTFS"
 # target_device: The UEFI:NTFS partition residing entier device file
 check_uefi_ntfs_support_partition(){
-    check_function_parameters_quantity ${FUNCNAME[0]} 1 "${#}"
+    check_function_parameters_quantity 1 "${#}"
 
     local -r target_device="${1}"; shift
 
@@ -1163,7 +1163,7 @@ check_uefi_ntfs_support_partition(){
 }
 
 mount_source_filesystem(){
-    check_function_parameters_quantity ${FUNCNAME[0]} 2 "${#}"
+    check_function_parameters_quantity 2 "${#}"
     local source_media="${1}"; shift
     local source_fs_mountpoint="${1}"; shift
 
@@ -1208,7 +1208,7 @@ mount_source_filesystem(){
 # target_fs_mountpoint: The existing directory used as the target filesystem's mountpoint, for example /mnt/target_filesystem
 # target_fs_type: The filesystem of the target filesystem currently supports: FAT, NTFS
 mount_target_filesystem(){
-    check_function_parameters_quantity ${FUNCNAME[0]} 3 "${#}"
+    check_function_parameters_quantity 3 "${#}"
     local target_partition="${1}"; shift
     local target_fs_mountpoint="${1}"; shift
 
@@ -1262,7 +1262,7 @@ mount_target_filesystem(){
 }
 
 check_target_filesystem_free_space(){
-    check_function_parameters_quantity ${FUNCNAME[0]} 2 "${#}"
+    check_function_parameters_quantity 2 "${#}"
     local -r target_fs_mountpoint="${1}"; shift
     local -r source_fs_mountpoint="${1}"; shift
 
@@ -1317,7 +1317,7 @@ check_target_filesystem_free_space(){
 
 # Copying all files from one filesystem to another, with progress reporting
 copy_filesystem_files(){
-    check_function_parameters_quantity ${FUNCNAME[0]} 4 "${#}"
+    check_function_parameters_quantity 4 "${#}"
     local source_fs_mountpoint="${1}"; shift
     local target_fs_mountpoint="${1}"; shift
     local target_filesystem_type="${1}"; shift
@@ -1412,7 +1412,7 @@ copy_filesystem_files(){
 # Copy source_file to dest_file, overwrite file if dest_file exists
 # Also report copy_filesystem_files progress during operation
 copy_large_file(){
-    check_function_parameters_quantity ${FUNCNAME[0]} 5 "${#}"
+    check_function_parameters_quantity 5 "${#}"
     local -r source_file="${1}"; shift
     local -r dest_file="${1}"; shift
     local -ir caller_copied_size="${1}"; shift
@@ -1461,7 +1461,7 @@ copy_large_file(){
 # Copy WIM files that is over 4GiB to a FAT32 filesystem
 # Using wimlib to split file into smaller parts
 copy_oversized_wim_file(){
-    check_function_parameters_quantity ${FUNCNAME[0]} 4 "${#}"
+    check_function_parameters_quantity 4 "${#}"
     local source_file="${1}"; shift
     local dest_file="${1}"; shift
     local -ir caller_copied_size="${1}"; shift
@@ -1523,7 +1523,7 @@ copy_oversized_wim_file(){
 # system image manually
 # TODO: Functionize Windows 7 checking
 workaround_support_windows_7_uefi_boot(){
-    check_function_parameters_quantity ${FUNCNAME[0]} 2 "${#}"
+    check_function_parameters_quantity 2 "${#}"
     local source_fs_mountpoint="${1}"; shift
     local target_fs_mountpoint="${1}"; shift
 
@@ -1625,7 +1625,7 @@ workaround_support_windows_7_uefi_boot(){
 }
 
 install_legacy_pc_bootloader_grub(){
-    check_function_parameters_quantity ${FUNCNAME[0]} 3 "${#}"
+    check_function_parameters_quantity 3 "${#}"
     local -r target_fs_mountpoint="${1}"; shift
     local -r target_device="${1}"; shift
     local -r command_grubinstall="${1}"; shift
@@ -1644,7 +1644,7 @@ install_legacy_pc_bootloader_grub(){
 # target_fs_mountpoint: Target filesystem's mountpoint(where GRUB is installed)
 # name_grub_prefix: May be different between distributions, so need to be specified (grub/grub2)
 install_legacy_pc_bootloader_grub_config(){
-    check_function_parameters_quantity ${FUNCNAME[0]} 2 "${#}"
+    check_function_parameters_quantity 2 "${#}"
 
     local -r target_fs_mountpoint="${1}"; shift
     local -r name_grub_prefix="${1}"; shift
@@ -1679,7 +1679,7 @@ END_OF_FILE
 # Unmount mounted filesystem and clean-up mountpoint before exiting program
 # return_value: 1 - Failed to unmount / 2 - Failed to remove mountpoint
 cleanup_mountpoint(){
-    check_function_parameters_quantity ${FUNCNAME[0]} 1 "${#}"
+    check_function_parameters_quantity 1 "${#}"
     local -r fs_mountpoint="${1}"; shift
 
     # In copy_filesystem_files, we use `pushd` to changed the working
@@ -1798,7 +1798,7 @@ trap_interrupt(){
 }
 
 trap_return(){
-    check_function_parameters_quantity ${FUNCNAME[0]} 1 "${#}"
+    check_function_parameters_quantity 1 "${#}"
     local returning_function="${1}"; shift
 
     for ignored_function in \
@@ -1870,7 +1870,7 @@ util_call_external_command(){
 # Parameters:
 # - color: color of the next message, or `none` to reset to default color
 switch_terminal_text_color(){
-    check_function_parameters_quantity ${FUNCNAME[0]} 1 "${#}"
+    check_function_parameters_quantity 1 "${#}"
     local -r color="${1}"; shift
 
     case "${color}" in
@@ -2033,7 +2033,7 @@ print_debug(){
 }
 
 shift_array(){
-    check_function_parameters_quantity ${FUNCNAME[0]} 1 "${#}"
+    check_function_parameters_quantity 1 "${#}"
 
     local -n array_ref="${1}"; shift
 
@@ -2055,7 +2055,7 @@ shift_array(){
 }
 
 is_var_set_and_not_empty(){
-    check_function_parameters_quantity ${FUNCNAME[0]} 1 "${#}"
+    check_function_parameters_quantity 1 "${#}"
 
     local parameter_name="${1}"; shift
 
@@ -2076,18 +2076,18 @@ is_var_set_and_not_empty(){
 # Utility function to check if function parameters quantity is legal
 # NOTE: non-static function parameter quantity(e.g. either 2 or 3) is not supported
 check_function_parameters_quantity(){
-    if [ "${#}" -ne 3 ]; then
+    if [ "${#}" -ne 2 ]; then
         print_fatal \
-            'Function %s (line %u) requires %u parameters, but %u is given\n' \
-            ${FUNCNAME[0]} \
-            ${LINENO} \
-            3 \
+            'Function %s (%s) requires %u parameters, but %u is given\n' \
+            "${FUNCNAME}" \
+            "$(caller)" \
+            2 \
             "${#}"
         exit 1
     fi
 
     # The function name
-    local function_name="${1}"; shift
+    local function_name="${FUNCNAME[1]}"
     # The line the error occured on
     local caller_info="$(caller 1)"
     # The expected given quantity
