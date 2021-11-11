@@ -1356,7 +1356,7 @@ copy_filesystem_files(){
                     'Copying "%s"...\n' \
                     "${source_file}"
             fi
-            if [ "${source_file_size}" -lt "${dd_block_size}" ]; then
+            if [[ "${source_file_size}" -lt "${dd_block_size}" ]]; then
                 cp "${source_file}" "${dest_file}"
             else
                 # FS_FAT is not a parameter expansion
