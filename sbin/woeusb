@@ -1206,13 +1206,7 @@ mount_target_filesystem(){
 
     mkdir \
         --parents \
-        "${target_fs_mountpoint}" \
-        || (
-            print_error \
-                'Unable to create "%s" mountpoint directory\n' \
-                "${target_fs_mountpoint}"
-            return 1
-        )
+        "${target_fs_mountpoint}"
 
     # Determine proper mount options according to filesystem type
     local mount_options='defaults'
@@ -1239,12 +1233,7 @@ mount_target_filesystem(){
         --options "${mount_options}" \
         ${fstype_options} \
         "${target_partition}" \
-        "${target_fs_mountpoint}" \
-        || (
-            print_error \
-                'Unable to mount target partition\n'
-            return 1
-        )
+        "${target_fs_mountpoint}"
 }
 
 check_target_filesystem_free_space(){
