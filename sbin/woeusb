@@ -307,18 +307,6 @@ print_help(){
     echo -e
 }
 
-# Print application version then exit, for debugging purpose.
-# application_version: Version of the application
-print_version(){
-    check_function_parameters_quantity 1 "${#}"
-
-    local -r application_version="${1}"; shift
-
-    printf -- \
-        '%s\n' \
-        "${application_version}"
-}
-
 print_application_info(){
     check_function_parameters_quantity 5 "${#}"
     local -r application_name="${1}"; shift
@@ -574,7 +562,8 @@ process_miscellaneous_requests(){
 
     if [ "${flag_print_version}" == true ]; then
         trap - EXIT
-        print_version \
+        printf -- \
+            '%s\n' \
             "${application_version}"
         exit 0
     fi
