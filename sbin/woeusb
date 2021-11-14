@@ -107,7 +107,7 @@ init(){
         "${application_name} v${application_version}" \
         '=============================='
 
-    check_permission \
+    check_superuser \
         "${application_name}"
 
     if ! check_runtime_parameters \
@@ -678,7 +678,7 @@ check_runtime_dependencies(){
     fi
 }
 
-check_permission(){
+check_superuser(){
     check_function_parameters_quantity 1 "${#}"
     local -r application_name="${1}"; shift
 
