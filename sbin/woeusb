@@ -684,7 +684,7 @@ check_superuser(){
 
     if [ ! "$(id --user)" = 0 ]; then
         print_warning \
-            'You are not running %s as root!\n' \
+            'You are not running %s as the superuser(root)!\n' \
             "${application_name}"
         print_warning \
             'This might be the reason of the following failure.\n'
