@@ -1170,37 +1170,20 @@ mount_source_filesystem(){
 
     print_info \
         'Mounting source filesystem...\n'
-
     mkdir \
         --parents \
-        "${source_fs_mountpoint}" \
-        || (
-            print_error \
-                'Unable to create "%s" mountpoint directory\n' \
-                "${source_fs_mountpoint}"
-            return 1
-        )
+        "${source_fs_mountpoint}"
     if [ -f "${source_media}" ]; then # ${source_media} is an ISO image
         mount \
             --options loop,ro \
             --types udf,iso9660 \
             "${source_media}" \
-            "${source_fs_mountpoint}" \
-        || (
-            print_error \
-                'Unable to mount source media\n'
-            return 1
-        )
+            "${source_fs_mountpoint}"
     else # ${source_media} is a real optical disk drive (block device)
         mount \
             --options ro \
             "${source_media}" \
-            "${source_fs_mountpoint}" \
-        || (
-            print_error \
-                'Unable to mount source media\n'
-            return 1
-        )
+            "${source_fs_mountpoint}"
     fi
 }
 
