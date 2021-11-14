@@ -173,6 +173,7 @@ init(){
             create_uefi_ntfs_support_partition \
                 "${target_device}"
             install_uefi_ntfs_support_partition \
+                "${rufus_uefi_ntfs_version}" \
                 "${target_device}2" \
                 "${temp_dir}" \
                 "${target_device}"
