@@ -193,7 +193,8 @@ init(){
         "${target_fs_mountpoint}"  \
         "${target_filesystem_type}"; then
         print_error \
-            'Unable to mount target filesystem\n'
+            'Unable to mount target filesystem in %s\n' \
+            "${target_partition}"
         exit 1
     fi
 
