@@ -152,7 +152,8 @@ init(){
         "${source_media}" \
         "${source_fs_mountpoint}"; then
         print_error \
-            'Unable to mount source filesystem\n'
+            'Unable to mount source filesystem in %s\n' \
+            "${source_media}"
         exit 1
     fi
 
