@@ -21,8 +21,10 @@ DD_BLOCK_SIZE="${DD_BLOCK_SIZE:-$((4 * 1024 * 1024))}" # 4MiB
 
 # Entry point of the main code
 init(){
-    check_function_parameters_quantity 3 "${#}"
+    check_function_parameters_quantity 5 "${#}"
     local -r program_name="${1}"; shift
+    local -n flag_source_filesystem_mounted_ref="${1}"; shift
+    local -n flag_target_filesystem_mounted_ref="${1}"; shift
     local -r rufus_uefi_ntfs_version="${1}"; shift
     local -r dd_block_size="${1}"; shift
 
@@ -156,6 +158,7 @@ init(){
             "${source_media}"
         exit 1
     fi
+    flag_source_filesystem_mounted_ref=true
 
     if [ "${install_mode}" = device ]; then
         wipe_existing_partition_table_and_filesystem_signatures \
@@ -187,6 +190,7 @@ init(){
             "${install_mode}" \
             "${target_device}"
     fi
+    flag_target_filesystem_mounted_ref=true
 
     if ! mount_target_filesystem \
         "${target_partition}" \
@@ -1699,16 +1703,14 @@ trap_exit(){
         sleep 1
     fi
 
-    if is_var_set_and_not_empty \
-        source_fs_mountpoint; then
+    if test "${flag_source_filesystem_mounted}" == true; then
         if ! cleanup_mountpoint  \
             "${source_fs_mountpoint}"; then
             flag_unclean=true
         fi
     fi
 
-    if is_var_set_and_not_empty \
-        target_fs_mountpoint; then
+    if test "${flag_target_filesystem_mounted}" == true; then
         if ! cleanup_mountpoint \
             "${target_fs_mountpoint}"; then
             local -i return_value="${?}"
@@ -2054,15 +2056,32 @@ check_function_parameters_quantity(){
     # The actual given parameter quantity, simply pass "${#}" will do
     local -i given_parameter_quantity="${1}"
 
-    if [ "${given_parameter_quantity}" -ne "${expected_parameter_quantity}" ]; then
+    local failed=false
+
+    if ! [[ $expected_parameter_quantity =~ ^[[:digit:]]+$ ]]; then
+        local test_expression="${expected_parameter_quantity}"
+        # test_expression is supposed to be word splitted here
+        # shellcheck disable=SC2086
+        if ! test "${given_parameter_quantity}" ${test_expression}; then
+            failed=true
+        fi
+    else
+        if [ "${given_parameter_quantity}" -ne "${expected_parameter_quantity}" ]; then
+            failed=true
+        fi
+    fi
+
+    if test "${failed}" == true; then
         print_fatal \
             'Function %s requires %u parameters, but %u is given\n' \
             "${FUNCNAME[1]}" \
             "${expected_parameter_quantity}" \
             "${given_parameter_quantity}"
+        # FATAL error
         exit 1
+    else
+        return 0
     fi
-    return 0
 }
 
 # Generate reliable and user-friendly timestamps
@@ -2148,6 +2167,10 @@ declare flag_verbose=false
 # Disable message coloring when set to `true`, set by --no-color
 declare flag_no_color=false
 
+# Need to be consumed by traps for clean-up
+declare flag_source_filesystem_mounted=false
+declare flag_target_filesystem_mounted=false
+
 # NOTE: Need to pass to traps, so need to be global
 declare \
     source_fs_mountpoint \
@@ -2177,5 +2200,7 @@ declare wimlib_imagex_pid=
 
 init \
     "${script_name}" \
+    flag_source_filesystem_mounted \
+    flag_target_filesystem_mounted \
     "${RUFUS_UEFI_NTFS_VERSION}" \
     "${DD_BLOCK_SIZE}"
