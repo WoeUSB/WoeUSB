@@ -308,9 +308,8 @@ print_help(){
         '- %s --partition /dev/sr0 /dev/sdX1\n' \
         "${program_name}"
     printf '\n'
-    printf '## '
-    printf 'Command-line Options'
-    printf ' ##\n'
+    printf 'Command-line Options\n'
+    printf '-----------------------------------\n'
     printf '    --verbose, -v\n'
     printf '        '
     printf 'Verbose mode\n'
