@@ -309,7 +309,9 @@ print_help(){
         "${program_name}"
     printf '\n'
     printf 'Command-line Options\n'
-    printf '-----------------------------------\n'
+    printf \
+        -- \
+        '-----------------------------------\n'
     printf '    --verbose, -v\n'
     printf '        '
     printf 'Verbose mode\n'
