@@ -247,68 +247,118 @@ print_help(){
     local -r program_name="${1}"; shift
 
     set +o xtrace
-    echo -e "${application_name} ${application_version} Help Information"
-    echo -e "======================================"
-    echo -e "${application_name} can create a bootable Microsoft Windows(R) USB storage device from an existing Windows optical disk or an ISO disk image."
-    echo -e
-    echo -e 'Currently two creation methods are supported:'
-    echo -e
-    echo -e '    --device, -d'
-    echo -e
-    echo -e '        ''Completely WIPE the entire USB storage device, then build a bootable Windows USB device from scratch.'
-    echo -e '        ''WARNING: All previous data on the device will be gone!'
-    echo -e
-    echo -e '        '"${program_name} --device <source media path> <device>"
-    echo -e '        ''Examples:'
-    echo -e '        '"- ${program_name} --device Windows7_x64.iso /dev/sdX"
-    echo -e '        '"- ${program_name} --device /dev/sr0 /dev/sdX"
-    echo -e
-    echo -e '    --partition, -p'
-    echo -e
-    echo -e '        ''Copy Windows files to an existing partition of a USB storage device and make it bootable.  This allows files to coexist as long as no filename conflict exists.'
-    echo -e '        ''WARNING: All files that has the same name will be overwritten!'
-    echo -e
-    echo -e '        '"${program_name} --partition <source media path> <partition>"
-    echo -e '        ''Examples:'
-    echo -e '        '"- ${program_name} --partition Windows7_x64.iso /dev/sdX1"
-    echo -e '        '"- ${program_name} --partition /dev/sr0 /dev/sdX1"
-    echo -e
-    echo -e '## ''Command-line Options'' ##'
-    echo -e '    --verbose, -v'
-    echo -e '        ''Verbose mode'
-    echo -e
-    echo -e '    --help, -h'
-    echo -e '        ''Show this help message and exit'
-    echo -e
-    echo -e '    --version, -V'
-    echo -e '        ''Print application version'
-    echo -e
-    echo -e '    --about, -ab'
-    echo -e '        ''Show info about this application'
-    echo -e
-    echo -e '    --no-color'
-    echo -e '        ''Disable message coloring'
-    echo -e
-    echo -e '    --debug'
-    echo -e '        ''Enable script debugging'
-    echo -e
-    echo -e '    --label, -l <filesystem_label>'
-    echo -e '        ''Specify label for the newly created file system in --device creation method'
-    echo -e '        ''Note that the label is not verified for validity and may be illegal for the filesystem'
-    echo -e
-    echo -e '    --workaround-bios-boot-flag'
-    echo -e '        '"Workaround BIOS bug that won't include the device in boot menu if non of the partition's boot flag is toggled"
-    echo -e
-    echo -e '    --debugging-internal-function-call <function name> (function_argument)...'
-    echo -e '        ''Development option for developers to test certain function without running the entire build'
-    echo -e
-    echo -e '    --target-filesystem, --tgt-fs <filesystem name>'
-    echo -e '        '"Specify the filesystem to use as the target partition's filesystem."
-    echo -e '        ''Currently supported: FAT(default)/NTFS'
-    echo -e
-    echo -e '    --for-gui'
-    echo -e '        ''No longer supported, reserved for compatibility with the wrapper programs'
-    echo -e
+    printf \
+        '%s %s Help Information\n' \
+        "${application_name}" \
+        "${application_version}"
+    printf \
+        '======================================\n'
+    printf \
+        '%s can create a bootable Microsoft Windows(R) USB storage device from an existing Windows optical disk or an ISO disk image.\n' \
+        "${application_name}"
+    printf '\n'
+    printf \
+        'Currently two creation methods are supported:\n'
+    printf '\n'
+    printf '    --device, -d\n'
+    printf '\n'
+    printf '        '
+    printf 'Completely WIPE the entire USB storage device, then build a bootable Windows USB device from scratch.\n'
+    printf '        '
+    printf 'WARNING: All previous data on the device will be gone!\n'
+    printf '\n'
+    printf '        '
+    printf \
+        '%s --device <source media path> <device>\n' \
+        "${program_name}"
+    printf '        '
+    printf 'Examples:\n'
+    printf '        '
+    printf \
+        -- \
+        '- %s --device Windows7_x64.iso /dev/sdX\n' \
+        "${program_name}"
+    printf '        '
+    printf \
+        -- \
+        '- %s --device /dev/sr0 /dev/sdX\n' \
+        "${program_name}"
+    printf '\n'
+    printf '    --partition, -p\n'
+    printf '\n'
+    printf '        '
+    printf 'Copy Windows files to an existing partition of a USB storage device and make it bootable.  This allows files to coexist as long as no filename conflict exists.\n'
+    printf '        '
+    printf 'WARNING: All files that has the same name will be overwritten!\n'
+    printf '\n'
+    printf '        '
+    printf \
+        '%s --partition <source media path> <partition>\n' \
+        "${program_name}"
+    printf '        '
+    printf 'Examples:\n'
+    printf '        '
+    printf \
+        -- \
+        '- %s --partition Windows7_x64.iso /dev/sdX1\n' \
+        "${program_name}"
+    printf '        '
+    printf \
+        -- \
+        '- %s --partition /dev/sr0 /dev/sdX1\n' \
+        "${program_name}"
+    printf '\n'
+    printf '## '
+    printf 'Command-line Options'
+    printf ' ##\n'
+    printf '    --verbose, -v\n'
+    printf '        '
+    printf 'Verbose mode\n'
+    printf '\n'
+    printf '    --help, -h\n'
+    printf '        '
+    printf 'Show this help message and exit\n'
+    printf '\n'
+    printf '    --version, -V\n'
+    printf '        '
+    printf 'Print application version\n'
+    printf '\n'
+    printf '    --about, -ab\n'
+    printf '        '
+    printf 'Show info about this application\n'
+    printf '\n'
+    printf '    --no-color\n'
+    printf '        '
+    printf 'Disable message coloring\n'
+    printf '\n'
+    printf '    --debug\n'
+    printf '        '
+    printf 'Enable script debugging\n'
+    printf '\n'
+    printf '    --label, -l <filesystem_label>\n'
+    printf '        '
+    printf 'Specify label for the newly created file system in --device creation method\n'
+    printf '        '
+    printf 'Note that the label is not verified for validity and may be illegal for the filesystem\n'
+    printf '\n'
+    printf '    --workaround-bios-boot-flag\n'
+    printf '        '
+    printf "Workaround BIOS bug that won't include the device in boot menu if non of the partition's boot flag is toggled\\n"
+    printf '\n'
+    printf '    --debugging-internal-function-call <function name> (function_argument)...\n'
+    printf '        '
+    printf 'Development option for developers to test certain function without running the entire build\n'
+    printf '\n'
+    printf '    --target-filesystem, --tgt-fs <filesystem name>\n'
+    printf '        '
+    printf "Specify the filesystem to use as the target partition's filesystem.\\n"
+    printf '        '
+    printf 'Currently supported: FAT(default)/NTFS\n'
+    printf '\n'
+    printf '    --for-gui\n'
+    printf '        '
+    printf 'No longer supported, reserved for compatibility with the wrapper programs\n'
+    printf '\n'
 }
 
 print_application_info(){
