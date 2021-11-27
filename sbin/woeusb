@@ -239,6 +239,154 @@ init(){
     exit 0
 }
 
+# FIXME: Doesn't support only printing LHS of the ATX style heading
+print_markdown_heading(){
+    local text="${1}"; shift
+    local -i level="${1}"; shift
+    # [atx|setext]
+    local style="${1}"; shift
+
+    local setext_separator_max_length
+    if test "${#}" -ne 0; then
+        setext_separator_max_length="${1}"; shift
+    fi
+
+    case "${style}" in
+        atx)
+            if test -v setext_separator_max_length; then
+                printf \
+                    '%s: Error: The setext_separator_max_length parameter can only be used with the Setext heading style.\n' \
+                    "${FUNCNAME[0]}" \
+                    1>&2
+                return 1
+            fi
+
+            if test "${level}" -gt 6; then
+                printf \
+                    '%s: Error: Atx heading style only support at most level 6, got %s\n' \
+                    "${FUNCNAME[0]}" \
+                    "${level}" \
+                    1>&2
+                return 1
+            fi
+
+            local -i i
+            local heading_marker=
+            for((i=0; i<level; i++)); do
+                heading_marker+='#'
+            done
+            printf \
+                '%s %s %s\n' \
+                "${heading_marker}" \
+                "${text}" \
+                "${heading_marker}"
+        ;;
+        setext)
+            if test "${level}" -gt 2; then
+                printf \
+                    '%s: Error: Setext heading style only support at most level 2, got %s\n' \
+                    "${FUNCNAME[0]}" \
+                    "${level}" \
+                    1>&2
+                return 1
+            fi
+
+            if test -v setext_separator_max_length \
+                && [[ ! "${setext_separator_max_length}" =~ ([[:digit:]]+|terminal) ]]; then
+                printf \
+                    "%s: Error: The setext_separator_max_length parameter only accepts numbers and 'terminal' as argument, but got \"%s\".\\n" \
+                    1>&2 \
+                    "${FUNCNAME[0]}" \
+                    "${setext_separator_max_length}"
+                return 1
+            fi
+
+            local -i separator_length
+            local -i terminal_columns
+            terminal_columns="$(
+                stty size \
+                    | awk '{print $2}'
+            )"
+
+            local -i text_length="${#text}"
+
+            if ! test -v setext_separator_max_length; then
+                if test "${terminal_columns}" -gt "${text_length}"; then
+                    separator_length="${text_length}"
+                else
+                    separator_length="${terminal_columns}"
+                fi
+            elif test "${setext_separator_max_length}" == terminal; then
+                separator_length="${terminal_columns}"
+            else
+                # Use terminal width if setext_separator_max_length will
+                # cause line wrap
+                if test "${terminal_columns}" -gt "${setext_separator_max_length}"; then
+                    separator_length="${setext_separator_max_length}"
+                else
+                    separator_length="${terminal_columns}"
+                fi
+            fi
+
+            local -i i
+            local separator=
+            for((i=0; i<separator_length; i++)); do
+                if test "${level}" -eq 1; then
+                    separator+='='
+                else
+                    separator+='-'
+                fi
+            done
+
+            printf \
+                -- \
+                '%s\n%s\n' \
+                "${text}" \
+                "${separator}"
+        ;;
+        *)
+            printf \
+                '%s: Error: Unsupported markdown heading style "%s".\n' \
+                "${FUNCNAME[0]}" \
+                "${style}" \
+                1>&2
+            return 1
+        ;;
+    esac
+
+    # Additional linebreak to separate heading and context
+    printf '\n'
+}
+
+print_markdown_paragraph(){
+    local text="${1}"; shift
+
+    printf \
+        -- \
+        '%s\n' \
+        "${text}"
+    printf \
+        '\n'
+}
+
+print_markdown_codeblock(){
+    local text="${1}"; shift
+    if test "${#}" -ne 0; then
+        local syntax_hint="${1}"; shift
+    fi
+
+    if ! test -v syntax_hint; then
+        printf '```\n'
+    else
+        printf '```%s\n' "${syntax_hint}"
+    fi
+    printf '%s\n' "${text}"
+    printf '```\n'
+
+    # Separate with following content
+    printf '\n'
+}
+
 print_help(){
     check_function_parameters_quantity 3 "${#}"
 
@@ -664,6 +812,7 @@ check_runtime_dependencies(){
         readlink \
         rm \
         stat \
+        stty \
         wget \
         wimlib-imagex \
         wipefs
