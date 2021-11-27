@@ -395,119 +395,211 @@ print_help(){
     local -r program_name="${1}"; shift
 
     set +o xtrace
-    printf \
-        '%s %s Help Information\n' \
-        "${application_name}" \
-        "${application_version}"
-    printf \
-        '======================================\n'
-    printf \
-        '%s can create a bootable Microsoft Windows(R) USB storage device from an existing Windows optical disk or an ISO disk image.\n' \
-        "${application_name}"
-    printf '\n'
-    printf \
-        'Currently two creation methods are supported:\n'
-    printf '\n'
-    printf '    --device, -d\n'
-    printf '\n'
-    printf '        '
-    printf 'Completely WIPE the entire USB storage device, then build a bootable Windows USB device from scratch.\n'
-    printf '        '
-    printf 'WARNING: All previous data on the device will be gone!\n'
-    printf '\n'
-    printf '        '
-    printf \
-        '%s --device <source media path> <device>\n' \
-        "${program_name}"
-    printf '        '
-    printf 'Examples:\n'
-    printf '        '
-    printf \
-        -- \
-        '- %s --device Windows7_x64.iso /dev/sdX\n' \
-        "${program_name}"
-    printf '        '
-    printf \
-        -- \
-        '- %s --device /dev/sr0 /dev/sdX\n' \
-        "${program_name}"
-    printf '\n'
-    printf '    --partition, -p\n'
-    printf '\n'
-    printf '        '
-    printf 'Copy Windows files to an existing partition of a USB storage device and make it bootable.  This allows files to coexist as long as no filename conflict exists.\n'
-    printf '        '
-    printf 'WARNING: All files that has the same name will be overwritten!\n'
-    printf '\n'
-    printf '        '
-    printf \
-        '%s --partition <source media path> <partition>\n' \
-        "${program_name}"
-    printf '        '
-    printf 'Examples:\n'
-    printf '        '
-    printf \
-        -- \
-        '- %s --partition Windows7_x64.iso /dev/sdX1\n' \
-        "${program_name}"
-    printf '        '
-    printf \
-        -- \
-        '- %s --partition /dev/sr0 /dev/sdX1\n' \
-        "${program_name}"
-    printf '\n'
-    printf 'Command-line Options\n'
-    printf \
-        -- \
-        '-----------------------------------\n'
-    printf '    --verbose, -v\n'
-    printf '        '
-    printf 'Verbose mode\n'
-    printf '\n'
-    printf '    --help, -h\n'
-    printf '        '
-    printf 'Show this help message and exit\n'
-    printf '\n'
-    printf '    --version, -V\n'
-    printf '        '
-    printf 'Print application version\n'
-    printf '\n'
-    printf '    --about, -ab\n'
-    printf '        '
-    printf 'Show info about this application\n'
-    printf '\n'
-    printf '    --no-color\n'
-    printf '        '
-    printf 'Disable message coloring\n'
-    printf '\n'
-    printf '    --debug\n'
-    printf '        '
-    printf 'Enable script debugging\n'
-    printf '\n'
-    printf '    --label, -l <filesystem_label>\n'
-    printf '        '
-    printf 'Specify label for the newly created file system in --device creation method\n'
-    printf '        '
-    printf 'Note that the label is not verified for validity and may be illegal for the filesystem\n'
-    printf '\n'
-    printf '    --workaround-bios-boot-flag\n'
-    printf '        '
-    printf "Workaround BIOS bug that won't include the device in boot menu if non of the partition's boot flag is toggled\\n"
-    printf '\n'
-    printf '    --debugging-internal-function-call <function name> (function_argument)...\n'
-    printf '        '
-    printf 'Development option for developers to test certain function without running the entire build\n'
-    printf '\n'
-    printf '    --target-filesystem, --tgt-fs <filesystem name>\n'
-    printf '        '
-    printf "Specify the filesystem to use as the target partition's filesystem.\\n"
-    printf '        '
-    printf 'Currently supported: FAT(default)/NTFS\n'
-    printf '\n'
-    printf '    --for-gui\n'
-    printf '        '
-    printf 'No longer supported, reserved for compatibility with the wrapper programs\n'
-    printf '\n'
+    print_markdown_heading \
+        "$(
+            printf \
+                '%s %s Help Information' \
+                "${application_name}" \
+                "${application_version}"
+        )" \
+        1 \
+        setext
+    print_markdown_paragraph \
+        "$(
+            printf \
+                '%s can create a bootable Microsoft Windows(R) USB storage device from an existing Windows optical disk or an ISO disk image.' \
+                "${application_name}"
+        )"
+
+    print_markdown_heading \
+        'Supported installation drive preparation modes' \
+        2 \
+        setext
+    print_markdown_paragraph \
+        'Currently two creation methods are supported:'
+
+    # The backtick pairs are Markdown's <code> markup, not a shell
+    # command substitution
+    # shellcheck disable=SC2016
+    print_markdown_heading \
+            '`--device`, `-d`' \
+            3 \
+            atx
+    print_markdown_paragraph \
+        'Completely WIPE the entire USB storage device, then build a bootable Windows USB device from scratch.'
+    print_markdown_paragraph \
+        'WARNING: All previous data on the device will be gone!'
+    print_markdown_codeblock \
+        "$(
+            printf \
+                '$ %s --device <source media path> <device>\n' \
+                "${program_name}"
+        )" \
+        synopsis
+    print_markdown_codeblock \
+        "$(
+            printf \
+                -- \
+                '%s --device Windows7_x64.iso /dev/sdX' \
+                "${program_name}"
+            printf '\n'
+            printf \
+                -- \
+                '%s --device /dev/sr0 /dev/sdX' \
+                "${program_name}"
+        )" \
+        example
+
+    # The backtick pairs are Markdown's <code> markup, not a shell
+    # command substitution
+    # shellcheck disable=SC2016
+    print_markdown_heading \
+            '`--partition`, `-p`' \
+            3 \
+            atx
+    print_markdown_paragraph \
+        'Copy Windows files to an existing partition of a USB storage device and make it bootable.  This allows files to coexist as long as no filename conflict exists.'
+    print_markdown_paragraph \
+        'WARNING: All files that has the same name will be overwritten!'
+    print_markdown_codeblock \
+        "$(
+            printf \
+                '%s --partition <source media path> <partition>' \
+                "${program_name}"
+        )" \
+        synopsis
+    print_markdown_codeblock \
+        "$(
+            printf \
+                -- \
+                '%s --partition Windows7_x64.iso /dev/sdX1' \
+                "${program_name}"
+            printf '\n'
+            printf \
+                -- \
+                '%s --partition /dev/sr0 /dev/sdX1' \
+                "${program_name}"
+        )" \
+        example
+
+    print_markdown_heading \
+            'Command-line Options' \
+            2 \
+            setext
+
+    # The backtick pairs are Markdown's <code> markup, not a shell
+    # command substitution
+    # shellcheck disable=SC2016
+    print_markdown_heading \
+        '`--verbose`, `-v`' \
+        3 \
+        atx
+    print_markdown_paragraph \
+        'Verbose mode'
+
+    # The backtick pairs are Markdown's <code> markup, not a shell
+    # command substitution
+    # shellcheck disable=SC2016
+    print_markdown_heading \
+        '`--help`, `-h`' \
+        3 \
+        atx
+    print_markdown_paragraph \
+        'Show this help message and exit'
+
+    # The backtick pairs are Markdown's <code> markup, not a shell
+    # command substitution
+    # shellcheck disable=SC2016
+    print_markdown_heading \
+        '`--version`, `-V`' \
+        3 \
+        atx
+    print_markdown_paragraph \
+        'Print application version'
+
+    # The backtick pairs are Markdown's <code> markup, not a shell
+    # command substitution
+    # shellcheck disable=SC2016
+    print_markdown_heading \
+        '`--about`, `-ab`' \
+        3 \
+        atx
+    print_markdown_paragraph \
+        'Show info about this application'
+
+    # The backtick pairs are Markdown's <code> markup, not a shell
+    # command substitution
+    # shellcheck disable=SC2016
+    print_markdown_heading \
+        '`--no-color`' \
+        3 \
+        atx
+    print_markdown_paragraph \
+        'Disable message coloring'
+
+    # The backtick pairs are Markdown's <code> markup, not a shell
+    # command substitution
+    # shellcheck disable=SC2016
+    print_markdown_heading \
+        '`--debug`' \
+        3 \
+        atx
+    print_markdown_paragraph \
+        'Enable script debugging'
+
+    # The backtick pairs are Markdown's <code> markup, not a shell
+    # command substitution
+    # shellcheck disable=SC2016
+    print_markdown_heading \
+        '`--label`, `-l <filesystem_label>`' \
+        3 \
+        atx
+    print_markdown_paragraph \
+        'Specify label for the newly created file system in --device creation method'
+    print_markdown_paragraph \
+        'Note that the label is not verified for validity and may be illegal for the filesystem'
+
+    # The backtick pairs are Markdown's <code> markup, not a shell
+    # command substitution
+    # shellcheck disable=SC2016
+    print_markdown_heading \
+        '`--workaround-bios-boot-flag`' \
+        3 \
+        atx
+    print_markdown_paragraph \
+        "Workaround BIOS bug that won't include the device in boot menu if non of the partition's boot flag is toggled"
+
+    # The backtick pairs are Markdown's <code> markup, not a shell
+    # command substitution
+    # shellcheck disable=SC2016
+    print_markdown_heading \
+        '`--debugging-internal-function-call <function name> (function_argument)...`' \
+        3 \
+        atx
+    print_markdown_paragraph \
+        'Development option for developers to test certain function without running the entire build\n'
+
+    # The backtick pairs are Markdown's <code> markup, not a shell
+    # command substitution
+    # shellcheck disable=SC2016
+    print_markdown_heading \
+        '`--target-filesystem`, `--tgt-fs <filesystem name>`' \
+        3 \
+        atx
+    print_markdown_paragraph \
+        "Specify the filesystem to use as the target partition's filesystem."
+    print_markdown_paragraph \
+        'Currently supported: FAT(default)/NTFS'
+
+    # The backtick pairs are Markdown's <code> markup, not a shell
+    # command substitution
+    # shellcheck disable=SC2016
+    print_markdown_heading \
+        '`--for-gui`' \
+        3 \
+        atx
+    print_markdown_paragraph \
+        'No longer supported, reserved for compatibility with the wrapper programs'
 }
 
 print_application_info(){
