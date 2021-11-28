@@ -1,0 +1,578 @@
+# GNU gettext message catalog template for WoeUSB
+# Copyright (C) 2021 WoeUSB contributors <https://github.com/WoeUSB/WoeUSB/graphs/contributors>
+# SPDX-License-Identifier: GPL-3.0-or-later
+# 林博仁 <Buo.Ren.Lin@gmail.com>, 2021.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: woeusb 5.2.2-7-gced86af-dirty\n"
+"Report-Msgid-Bugs-To: https://github.com/WoeUSB/WoeUSB/issues\n"
+"POT-Creation-Date: 2021-11-29 00:30+0800\n"
+"PO-Revision-Date: 2021-11-29 01:27+0800\n"
+"Last-Translator: 林博仁 <Buo.Ren.Lin@gmail.com>\n"
+"Language-Team: Chinese (traditional) <zh-l10n@lists.linux.org.tw>\n"
+"Language: zh_TW\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: sbin/woeusb:33
+msgid "WoeUSB"
+msgstr "WoeUSB"
+
+#: sbin/woeusb:159
+msgid "Unable to mount source filesystem in %s\\n"
+msgstr "無法掛載位於 %s 的來源檔案系統\\n"
+
+#: sbin/woeusb:202
+msgid "Unable to mount target filesystem in %s\\n"
+msgstr "無法掛載位於 %s 的目標檔案系統\\n"
+
+#: sbin/woeusb:237
+msgid "Done :)\\n"
+msgstr "完成了 :)\\n"
+
+#: sbin/woeusb:239
+msgid "The target device should be bootable now\\n"
+msgstr "目標裝置現在應能正常開機\\n"
+
+#: sbin/woeusb:260
+msgid ""
+"%s: Error: The setext_separator_max_length parameter can only be used with "
+"the Setext heading style.\\n"
+msgstr ""
+"%s：錯誤：setext_separator_max_length 參數只能用於 Setext Markdown 標題風"
+"格。\\n"
+
+#: sbin/woeusb:268
+msgid "%s: Error: Atx heading style only support at most level 6, got %s\\n"
+msgstr "%s：錯誤：Atx Markdown 標題風格最多只支援第六級，但拿到了 %s\\n"
+
+#: sbin/woeusb:289
+msgid "%s: Error: Setext heading style only support at most level 2, got %s\\n"
+msgstr "%s：錯誤：Setext Markdown 標題風格最多只支援第二級標題，但拿到了 %s\\n"
+
+#: sbin/woeusb:299
+msgid ""
+"%s: Error: The setext_separator_max_length parameter only accepts numbers "
+"and 'terminal' as argument, but got \"%s\".\\n"
+msgstr ""
+"%s：錯誤：setext_separator_max_length 參數只支援數字以及 'terminal' 作為引"
+"數，但是拿到了「%s」。\\n"
+
+#: sbin/woeusb:351
+msgid "%s: Error: Unsupported markdown heading style \"%s\".\\n"
+msgstr "%s：錯誤：不支援的「%s」Markdown 標題風格。\\n"
+
+#: sbin/woeusb:403
+msgid "%s %s Help Information"
+msgstr "%s %s 的幫助說明"
+
+#: sbin/woeusb:412
+msgid ""
+"%s can create a bootable Microsoft Windows(R) USB storage device from an "
+"existing Windows optical disk or an ISO disk image."
+msgstr ""
+"%s 可以自現有的 Windows 光碟或 ISO 光碟映像檔創建可啟動的 Microsoft "
+"Windows(R) USB 儲存設備。"
+
+#: sbin/woeusb:417
+msgid "Supported installation drive preparation modes"
+msgstr "支援的安裝驅動器準備模式"
+
+#: sbin/woeusb:421
+msgid "Currently two creation methods are supported:"
+msgstr "目前支援兩種創建方法："
+
+#: sbin/woeusb:431
+msgid ""
+"Completely WIPE the entire USB storage device, then build a bootable Windows "
+"USB device from scratch."
+msgstr "完全抹除整個 USB 儲存裝置，然後從頭開始建構可開機的 Windows USB 裝置。"
+
+#: sbin/woeusb:433
+msgid "WARNING: All previous data on the device will be gone!"
+msgstr "警告：所有設備上的既有資料都將丟失！"
+
+#: sbin/woeusb:463
+msgid ""
+"Copy Windows files to an existing partition of a USB storage device and make "
+"it bootable.  This allows files to coexist as long as no filename conflict "
+"exists."
+msgstr ""
+"複製 Windows 安裝文件至 USB 儲存裝置的既有分區中並使其可開機。這將能夠在沒有"
+"檔名衝突的前提下讓檔案能夠共存。"
+
+#: sbin/woeusb:465
+msgid "WARNING: All files that has the same name will be overwritten!"
+msgstr "警告：所有包含相同名稱的檔案將被覆寫！"
+
+#: sbin/woeusb:488
+msgid "Command-line Options"
+msgstr "命令列選項"
+
+#: sbin/woeusb:500
+msgid "Verbose mode"
+msgstr "冗餘輸出模式"
+
+#: sbin/woeusb:510
+msgid "Show this help message and exit"
+msgstr "顯示此幫助訊息並且離開"
+
+#: sbin/woeusb:520
+msgid "Print application version"
+msgstr "印出應用軟體的版本"
+
+#: sbin/woeusb:530
+msgid "Show info about this application"
+msgstr "顯示關於本應用軟體的相關資訊"
+
+#: sbin/woeusb:540
+msgid "Disable message coloring"
+msgstr "禁用訊息上色"
+
+#: sbin/woeusb:550
+msgid "Enable script debugging"
+msgstr "啟用腳本除錯功能"
+
+#: sbin/woeusb:560
+msgid ""
+"Specify label for the newly created file system in --device creation method"
+msgstr "指定於 --device 建構模式中新建立之檔案系統的文字標籤"
+
+#: sbin/woeusb:562
+msgid ""
+"Note that the label is not verified for validity and may be illegal for the "
+"filesystem"
+msgstr "注意：提供的文字標籤並不會驗證有效性，且可能是指定檔案系統的無效標籤"
+
+#: sbin/woeusb:572
+msgid ""
+"Workaround BIOS bug that won't include the device in boot menu if non of the "
+"partition's boot flag is toggled"
+msgstr ""
+"迴避當分區的 boot 旗標沒有啟用時裝置不會被列在開機選單中的 BIOS 韌體缺陷"
+
+#: sbin/woeusb:582
+msgid ""
+"Development option for developers to test certain function without running "
+"the entire build\\n"
+msgstr "開發者用來在不用運行完整的製作程序下測試特定函式功能的開發功能選項\\n"
+
+#: sbin/woeusb:592
+msgid "Specify the filesystem to use as the target partition's filesystem."
+msgstr "指定要作為目標分區之檔案系統的檔案系統。"
+
+#: sbin/woeusb:594
+msgid "Currently supported: FAT(default)/NTFS"
+msgstr "目前支援：FAT（預設值）/ NTFS"
+
+#: sbin/woeusb:604
+msgid ""
+"No longer supported, reserved for compatibility with the wrapper programs"
+msgstr "不再被支援，僅用於相容 WoeUSB 的包裝程式"
+
+#: sbin/woeusb:681
+msgid "--partition option requires 2 arguments!\\n"
+msgstr "--partition 命令選項需要 2 個引數！\\n"
+
+#: sbin/woeusb:699
+msgid "--device option requires 2 arguments!\\n"
+msgstr "--device 命令選項需要 2 個引數！\\n"
+
+#: sbin/woeusb:721
+msgid "--label option requires 1 argument.\\n"
+msgstr "--label 命令選項需要 1 個引數。\\n"
+
+#: sbin/woeusb:737
+msgid ""
+"--debugging-internal-function-call option requires at least 1 argument.\\n"
+msgstr "--debugging-internal-function-call 命令選項需要至少 1 個引數。\\n"
+
+#: sbin/woeusb:751
+msgid "--target-filesystem option requires 1 argument.\\n"
+msgstr "--target-filesystem option 需要至少 1 個引數。\\n"
+
+#: sbin/woeusb:764
+msgid "Unknown command-line argument \"%s\"\\n"
+msgstr "未知的「%s」命令列引數\\n"
+
+#: sbin/woeusb:779
+msgid "No creation method specified!\\n"
+msgstr "未指定任何 Windows 安裝碟製作模式！\\n"
+
+#: sbin/woeusb:786
+msgid "--device and --partition creation method are mutual-exclusive.\\n"
+msgstr "--device 跟 --partition Windows 安裝碟創建模式是互斥的。\\n"
+
+#: sbin/woeusb:796
+msgid "--label option only can be used with --device creation method\\n"
+msgstr "--label 命令選項僅能與 --device Windows 安裝碟創建方式一起使用\\n"
+
+#: sbin/woeusb:806
+msgid ""
+"--target-filesystem option only can be used with --device creation method\\n"
+msgstr "--target-filesystem 命令選項僅能與 --device 安裝碟創建方式一起使用\\n"
+
+#: sbin/woeusb:822
+msgid "Target filesystem not supported.\\n"
+msgstr "目標檔案系統不被支援。\\n"
+
+#: sbin/woeusb:916
+msgid ""
+"%s requires %s command in the executable search path, but it is not found.\\n"
+msgstr "%s 需要 %s 命令在可執行檔搜尋路徑中，但是找不到。\\n"
+
+#: sbin/woeusb:933
+msgid "mkdosfs/mkfs.msdos/mkfs.vfat/mkfs.fat command not found!\\n"
+msgstr "mkdosfs/mkfs.msdos/mkfs.vfat/mkfs.fat 命令找不到！\\n"
+
+#: sbin/woeusb:935
+msgid "Please make sure that dosfstools is properly installed!\\n"
+msgstr "請確保 dosfstools 依賴軟體已正確安裝！\\n"
+
+#: sbin/woeusb:943
+msgid "mkntfs command not found!\\n"
+msgstr "找不到 mkntfs 命令！\\n"
+
+#: sbin/woeusb:945
+msgid "Please make sure that ntfs-3g is properly installed!\\n"
+msgstr "請確保 ntfs-3g 軟體已正確安裝！\\n"
+
+#: sbin/woeusb:957
+msgid "grub-install or grub2-install command not found!\\n"
+msgstr "grub-install 或 grub2-install 命令找不到！\\n"
+
+#: sbin/woeusb:959
+msgid "Please make sure that GNU GRUB is properly installed!\\n"
+msgstr "請確保 GNU GRUB 軟體已正確安裝！\\n"
+
+#: sbin/woeusb:976
+msgid "You are not running %s as the superuser(root)!\\n"
+msgstr "您沒有以 superuser(root) 身份運行 %s！\\n"
+
+#: sbin/woeusb:979
+msgid "This might be the reason of the following failure.\\n"
+msgstr "這可能是接下來的執行失敗的造成原因。\\n"
+
+#: sbin/woeusb:993
+msgid ""
+"source media \"%s\" not found or not a regular file or a block device file!"
+"\\n"
+msgstr "「%s」來源媒體找不到或是不是一個一般的檔案或區塊裝置！\\n"
+
+#: sbin/woeusb:1000
+msgid "Target media \"%s\" is not a block device file!\\n"
+msgstr "「%s」目標媒體不是一個區塊裝置！\\n"
+
+#: sbin/woeusb:1009
+msgid "Target media \"%s\" is not an entire storage device!\\n"
+msgstr "「%s」目標媒體不是一個完整區塊裝置！\\n"
+
+#: sbin/woeusb:1018
+msgid "Target media \"%s\" is not an partition!\\n"
+msgstr "「%s」目標媒體不是一個分區！\\n"
+
+#: sbin/woeusb:1058
+msgid ""
+"Unsupported target filesystem \"%s\", currently supported target "
+"filesystems: %s, %s\\n"
+msgstr "不支援的「%s」目標檔案系統，目前支援的目標檔案系統有：%s、%s\\n"
+
+#: sbin/woeusb:1073
+msgid "Target device is '%s'.\\n"
+msgstr "目標裝置是「%s」。\\n"
+
+#: sbin/woeusb:1076
+msgid "Target partition is '%s'.\\n"
+msgstr "目標分區是「%s」。\\n"
+
+#: sbin/woeusb:1080
+msgid "Target filesystem is '%s'.\\n"
+msgstr "目標檔案系統是「%s」。\\n"
+
+#: sbin/woeusb:1117
+msgid ""
+"Source media is currently mounted, unmount the partition then try again\\n"
+msgstr "來源媒體的檔案系統目前正在被掛載，將該分區解掛載後再試一次\\n"
+
+#: sbin/woeusb:1129
+msgid ""
+"Target partition is currently mounted, unmount the partition then try again"
+"\\n"
+msgstr "目標分區的檔案系統目前已被掛載，將其解掛載後再試一次\\n"
+
+#: sbin/woeusb:1135
+msgid ""
+"Target device is currently busy, unmount all mounted partitions in target "
+"device then try again\\n"
+msgstr "目標裝置目前忙碌中，將該裝置所有已掛載分區解掛載後再試一次\\n"
+
+#: sbin/woeusb:1146
+msgid ""
+"Wiping all existing partition table and filesystem signatures in %s...\\n"
+msgstr "正在抹除 %s 中所有既有的分區表與檔案系統痕跡……\\n"
+
+#: sbin/woeusb:1163
+msgid "Ensure that %s is really wiped...\\n"
+msgstr "確保 %s 真的有被抹除……\\n"
+
+#: sbin/woeusb:1178
+msgid ""
+"Partition is still detected after wiping all signatures, this indicates that "
+"the drive might be locked into readonly mode due to end of lifespan.\\n"
+msgstr ""
+"在抹除所有分區表與檔案系統痕跡後仍偵測到分區的存在，這代表著該存儲裝置可能因"
+"為壽命終結被鎖定在唯讀模式。\\n"
+
+#: sbin/woeusb:1191
+msgid "Creating new partition table on %s...\\n"
+msgstr "正在 %s 上建立新的分區表……\\n"
+
+#: sbin/woeusb:1203
+msgid "Currently GUID partition table is not supported.\\n"
+msgstr "目前尚不支援 GUID 磁碟分區表。\\n"
+
+#: sbin/woeusb:1208
+msgid "Partition table not supported.\\n"
+msgstr "分區表不被支援。\\n"
+
+#: sbin/woeusb:1226
+msgid "Making system realize that partition table has changed...\\n"
+msgstr "正在讓系統發現分區表已異動……\\n"
+
+#: sbin/woeusb:1233
+msgid "Wait 3 seconds for block device nodes to populate...\\n"
+msgstr "等 3 秒讓作業系統重新建立區塊裝置節點……\\n"
+
+#: sbin/woeusb:1261
+msgid "Filesystem not supported\\n"
+msgstr "檔案系統不被支援\\n"
+
+#: sbin/woeusb:1267
+msgid "Creating target partition...\\n"
+msgstr "正在建立目標分區……\\n"
+
+#: sbin/woeusb:1296
+msgid "Illegal parted_mkpart_fs_type, please report bug.\\n"
+msgstr "無效的 parted_mkpart_fs_type，請回報軟體缺陷。\\n"
+
+#: sbin/woeusb:1387
+msgid ""
+"Applying workaround for buggy motherboards that will ignore disks with no "
+"partitions with the boot flag toggled\\n"
+msgstr ""
+"正在套用無視不包含 boot 旗標之分區的磁碟的有問題的主板韌體的問題迴避措施\\n"
+
+#: sbin/woeusb:1423
+msgid ""
+"Target filesystem not supported, currently supported filesystem: FAT, NTFS."
+"\\n"
+msgstr "目標檔案系統不被支援，目前支援的檔案系統：FAT、NTFS。\\n"
+
+#: sbin/woeusb:1449
+msgid ""
+"Your device doesn't seems to have an UEFI:NTFS partition, UEFI booting will "
+"fail if the motherboard firmware itself doesn't support NTFS filesystem!\\n"
+msgstr ""
+"您的裝置似乎沒有 UEFI:NTFS 支援分區，如果主版韌體本身不支援 NTFS 檔案系統的"
+"話 UEFI 開機將會失敗！\\n"
+
+#: sbin/woeusb:1451
+msgid ""
+"You may recreate disk with an UEFI:NTFS partition by using the --device "
+"creation method\\n"
+msgstr ""
+"您可以使用 --device 安裝碟創建方式重建一個具備 UEFI:NTFS 輔助分區的磁碟\\n"
+
+#: sbin/woeusb:1461
+msgid "Mounting source filesystem...\\n"
+msgstr "正在掛載來源檔案系統……\\n"
+
+#: sbin/woeusb:1492
+msgid "Mounting target filesystem...\\n"
+msgstr "正在掛載目標檔案系統……\\n"
+
+#: sbin/woeusb:1512
+msgid "Unsupported target_fs_type, please report bug.\\n"
+msgstr "不支援的 target_fs_type，請回報軟體缺陷。\\n"
+
+#: sbin/woeusb:1568
+msgid "Not enough free space on target partition!\\n"
+msgstr "在目標分區中沒有足夠的可用空間！\\n"
+
+#: sbin/woeusb:1570
+msgid "We required %s(%u bytes) but '%s' only has %s(%u bytes).\\n"
+msgstr "我們需要 %s（%u 位元組）但是「%s」只有 %s（%u 位元組）。\\n"
+
+#: sbin/woeusb:1600
+msgid "Copying files from source media...\\n"
+msgstr "正在自來源媒體複製檔案……\\n"
+
+#: sbin/woeusb:1618
+msgid "Copying \"%s\"...\\n"
+msgstr "正在複製「%s」……\\n"
+
+#: sbin/woeusb:1630
+msgid ""
+"Unsupported oversized file \"%s\" detected, this file will NOT be "
+"transferred.\\n"
+msgstr "偵測到不支援的「%s」過大檔案，這個檔案將**不會**被傳輸。\\n"
+
+#: sbin/woeusb:1650
+msgid "Unknown type of '%s'!\\n"
+msgstr "未知的「%s」檔案類型！\\n"
+
+#: sbin/woeusb:1803
+msgid ""
+"Source media seems to be Windows 7-based with EFI support, applying "
+"workaround to make it support UEFI booting\\n"
+msgstr ""
+"來源媒體似乎是有 EFI 開機支援的，基於 Windows 7 的安裝媒體，正在套用問題迴避"
+"措施來讓它能夠支援 UEFI 開機\\n"
+
+#: sbin/woeusb:1806
+msgid "'7z' utility not found, workaround is not applied.\\n"
+msgstr "找不到「7z」工具程式，問題迴避措施將不會被套用。\\n"
+
+#: sbin/woeusb:1830 sbin/woeusb:1855
+msgid "%s detected.\\n"
+msgstr "偵測到 %s。\\n"
+
+#: sbin/woeusb:1848
+msgid "Can't find efi/boot directory, use %s.\\n"
+msgstr "無法找到 efi/boot 目錄，將使用 %s。\\n"
+
+#: sbin/woeusb:1872
+msgid "Detected existing EFI bootloader, workaround skipped.\\n"
+msgstr "偵測到既有的 EFI 開機程式，問題迴避措施將被跳過。\\n"
+
+#: sbin/woeusb:1896
+msgid "Installing GRUB bootloader for legacy PC booting support...\\n"
+msgstr "正在安裝用於舊式 PC 開機支援的 GRUB 開機載入程式……\\n"
+
+#: sbin/woeusb:1915
+msgid "Installing custom GRUB config for legacy PC booting...\\n"
+msgstr "正在安裝用於舊式 PC 開機的自訂 GRUB 配置文件……\\n"
+
+#: sbin/woeusb:1956
+msgid "Unmounting and removing \"%s\"...\\n"
+msgstr "正在解除掛載並移除「%s」……\\n"
+
+#: sbin/woeusb:1960
+msgid "Unable to unmount \"%s\".\\n"
+msgstr "無法解除掛載「%s」。\\n"
+
+#: sbin/woeusb:1967
+msgid "Unable to remove \"%s\".\\n"
+msgstr "無法移除「%s」。\\n"
+
+#: sbin/woeusb:1980
+msgid ""
+"The command \"%s\" failed with exit status \"%u\", program is prematurely "
+"aborted\\n"
+msgstr "「%s」命令以「%u」結束狀態碼失敗，程式被提前中止\\n"
+
+#: sbin/woeusb:2022
+msgid ""
+"Some mountpoints are not unmount/cleaned successfully and must be done "
+"manually\\n"
+msgstr "某些檔案系統掛載點沒有被成功地解除掛載／清理，必須手動完成。\\n"
+
+#: sbin/woeusb:2027
+msgid ""
+"We unable to unmount target filesystem for you, please make sure target "
+"filesystem is unmounted before detaching to prevent data corruption\\n"
+msgstr ""
+"我們無法為您解除掛載目標檔案系統，為避免發生資料毀損請在解除連接裝置前確保目"
+"標檔案系統已解除掛載\\n"
+
+#: sbin/woeusb:2039
+msgid ""
+"Target device is busy, please make sure you unmount all filesystems on "
+"target device or shutdown the computer before detaching it.\\n"
+msgstr ""
+"目標裝置忙碌中，在將其解除連接前請確保您已解除掛載所有目標裝置的檔案系統或是"
+"將電腦關機。\\n"
+
+#: sbin/woeusb:2042
+msgid "You may now safely detach the target device\\n"
+msgstr "您現在可以安全地解除連接目標裝置\\n"
+
+#: sbin/woeusb:2056
+msgid "Recieved SIGINT, program is interrupted.\\n"
+msgstr "接收到 SIGINT 訊號，程式被中止。\\n"
+
+#: sbin/woeusb:2080
+msgid "returning from %s\\n"
+msgstr "自 %s 返回\\n"
+
+#: sbin/woeusb:2099
+msgid "Error occurred while running command \"%s\" (exit status: %u)!\\n"
+msgstr "在運行「%s」命令時發生錯誤（結束狀態碼：%u）！\\n"
+
+#: sbin/woeusb:2122
+msgid "Press ENTER to continue\\n"
+msgstr "請按 ENTER 鍵繼續\\n"
+
+#: sbin/woeusb:2160
+msgid "Illegal parameter, please report bug.\\n"
+msgstr "無效的參數，請回報軟體缺陷。\\n"
+
+#: sbin/woeusb:2170
+msgid "Parameter quantity illegal, please report bug.\\n"
+msgstr "函式參數數量無效，請回報軟體缺陷。\\n"
+
+#: sbin/woeusb:2196
+msgid "%s: FATAL: This function should have at least 1 argument.\\n"
+msgstr "%s：致命錯誤：此函式應制少有一個引數。\\n"
+
+#: sbin/woeusb:2203
+msgid "%s: FATAL: "
+msgstr "%s：致命錯誤："
+
+#: sbin/woeusb:2218 sbin/woeusb:2237 sbin/woeusb:2258 sbin/woeusb:2279
+msgid "This function should have at least 1 argument.\\n"
+msgstr "此函式應至少有 1 個引數。\\n"
+
+#: sbin/woeusb:2224
+msgid "Info: "
+msgstr "資訊："
+
+#: sbin/woeusb:2243
+msgid "Warning: "
+msgstr "警告："
+
+#: sbin/woeusb:2264
+msgid "ERROR: "
+msgstr "錯誤："
+
+#: sbin/woeusb:2284
+msgid "%s: DEBUG: "
+msgstr "%s：除錯："
+
+#: sbin/woeusb:2302
+msgid "array is empty!\\n"
+msgstr "陣列是空的！\\n"
+
+#: sbin/woeusb:2341 sbin/woeusb:2370
+msgid "Function %s requires %u parameters, but %u is given\\n"
+msgstr "%s 函式需要 %u 個引數，但是只拿到了 %u 個\\n"
+
+#: sbin/woeusb:2405
+msgid ""
+"This program requires Bash >= 4.3 to function properly, refer <%s> for more "
+"info.\\n"
+msgstr "本程式需要 >= 4.3 版的 Bash 才能正常運作，參閱 <%s> 查看更多資訊。\\n"
+
+#: sbin/woeusb:2418
+msgid "This program requires GNU Coreutils in the executable search path"
+msgstr "本程序需要 GNU Coreutils 在可執行檔搜尋路徑中"
+
+#: sbin/woeusb:2488
+msgid "File Allocation Table(FAT)"
+msgstr "File Allocation Table(FAT)"
+
+#: sbin/woeusb:2489
+msgid "New Technology File System(NTFS)"
+msgstr "New Technology File System(NTFS)"
