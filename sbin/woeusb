@@ -15,6 +15,8 @@
 #
 # lint: We use indirections and primitive variables, which is false positive of this rule
 # shellcheck disable=SC2034
+# lint: Required for I18N
+# shellcheck disable=SC2059
 
 RUFUS_UEFI_NTFS_VERSION="${RUFUS_UEFI_NTFS_VERSION:-b30e3b387a3ca7a5e2fddebcc2c8f9538a89b868}"
 DD_BLOCK_SIZE="${DD_BLOCK_SIZE:-$((4 * 1024 * 1024))}" # 4MiB
@@ -28,7 +30,7 @@ init(){
     local -r rufus_uefi_ntfs_version="${1}"; shift
     local -r dd_block_size="${1}"; shift
 
-    local -r application_name='WoeUSB'
+    local -r application_name="$(gettext 'WoeUSB')"
     local -r application_version='@@WOEUSB_VERSION@@'
 
     local \
@@ -154,7 +156,7 @@ init(){
         "${source_media}" \
         "${source_fs_mountpoint}"; then
         print_error \
-            'Unable to mount source filesystem in %s\n' \
+            "$(gettext 'Unable to mount source filesystem in %s\n')" \
             "${source_media}"
         exit 1
     fi
@@ -197,7 +199,7 @@ init(){
         "${target_fs_mountpoint}"  \
         "${target_filesystem_type}"; then
         print_error \
-            'Unable to mount target filesystem in %s\n' \
+            "$(gettext 'Unable to mount target filesystem in %s\n')" \
             "${target_partition}"
         exit 1
     fi
@@ -232,9 +234,9 @@ init(){
     fi
 
     print_info \
-        'Done :)\n'
+        "$(gettext 'Done :)\n')"
     print_info \
-        'The target device should be bootable now\n'
+        "$(gettext 'The target device should be bootable now\n')"
 
     exit 0
 }
@@ -255,7 +257,7 @@ print_markdown_heading(){
         atx)
             if test -v setext_separator_max_length; then
                 printf \
-                    '%s: Error: The setext_separator_max_length parameter can only be used with the Setext heading style.\n' \
+                    "$(gettext '%s: Error: The setext_separator_max_length parameter can only be used with the Setext heading style.\n')" \
                     "${FUNCNAME[0]}" \
                     1>&2
                 return 1
@@ -263,7 +265,7 @@ print_markdown_heading(){
 
             if test "${level}" -gt 6; then
                 printf \
-                    '%s: Error: Atx heading style only support at most level 6, got %s\n' \
+                    "$(gettext '%s: Error: Atx heading style only support at most level 6, got %s\n')" \
                     "${FUNCNAME[0]}" \
                     "${level}" \
                     1>&2
@@ -284,7 +286,7 @@ print_markdown_heading(){
         setext)
             if test "${level}" -gt 2; then
                 printf \
-                    '%s: Error: Setext heading style only support at most level 2, got %s\n' \
+                    "$(gettext '%s: Error: Setext heading style only support at most level 2, got %s\n')" \
                     "${FUNCNAME[0]}" \
                     "${level}" \
                     1>&2
@@ -294,7 +296,7 @@ print_markdown_heading(){
             if test -v setext_separator_max_length \
                 && [[ ! "${setext_separator_max_length}" =~ ([[:digit:]]+|terminal) ]]; then
                 printf \
-                    "%s: Error: The setext_separator_max_length parameter only accepts numbers and 'terminal' as argument, but got \"%s\".\\n" \
+                    "$(gettext "%s: Error: The setext_separator_max_length parameter only accepts numbers and 'terminal' as argument, but got \"%s\".\\n")" \
                     1>&2 \
                     "${FUNCNAME[0]}" \
                     "${setext_separator_max_length}"
@@ -346,7 +348,7 @@ print_markdown_heading(){
         ;;
         *)
             printf \
-                '%s: Error: Unsupported markdown heading style "%s".\n' \
+                "$(gettext '%s: Error: Unsupported markdown heading style "%s".\n')" \
                 "${FUNCNAME[0]}" \
                 "${style}" \
                 1>&2
@@ -398,7 +400,7 @@ print_help(){
     print_markdown_heading \
         "$(
             printf \
-                '%s %s Help Information' \
+                "$(gettext '%s %s Help Information')" \
                 "${application_name}" \
                 "${application_version}"
         )" \
@@ -407,16 +409,16 @@ print_help(){
     print_markdown_paragraph \
         "$(
             printf \
-                '%s can create a bootable Microsoft Windows(R) USB storage device from an existing Windows optical disk or an ISO disk image.' \
+                "$(gettext '%s can create a bootable Microsoft Windows(R) USB storage device from an existing Windows optical disk or an ISO disk image.')" \
                 "${application_name}"
         )"
 
     print_markdown_heading \
-        'Supported installation drive preparation modes' \
+        "$(gettext 'Supported installation drive preparation modes')" \
         2 \
         setext
     print_markdown_paragraph \
-        'Currently two creation methods are supported:'
+        "$(gettext 'Currently two creation methods are supported:')"
 
     # The backtick pairs are Markdown's <code> markup, not a shell
     # command substitution
@@ -426,9 +428,9 @@ print_help(){
             3 \
             atx
     print_markdown_paragraph \
-        'Completely WIPE the entire USB storage device, then build a bootable Windows USB device from scratch.'
+        "$(gettext 'Completely WIPE the entire USB storage device, then build a bootable Windows USB device from scratch.')"
     print_markdown_paragraph \
-        'WARNING: All previous data on the device will be gone!'
+        "$(gettext 'WARNING: All previous data on the device will be gone!')"
     print_markdown_codeblock \
         "$(
             printf \
@@ -458,9 +460,9 @@ print_help(){
             3 \
             atx
     print_markdown_paragraph \
-        'Copy Windows files to an existing partition of a USB storage device and make it bootable.  This allows files to coexist as long as no filename conflict exists.'
+        "$(gettext 'Copy Windows files to an existing partition of a USB storage device and make it bootable.  This allows files to coexist as long as no filename conflict exists.')"
     print_markdown_paragraph \
-        'WARNING: All files that has the same name will be overwritten!'
+        "$(gettext 'WARNING: All files that has the same name will be overwritten!')"
     print_markdown_codeblock \
         "$(
             printf \
@@ -483,7 +485,7 @@ print_help(){
         example
 
     print_markdown_heading \
-            'Command-line Options' \
+            "$(gettext 'Command-line Options')" \
             2 \
             setext
 
@@ -495,7 +497,7 @@ print_help(){
         3 \
         atx
     print_markdown_paragraph \
-        'Verbose mode'
+        "$(gettext 'Verbose mode')"
 
     # The backtick pairs are Markdown's <code> markup, not a shell
     # command substitution
@@ -505,7 +507,7 @@ print_help(){
         3 \
         atx
     print_markdown_paragraph \
-        'Show this help message and exit'
+        "$(gettext 'Show this help message and exit')"
 
     # The backtick pairs are Markdown's <code> markup, not a shell
     # command substitution
@@ -515,7 +517,7 @@ print_help(){
         3 \
         atx
     print_markdown_paragraph \
-        'Print application version'
+        "$(gettext 'Print application version')"
 
     # The backtick pairs are Markdown's <code> markup, not a shell
     # command substitution
@@ -525,7 +527,7 @@ print_help(){
         3 \
         atx
     print_markdown_paragraph \
-        'Show info about this application'
+        "$(gettext 'Show info about this application')"
 
     # The backtick pairs are Markdown's <code> markup, not a shell
     # command substitution
@@ -535,7 +537,7 @@ print_help(){
         3 \
         atx
     print_markdown_paragraph \
-        'Disable message coloring'
+        "$(gettext 'Disable message coloring')"
 
     # The backtick pairs are Markdown's <code> markup, not a shell
     # command substitution
@@ -545,7 +547,7 @@ print_help(){
         3 \
         atx
     print_markdown_paragraph \
-        'Enable script debugging'
+        "$(gettext 'Enable script debugging')"
 
     # The backtick pairs are Markdown's <code> markup, not a shell
     # command substitution
@@ -555,9 +557,9 @@ print_help(){
         3 \
         atx
     print_markdown_paragraph \
-        'Specify label for the newly created file system in --device creation method'
+        "$(gettext 'Specify label for the newly created file system in --device creation method')"
     print_markdown_paragraph \
-        'Note that the label is not verified for validity and may be illegal for the filesystem'
+        "$(gettext 'Note that the label is not verified for validity and may be illegal for the filesystem')"
 
     # The backtick pairs are Markdown's <code> markup, not a shell
     # command substitution
@@ -567,7 +569,7 @@ print_help(){
         3 \
         atx
     print_markdown_paragraph \
-        "Workaround BIOS bug that won't include the device in boot menu if non of the partition's boot flag is toggled"
+        "$(gettext "Workaround BIOS bug that won't include the device in boot menu if non of the partition's boot flag is toggled")"
 
     # The backtick pairs are Markdown's <code> markup, not a shell
     # command substitution
@@ -577,7 +579,7 @@ print_help(){
         3 \
         atx
     print_markdown_paragraph \
-        'Development option for developers to test certain function without running the entire build\n'
+        "$(gettext 'Development option for developers to test certain function without running the entire build\n')"
 
     # The backtick pairs are Markdown's <code> markup, not a shell
     # command substitution
@@ -587,9 +589,9 @@ print_help(){
         3 \
         atx
     print_markdown_paragraph \
-        "Specify the filesystem to use as the target partition's filesystem."
+        "$(gettext "Specify the filesystem to use as the target partition's filesystem.")"
     print_markdown_paragraph \
-        'Currently supported: FAT(default)/NTFS'
+        "$(gettext 'Currently supported: FAT(default)/NTFS')"
 
     # The backtick pairs are Markdown's <code> markup, not a shell
     # command substitution
@@ -599,7 +601,7 @@ print_help(){
         3 \
         atx
     print_markdown_paragraph \
-        'No longer supported, reserved for compatibility with the wrapper programs'
+        "$(gettext 'No longer supported, reserved for compatibility with the wrapper programs')"
 }
 
 print_application_info(){
@@ -675,8 +677,7 @@ process_commandline_parameters(){
                 shift_array parameters
                 if [ "${#parameters[@]}" -lt 2 ]; then
                     print_error \
-                        -- \
-                        '--partition option requires 2 arguments!\n'
+                        "$(gettext -- '--partition option requires 2 arguments!\n')"
                     return 1
                 fi
                 source_media_ref="${parameters[0]}"
@@ -693,8 +694,7 @@ process_commandline_parameters(){
                 shift_array parameters
                 if [ "${#parameters[@]}" -lt 2 ]; then
                     print_error \
-                        -- \
-                        '--device option requires 2 arguments!\n'
+                        "$(gettext -- '--device option requires 2 arguments!\n')"
                     return 1
                 fi
                 source_media_ref="${parameters[0]}"
@@ -715,8 +715,7 @@ process_commandline_parameters(){
                 shift_array parameters
                 if [ ${#parameters[@]} -lt 1 ]; then
                     print_error \
-                        -- \
-                        '--label option requires 1 argument.\n'
+                        "$(gettext -- '--label option requires 1 argument.\n')"
                     return 1
                 fi
                 target_fs_label_ref="${parameters[0]}"
@@ -731,8 +730,7 @@ process_commandline_parameters(){
 
                 if [ ${#parameters[@]} -lt 1 ]; then
                     print_error \
-                        -- \
-                        '--debugging-internal-function-call option requires at least 1 argument.\n'
+                        "$(gettext -- '--debugging-internal-function-call option requires at least 1 argument.\n')"
                     return 1
                 fi
                 "${parameters[@]}"
@@ -745,8 +743,7 @@ process_commandline_parameters(){
                 shift_array parameters
                 if [ ${#parameters[@]} -lt 1 ]; then
                     print_error \
-                        -- \
-                        '--target-filesystem option requires 1 argument.\n'
+                        "$(gettext -- '--target-filesystem option requires 1 argument.\n')"
                     return 1
                 fi
                 target_filesystem_type_input="$(
@@ -759,7 +756,7 @@ process_commandline_parameters(){
                 ;;
             *)
                 print_error \
-                    'Unknown command-line argument "%s"\n' \
+                    "$(gettext 'Unknown command-line argument "%s"\n')" \
                     "${parameters[0]}"
                 return 1
                 ;;
@@ -774,14 +771,13 @@ process_commandline_parameters(){
         && [ "${enable_debugging_internal_function_call}" == false ]; then
         # intentionally don't mention about the internal function call option
         print_error \
-            'No creation method specified!\n'
+            "$(gettext 'No creation method specified!\n')"
         return 1
     elif \
         [ "${enable_device}" == true ]  \
         && [ "${enable_partition}" == true ]; then
         print_error \
-            -- \
-            '--device and --partition creation method are mutual-exclusive.\n'
+            "$(gettext -- '--device and --partition creation method are mutual-exclusive.\n')"
         return 1
     fi
 
@@ -790,8 +786,7 @@ process_commandline_parameters(){
         [ "${enable_partition}" == true ] \
         && [ "${enable_label}" == true ]; then
         print_error \
-            -- \
-            '--label option only can be used with --device creation method\n'
+            "$(gettext -- '--label option only can be used with --device creation method\n')"
         return 1
     fi
 
@@ -800,8 +795,7 @@ process_commandline_parameters(){
         [ "${enable_target_filesystem}" == true ] \
         && [ "${enable_partition}" == true ]; then
         print_error \
-            -- \
-            '--target-filesystem option only can be used with --device creation method\n'
+            "$(gettext -- '--target-filesystem option only can be used with --device creation method\n')"
         return 1
     fi
 
@@ -816,8 +810,8 @@ process_commandline_parameters(){
                 target_filesystem_type_ref=FS_NTFS
             ;;
             *)
-                print_error \
-                    'Target filesystem not supported.\n'
+                 \
+                    "$(gettext 'Target filesystem not supported.\n')"
                 return 1
             ;;
         esac
@@ -911,7 +905,7 @@ check_runtime_dependencies(){
         do
         if ! command -v "${required_command}" >/dev/null; then
             print_error \
-                '%s requires %s command in the executable search path, but it is not found.\n' \
+                "$(gettext -- '%s requires %s command in the executable search path, but it is not found.\n')" \
                 "${application_name}" \
                 "${required_command}"
             result=failed
@@ -928,9 +922,9 @@ check_runtime_dependencies(){
         command_mkdosfs_ref=mkfs.fat
     else
         print_error \
-            'mkdosfs/mkfs.msdos/mkfs.vfat/mkfs.fat command not found!\n'
+            "$(gettext 'mkdosfs/mkfs.msdos/mkfs.vfat/mkfs.fat command not found!\n')"
         print_error \
-            'Please make sure that dosfstools is properly installed!\n'
+            "$(gettext 'Please make sure that dosfstools is properly installed!\n')"
         result='failed'
     fi
 
@@ -938,9 +932,9 @@ check_runtime_dependencies(){
         command_mkntfs_ref=mkntfs
     else
         print_error \
-            'mkntfs command not found!\n'
+            "$(gettext 'mkntfs command not found!\n')"
         print_error \
-            'Please make sure that ntfs-3g is properly installed!\n'
+            "$(gettext 'Please make sure that ntfs-3g is properly installed!\n')"
         result=failed
     fi
 
@@ -952,9 +946,9 @@ check_runtime_dependencies(){
         name_grub_prefix_ref=grub2
     else
         print_error \
-            'grub-install or grub2-install command not found!\n'
+            "$(gettext 'grub-install or grub2-install command not found!\n')"
         print_error \
-            'Please make sure that GNU GRUB is properly installed!\n'
+            "$(gettext 'Please make sure that GNU GRUB is properly installed!\n')"
         result=failed
     fi
 
@@ -971,10 +965,10 @@ check_superuser(){
 
     if [ ! "$(id --user)" = 0 ]; then
         print_warning \
-            'You are not running %s as the superuser(root)!\n' \
+            "$(gettext 'You are not running %s as the superuser(root)!\n')" \
             "${application_name}"
         print_warning \
-            'This might be the reason of the following failure.\n'
+            "$(gettext 'This might be the reason of the following failure.\n')"
     fi
     return 0
 }
@@ -988,14 +982,14 @@ check_runtime_parameters(){
     if [ ! -f "${source_media_ref}" ] \
         && [ ! -b "${source_media_ref}" ]; then
         print_error \
-            'source media "%s" not found or not a regular file or a block device file!\n' \
+            "$(gettext 'source media "%s" not found or not a regular file or a block device file!\n')" \
             "${source_media_ref}"
         return 1
     fi
 
     if ! [ -b "${target_media_ref}" ]; then
         print_error \
-            'Target media "%s" is not a block device file!\n' \
+            "$(gettext 'Target media "%s" is not a block device file!\n')" \
             "${target_media_ref}"
         return 1
     fi
@@ -1004,7 +998,7 @@ check_runtime_parameters(){
         && [[ "${target_media}" =~ .*[0-9] ]]
         then
         print_error \
-            'Target media "%s" is not an entire storage device!\n' \
+            "$(gettext 'Target media "%s" is not an entire storage device!\n')" \
             "${target_media_ref}"
         return 1
     fi
@@ -1013,7 +1007,7 @@ check_runtime_parameters(){
         && ! [[ "${target_media}" =~ .*[0-9] ]]
         then
         print_error \
-            'Target media "%s" is not an partition!\n' \
+            "$(gettext 'Target media "%s" is not an partition!\n')" \
             "${target_media_ref}"
         return 1
     fi
@@ -1053,7 +1047,7 @@ determine_target_parameters(){
             ;;
             *)
                 print_error \
-                    'Unsupported target filesystem "%s", currently supported target filesystems: %s, %s\n' \
+                    "$(gettext 'Unsupported target filesystem "%s", currently supported target filesystems: %s, %s\n')" \
                     "${target_filesystem_type_libblkid}" \
                     "${ENUM_SUPPORTED_FILESYSTEMS[FS_FAT]}" \
                     "${ENUM_SUPPORTED_FILESYSTEMS[FS_NTFS]}"
@@ -1068,14 +1062,14 @@ determine_target_parameters(){
 
     if [ "${flag_verbose}" = true ]; then
         print_info \
-            "Target device is '%s'.\\n" \
+            "$(gettext "Target device is '%s'.\\n")" \
             "${target_device_ref}"
         print_info \
-            "Target partition is '%s'.\\n" \
+            "$(gettext "Target partition is '%s'.\\n")" \
             "${target_partition_ref}"
         if [ "${install_mode}" = partition ]; then
             print_info \
-                "Target filesystem is '%s'.\\n" \
+                "$(gettext "Target filesystem is '%s'.\\n")" \
                 "${ENUM_SUPPORTED_FILESYSTEMS[$target_filesystem_type]}"
         fi
     fi
@@ -1112,7 +1106,7 @@ check_source_and_target_not_busy(){
             "${source_media}"
         )" != 0 ]; then
         print_error \
-            'Source media is currently mounted, unmount the partition then try again\n'
+            "$(gettext 'Source media is currently mounted, unmount the partition then try again\n')"
         exit 1
     fi
 
@@ -1124,13 +1118,13 @@ check_source_and_target_not_busy(){
                 "${target_partition}"
             )" != 0 ]; then
             print_error \
-                'Target partition is currently mounted, unmount the partition then try again\n'
+                "$(gettext 'Target partition is currently mounted, unmount the partition then try again\n')"
             exit 1
         fi
     else # When install_mode = device, all target partitions needs to by unmounted
         if is_target_busy "${target_device}"; then
             print_error \
-                'Target device is currently busy, unmount all mounted partitions in target device then try again\n'
+                "$(gettext 'Target device is currently busy, unmount all mounted partitions in target device then try again\n')"
             exit 1
         fi
     fi
@@ -1141,7 +1135,7 @@ wipe_existing_partition_table_and_filesystem_signatures(){
     local -r target_device="${1}"; shift
 
     print_info \
-        'Wiping all existing partition table and filesystem signatures in %s...\n' \
+        "$(gettext 'Wiping all existing partition table and filesystem signatures in %s...\n')" \
         "${target_device}"
     wipefs --all "${target_device}"
 
@@ -1158,7 +1152,7 @@ check_if_the_drive_is_really_wiped(){
     local -r target_device="${1}"; shift
 
     print_info \
-        'Ensure that %s is really wiped...\n' \
+        "$(gettext 'Ensure that %s is really wiped...\n')" \
         "${target_device}"
 
     if [ "$(
@@ -1173,7 +1167,7 @@ check_if_the_drive_is_really_wiped(){
                 part
         )" -ne 0 ]; then
         print_error \
-            'Partition is still detected after wiping all signatures, this indicates that the drive might be locked into readonly mode due to end of lifespan.\n'
+            "$(gettext 'Partition is still detected after wiping all signatures, this indicates that the drive might be locked into readonly mode due to end of lifespan.\n')"
         return 1
     else
         return 0
@@ -1186,7 +1180,7 @@ create_target_partition_table(){
     local -r partition_table_type="${1}"; shift
 
     print_info \
-        'Creating new partition table on %s...\n' \
+        "$(gettext 'Creating new partition table on %s...\n')" \
         "${target_device}"
 
     local parted_partiton_table_argument
@@ -1198,12 +1192,12 @@ create_target_partition_table(){
         gpt|guid)
             parted_partiton_table_argument=gpt
             print_error \
-                'Currently GUID partition table is not supported.\n'
+                "$(gettext 'Currently GUID partition table is not supported.\n')"
             return 2
             ;;
         *)
             print_error \
-                'Partition table not supported.\n'
+                "$(gettext 'Partition table not supported.\n')"
             return 2
             ;;
     esac
@@ -1221,14 +1215,14 @@ workaround_make_system_realize_partition_table_changed(){
     local -r target_device="${1}"; shift
 
     print_info \
-        'Making system realize that partition table has changed...\n'
+        "$(gettext 'Making system realize that partition table has changed...\n')"
 
     blockdev \
         --rereadpt \
         "${target_device}" \
         || true
     print_info \
-        'Wait 3 seconds for block device nodes to populate...\n'
+        "$(gettext 'Wait 3 seconds for block device nodes to populate...\n')"
     sleep 3
 
 }
@@ -1256,13 +1250,13 @@ create_target_partition(){
             ;;
         *)
             print_error \
-                'Filesystem not supported\n'
+                "$(gettext 'Filesystem not supported\n')"
             return 2
             ;;
     esac
 
     print_info \
-        'Creating target partition...\n'
+        "$(gettext 'Creating target partition...\n')"
 
     # Create target partition
     # We start at 4MiB for grub (it needs a post-mbr gap for its code) and alignment of flash memery block erase segment in general, for details see http://www.gnu.org/software/grub/manual/grub.html#BIOS-installation and http://lwn.net/Articles/428584/
@@ -1291,7 +1285,7 @@ create_target_partition(){
             ;;
         *)
             print_fatal \
-                'Illegal parted_mkpart_fs_type, please report bug.\n'
+                "$(gettext 'Illegal parted_mkpart_fs_type, please report bug.\n')"
             ;;
     esac
     unset parted_mkpart_fs_type
@@ -1382,7 +1376,7 @@ workaround_buggy_motherboards_that_ignore_disks_without_boot_flag_toggled(){
     local -r target_device="${1}"; shift
 
     print_warning \
-        'Applying workaround for buggy motherboards that will ignore disks with no partitions with the boot flag toggled\n'
+        "$(gettext 'Applying workaround for buggy motherboards that will ignore disks with no partitions with the boot flag toggled\n')"
     parted --script \
         "${target_device}" \
         set 1 boot on
@@ -1418,7 +1412,7 @@ check_target_partition(){
             ;;
         *)
             print_error \
-                'Target filesystem not supported, currently supported filesystem: FAT, NTFS.\n'
+                "$(gettext 'Target filesystem not supported, currently supported filesystem: FAT, NTFS.\n')"
             return 1
             ;;
     esac
@@ -1444,9 +1438,9 @@ check_uefi_ntfs_support_partition(){
             --silent \
             'UEFI_NTFS'; then
         print_warning \
-            "Your device doesn't seems to have an UEFI:NTFS partition, UEFI booting will fail if the motherboard firmware itself doesn't support NTFS filesystem!\\n"
+            "$(gettext "Your device doesn't seems to have an UEFI:NTFS partition, UEFI booting will fail if the motherboard firmware itself doesn't support NTFS filesystem!\\n")"
         print_info \
-            'You may recreate disk with an UEFI:NTFS partition by using the --device creation method\n'
+            "$(gettext 'You may recreate disk with an UEFI:NTFS partition by using the --device creation method\n')"
     fi
 }
 
@@ -1456,7 +1450,7 @@ mount_source_filesystem(){
     local source_fs_mountpoint="${1}"; shift
 
     print_info \
-        'Mounting source filesystem...\n'
+        "$(gettext 'Mounting source filesystem...\n')"
     mkdir \
         --parents \
         "${source_fs_mountpoint}"
@@ -1487,7 +1481,7 @@ mount_target_filesystem(){
     local target_fs_type="${1}"
 
     print_info \
-        'Mounting target filesystem...\n'
+        "$(gettext 'Mounting target filesystem...\n')"
 
     mkdir \
         --parents \
@@ -1507,7 +1501,7 @@ mount_target_filesystem(){
         ;;
         *)
             print_fatal \
-                'Unsupported target_fs_type, please report bug.\n'
+                "$(gettext 'Unsupported target_fs_type, please report bug.\n')"
             exit 1
         ;;
     esac
@@ -1563,9 +1557,9 @@ check_target_filesystem_free_space(){
 
     if [ "${needed_space}" -gt "${free_space}" ]; then
         print_error \
-            'Not enough free space on target partition!\n'
+            "$(gettext 'Not enough free space on target partition!\n')"
         print_error \
-            "We required %s(%u bytes) but '%s' only has %s(%u bytes).\n" \
+            "$(gettext "We required %s(%u bytes) but '%s' only has %s(%u bytes).\n")" \
             "${needed_space_human_readable}" \
             "${needed_space}" \
             "${target_partition}" \
@@ -1595,7 +1589,7 @@ copy_filesystem_files(){
     )
 
     print_info \
-        'Copying files from source media...\n'
+        "$(gettext 'Copying files from source media...\n')"
 
     pushd "${source_fs_mountpoint}" >/dev/null
 
@@ -1613,7 +1607,7 @@ copy_filesystem_files(){
         elif [ -f "${source_file}" ]; then
             if [ "${flag_verbose}" = true ]; then
                 print_info \
-                    'Copying "%s"...\n' \
+                    "$(gettext 'Copying "%s"...\n')" \
                     "${source_file}"
             fi
             if [ "${source_file_size}" -lt "${dd_block_size}" ]; then
@@ -1625,7 +1619,7 @@ copy_filesystem_files(){
                     && [ "${source_file_size}" -gt "${fat32_filesize_limit}" ]; then
                     if [[ ! "${source_file}" =~ \.wim$ ]]; then
                         print_warning \
-                            'Unsupported oversized file "%s" detected, this file will NOT be transferred.\n' \
+                            "$(gettext 'Unsupported oversized file "%s" detected, this file will NOT be transferred.\n')" \
                             "${source_file}"
                     else
                         copy_oversized_wim_file \
@@ -1645,7 +1639,7 @@ copy_filesystem_files(){
             fi
         else
             print_error \
-                "Unknown type of '%s'!\\n"
+                "$(gettext "Unknown type of '%s'!\\n")" \
                 "${source_file}"
             exit 1
         fi
@@ -1798,10 +1792,10 @@ workaround_support_windows_7_uefi_boot(){
     fi
 
     print_warning \
-        'Source media seems to be Windows 7-based with EFI support, applying workaround to make it support UEFI booting\n'
+        "$(gettext 'Source media seems to be Windows 7-based with EFI support, applying workaround to make it support UEFI booting\n')"
     if ! command -v '7z' >/dev/null 2>&1; then
         print_warning \
-            "'7z' utility not found, workaround is not applied.\\n"
+            "$(gettext "'7z' utility not found, workaround is not applied.\\n")"
         return 0
     fi
 
@@ -1825,7 +1819,7 @@ workaround_support_windows_7_uefi_boot(){
         efi_directory="${test_efi_directory}"
         if [ "${flag_verbose}" = true ]; then
             print_debug \
-                '%s detected.\n' \
+                "$(gettext '%s detected.\n')" \
                 "${efi_directory}"
         fi
     fi
@@ -1843,14 +1837,14 @@ workaround_support_windows_7_uefi_boot(){
         efi_boot_directory="${efi_directory}/boot"
         if [ "${flag_verbose}" = true ]; then
             print_debug \
-                "Can't find efi/boot directory, use %s.\\n" \
+                "$(gettext "Can't find efi/boot directory, use %s.\\n")" \
                 "${efi_boot_directory}"
         fi
     else # boot directory(case don't care) exists
         efi_boot_directory="${test_efi_boot_directory}"
         if [ "${flag_verbose}" = true ]; then
             print_debug \
-                '%s detected.\n' \
+                "$(gettext '%s detected.\n')" \
                 "${efi_boot_directory}"
         fi
     fi
@@ -1867,7 +1861,7 @@ workaround_support_windows_7_uefi_boot(){
     )"
     if [ -n "${test_efi_bootloader}" ]; then
         print_info \
-            'Detected existing EFI bootloader, workaround skipped.\n'
+            "$(gettext 'Detected existing EFI bootloader, workaround skipped.\n')"
         return 0
     fi
 
@@ -1891,7 +1885,7 @@ install_legacy_pc_bootloader_grub(){
     local -r command_grubinstall="${1}"; shift
 
     print_info \
-        'Installing GRUB bootloader for legacy PC booting support...\n'
+        "$(gettext 'Installing GRUB bootloader for legacy PC booting support...\n')"
     "${command_grubinstall}" \
         --target=i386-pc \
         --boot-directory="${target_fs_mountpoint}" \
@@ -1910,7 +1904,7 @@ install_legacy_pc_bootloader_grub_config(){
     local -r name_grub_prefix="${1}"; shift
 
     print_info \
-        'Installing custom GRUB config for legacy PC booting...\n'
+        "$(gettext 'Installing custom GRUB config for legacy PC booting...\n')"
     local -r grub_cfg="${target_fs_mountpoint}/${name_grub_prefix}/grub.cfg"
     local target_fs_uuid; target_fs_uuid=$(
         lsblk \
@@ -1951,18 +1945,18 @@ cleanup_mountpoint(){
 
     if [ -e "${fs_mountpoint}" ]; then
         print_info \
-            'Unmounting and removing "%s"...\n' \
+            "$(gettext 'Unmounting and removing "%s"...\n')" \
             "${fs_mountpoint}"
         if ! umount "${fs_mountpoint}"; then
             print_warning \
-                'Unable to unmount "%s".\n' \
+                "$(gettext 'Unable to unmount "%s".\n')" \
                 "${fs_mountpoint}"
             return 1
         fi
 
         if ! rmdir "${fs_mountpoint}"; then
             print_warning \
-                'Unable to remove "%s".\n' \
+                "$(gettext 'Unable to remove "%s".\n')" \
                 "${fs_mountpoint}"
             return 2
         fi
@@ -1975,7 +1969,7 @@ cleanup_mountpoint(){
 # Shell Builtin Commands » Bourne Shell Builtins » trap
 trap_errexit(){
     print_error \
-        'The command "%s" failed with exit status "%u", program is prematurely aborted\n'\
+        "$(gettext 'The command "%s" failed with exit status "%u", program is prematurely aborted\n')"\
         "${BASH_COMMAND}" \
         "${?}"
 
@@ -2017,12 +2011,12 @@ trap_exit(){
 
     if [ "${flag_unclean}" = true ]; then
         print_warning \
-            'Some mountpoints are not unmount/cleaned successfully and must be done manually\n'
+            "$(gettext 'Some mountpoints are not unmount/cleaned successfully and must be done manually\n')"
     fi
 
     if [ "${flag_unsafe}" = true ]; then
         print_warning \
-            'We unable to unmount target filesystem for you, please make sure target filesystem is unmounted before detaching to prevent data corruption\n'
+            "$(gettext 'We unable to unmount target filesystem for you, please make sure target filesystem is unmounted before detaching to prevent data corruption\n')"
     fi
 
     unset \
@@ -2034,10 +2028,10 @@ trap_exit(){
             target_device; then
         if is_target_busy "${target_device}"; then
             print_warning \
-                'Target device is busy, please make sure you unmount all filesystems on target device or shutdown the computer before detaching it.\n'
+                "$(gettext 'Target device is busy, please make sure you unmount all filesystems on target device or shutdown the computer before detaching it.\n')"
         else
             print_info \
-                'You may now safely detach the target device\n'
+                "$(gettext 'You may now safely detach the target device\n')"
         fi
     fi
 
@@ -2051,7 +2045,7 @@ trap_exit(){
 trap_interrupt(){
     printf '\n' # Separate message with previous output
     print_warning \
-        'Recieved SIGINT, program is interrupted.\n'
+        "$(gettext 'Recieved SIGINT, program is interrupted.\n')"
     return 1
 }
 
@@ -2075,7 +2069,7 @@ trap_return(){
     done
 
     print_debug \
-        'returning from %s\n' \
+        "$(gettext 'returning from %s\n')" \
         "${returning_function}"
 }
 
@@ -2094,7 +2088,7 @@ util_call_external_command(){
 
     if [ "${command_exit_status}" -ne 0 ]; then
         print_error \
-            'Error occurred while running command "%s" (exit status: %u)!\n' \
+            "$(gettext 'Error occurred while running command "%s" (exit status: %u)!\n')" \
             "${command[*]}" \
             "${command_exit_status}"
 
@@ -2117,7 +2111,7 @@ util_call_external_command(){
         done
 
         print_error \
-            'Press ENTER to continue\n'
+            "$(gettext 'Press ENTER to continue\n')"
         read -r # catch enter key
     fi
 
@@ -2155,7 +2149,7 @@ switch_terminal_text_color(){
             ;;
         *)
             print_fatal \
-                'Illegal parameter, please report bug.\n'
+                "$(gettext 'Illegal parameter, please report bug.\n')"
             exit 1
             ;;
     esac
@@ -2165,7 +2159,7 @@ switch_terminal_text_color(){
 printf_with_color(){
     if [ "${#}" -lt 2 ]; then
         print_fatal \
-            'Parameter quantity illegal, please report bug.\n'
+            "$(gettext 'Parameter quantity illegal, please report bug.\n')"
         exit 1
     fi
     local -r color="${1}"; shift
@@ -2191,14 +2185,14 @@ print_fatal(){
 
     if test "${#printf_arguments[@]}" -eq 0; then
         printf \
-            '%s: FATAL: This function should have at least 1 argument.\n' \
+            "$(gettext '%s: FATAL: This function should have at least 1 argument.\n')" \
             "${FUNCNAME[0]}" \
             1>&2
         exit 1
     fi
 
     printf \
-        '%s: FATAL: ' \
+        "$(gettext '%s: FATAL: ')" \
         "${FUNCNAME[1]}" \
         1>&2
 
@@ -2213,13 +2207,13 @@ print_info(){
     local -a printf_arguments=("${@}")
 
     if test "${#printf_arguments[@]}" -eq 0; then
-        print_fatal 'This function should have at least 1 argument.\n'
+        print_fatal "$(gettext 'This function should have at least 1 argument.\n')"
         exit 1
     fi
 
     printf_with_color \
         green \
-        'Info: '
+        "$(gettext 'Info: ')"
 
     # False positive: not format string(ShellCheck #1028)
     # shellcheck disable=SC2059
@@ -2232,13 +2226,13 @@ print_warning(){
     local -a printf_arguments=("${@}")
 
     if test "${#printf_arguments[@]}" -eq 0; then
-        print_fatal 'This function should have at least 1 argument.\n'
+        print_fatal "$(gettext 'This function should have at least 1 argument.\n')"
         exit 1
     fi
 
     printf_with_color \
         yellow \
-        'Warning: ' \
+        "$(gettext 'Warning: ')" \
         1>&2
 
     # False positive: not format string(ShellCheck #1028)
@@ -2253,13 +2247,13 @@ print_error(){
     local -a printf_arguments=("${@}")
 
     if test "${#printf_arguments[@]}" -eq 0; then
-        print_fatal 'This function should have at least 1 argument.\n'
+        print_fatal "$(gettext 'This function should have at least 1 argument.\n')"
         exit 1
     fi
 
     printf_with_color \
         red \
-        'ERROR: ' \
+        "$(gettext 'ERROR: ')" \
         1>&2
 
     # False positive: not format string(ShellCheck #1028)
@@ -2274,12 +2268,12 @@ print_debug(){
     local -a printf_arguments=("${@}")
 
     if test "${#printf_arguments[@]}" -eq 0; then
-        print_fatal 'This function should have at least 1 argument.\n'
+        print_fatal "$(gettext 'This function should have at least 1 argument.\n')"
         exit 1
     fi
 
     printf \
-        '%s: DEBUG: ' \
+        "$(gettext '%s: DEBUG: ')" \
         "${FUNCNAME[1]}" \
         1>&2
 
@@ -2297,7 +2291,7 @@ shift_array(){
 
     if [ "${#array_ref[@]}" -eq 0 ]; then
         print_fatal \
-            'array is empty!\n'
+            "$(gettext 'array is empty!\n')"
         exit 1
     fi
 
@@ -2336,7 +2330,7 @@ is_var_set_and_not_empty(){
 check_function_parameters_quantity(){
     if [ "${#}" -ne 2 ]; then
         print_fatal \
-            'Function %s requires %u parameters, but %u is given\n' \
+            "$(gettext 'Function %s requires %u parameters, but %u is given\n')" \
             "${FUNCNAME[0]}" \
             2 \
             "${#}"
@@ -2365,7 +2359,7 @@ check_function_parameters_quantity(){
 
     if test "${failed}" == true; then
         print_fatal \
-            'Function %s requires %u parameters, but %u is given\n' \
+            "$(gettext 'Function %s requires %u parameters, but %u is given\n')" \
             "${FUNCNAME[1]}" \
             "${expected_parameter_quantity}" \
             "${given_parameter_quantity}"
@@ -2400,7 +2394,7 @@ if test "${BASH_VERSINFO[0]}" -lt 4 \
     || { test "${BASH_VERSINFO[0]}" -eq 4 \
         && test "${BASH_VERSINFO[1]}" -lt 3;}; then
     print_error \
-        'This program requires Bash >= 4.3 to function properly, refer <%s> for more info.\n' \
+        "$(gettext 'This program requires Bash >= 4.3 to function properly, refer <%s> for more info.\n')" \
         https://github.com/WoeUSB/WoeUSB#dependencies
     exit 1
 fi
@@ -2413,7 +2407,7 @@ for critical_command in \
     realpath; do
     if ! command -v "${critical_command}" &> /dev/null; then
         print_fatal \
-            'This program requires GNU Coreutils in the executable search path'
+            "$(gettext 'This program requires GNU Coreutils in the executable search path')"
         exit 1
     fi
 done
@@ -2469,11 +2463,31 @@ declare \
     target_fs_mountpoint \
     target_device
 
+# I18N
+if ! command -v gettext >/dev/null; then
+    # Dummy gettext utility to fall back to no I18N
+    gettext(){
+        local text="${1}"
+
+        printf '%s' "${text}"
+    }
+else
+    # NOTE: We don't really use the library functions as of now
+    # External scope
+    # shellcheck source=/dev/null
+    #. gettext.sh
+    TEXTDOMAIN="${script_name}"
+    TEXTDOMAINDIR="${script_dir}"/../share/locale
+    export \
+        TEXTDOMAIN \
+        TEXTDOMAINDIR
+fi
+
 # Supported filesystems
 # A associated array with supported filesystem's identifier as key and its description as value
 declare -A ENUM_SUPPORTED_FILESYSTEMS=(
-    [FS_FAT]='File Allocation Table(FAT)'
-    [FS_NTFS]='New Technology File System(NTFS)'
+    [FS_FAT]="$(gettext 'File Allocation Table(FAT)')"
+    [FS_NTFS]="$(gettext 'New Technology File System(NTFS)')"
 )
 
 trap trap_exit EXIT

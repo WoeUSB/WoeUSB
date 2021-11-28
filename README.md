@@ -63,6 +63,8 @@ Without the following dependencies WoeUSB will still able to run, but some funct
   For workaround the problem where the Windows 7 installation media doesn't ship their UEFI bootloader in the proper location
 * [Pete Batard](https://pete.akeo.ie/)'s [UEFI:NTFS](https://github.com/pbatard/uefi-ntfs) UEFI bootloader  
   For supporting NTFS filesystems in the target USB key
+* [GNU gettext](https://www.gnu.org/software/gettext/)  
+  For supporting message internationalization(I18N)
 
 ## Installation
 

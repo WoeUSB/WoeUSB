@@ -15,7 +15,12 @@ Contribution is always welcomed in WoeUSB!  However, please review the following
 
 ## Contributing to the localization(L10N) of the product
 
-Currently there is no internationalization(I18N) infrastructure implemented in this project, patches are welcome!
+* We use [GNU gettext](https://www.gnu.org/software/gettext/) to support internationalization(I18N), please check out [their documentation](https://www.gnu.org/software/gettext/manual/) for the overall process.
+* Check out the following utility scripts for generating the files required for translation.
+    + [dev-assets/build-gettext-template.sh](dev-assets/build-gettext-template.sh)
+    + [dev-assets/initialize-new-message-catalog-locale.sh](dev-assets/initialize-new-message-catalog-locale.sh)
+    + [dev-assets/build-binary-message-catalogs.sh](dev-assets/build-binary-message-catalogs.sh)
+* We require all contribution's revision commits to be signed with [Developer Certificate of Origin](https://developercertificate.org/).
 
 ## Contributing to the documentation
 

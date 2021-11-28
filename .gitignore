@@ -73,3 +73,9 @@
 
 # Don't track Vagrant runtime directories
 .vagrant/
+
+# Don't track GNU gettext message catalog template
+*.pot
+
+# Don't track GNU gettext machine-readable message catalogs
+*.mo

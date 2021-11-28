@@ -16,6 +16,7 @@
 /.* export-ignore
 /continuous-integration/ export-ignore
 /distribution/ export-ignore
+/dev-assets/ export-ignore
 
 # Exclude development assets exclusive licenses
 /LICENSES/WTFPL.* export-ignore
