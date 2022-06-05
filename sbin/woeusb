@@ -579,7 +579,7 @@ print_help(){
         3 \
         atx
     print_markdown_paragraph \
-        "$(gettext 'Development option for developers to test certain function without running the entire build\n')"
+        "$(gettext 'Development option for developers to test certain function without running the entire build')"
 
     # The backtick pairs are Markdown's <code> markup, not a shell
     # command substitution
