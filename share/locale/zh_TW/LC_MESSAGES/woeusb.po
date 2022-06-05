@@ -156,7 +156,7 @@ msgstr ""
 #: sbin/woeusb:582
 msgid ""
 "Development option for developers to test certain function without running "
-"the entire build\\n"
+"the entire build"
 msgstr "開發者用來在不用運行完整的製作程序下測試特定函式功能的開發功能選項\\n"
 
 #: sbin/woeusb:592
