@@ -1,0 +1,603 @@
+# GNU gettext message catalog(pt_BR) for WoeUSB
+# Copyright (C) 2023 WoeUSB contributors <https://github.com/WoeUSB/WoeUSB/graphs/contributors>
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Rafael Fontenelle <rffontenelle@gmail.com>, 2023.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: woeusb 5.2.4-2-g34b400d\n"
+"Report-Msgid-Bugs-To: https://github.com/WoeUSB/WoeUSB/issues\n"
+"POT-Creation-Date: 2023-05-13 14:25-0300\n"
+"PO-Revision-Date: 2023-05-13 15:17-0300\n"
+"Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>\n"
+"Language-Team: Brazilian Portuguese\n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+"X-Generator: Gtranslator 42.0\n"
+
+#: sbin/woeusb:33
+msgid "WoeUSB"
+msgstr "WoeUSB"
+
+#: sbin/woeusb:159
+msgid "Unable to mount source filesystem in %s\\n"
+msgstr "Não foi possível montar o sistema de arquivos de origem em %s\\n"
+
+#: sbin/woeusb:202
+msgid "Unable to mount target filesystem in %s\\n"
+msgstr "Não foi possível montar o sistema de arquivos de destino em %s\\n"
+
+#: sbin/woeusb:237
+msgid "Done :)\\n"
+msgstr "Feito :)\\n"
+
+#: sbin/woeusb:239
+msgid "The target device should be bootable now\\n"
+msgstr "O dispositivo de destino deve ser inicializável agora\\n"
+
+#: sbin/woeusb:260
+msgid ""
+"%s: Error: The setext_separator_max_length parameter can only be used with "
+"the Setext heading style.\\n"
+msgstr ""
+"%s: Erro: O parâmetro setext_separator_max_length só pode ser usado com o "
+"estilo de cabeçalho Setext.\\n"
+
+#: sbin/woeusb:268
+msgid "%s: Error: Atx heading style only support at most level 6, got %s\\n"
+msgstr ""
+"%s: Erro: O estilo de cabeçalho Atx suporta no máximo nível 6, mas recebeu %s"
+"\\n"
+
+#: sbin/woeusb:289
+msgid "%s: Error: Setext heading style only support at most level 2, got %s\\n"
+msgstr ""
+"%s: Erro: O estilo de cabeçalho Setext suporta no máximo nível 2, mas "
+"recebeu %s\\n"
+
+#: sbin/woeusb:299
+msgid ""
+"%s: Error: The setext_separator_max_length parameter only accepts numbers "
+"and 'terminal' as argument, but got \"%s\".\\n"
+msgstr ""
+"%s: Erro: O parâmetro setext_separator_max_length só aceita números e "
+"'terminal' como argumento, mas recebeu \"%s\".\\n"
+
+#: sbin/woeusb:351
+msgid "%s: Error: Unsupported markdown heading style \"%s\".\\n"
+msgstr "%s: Erro: Sem suporte ao estilo de cabeçalho de marcação \"%s\".\\n"
+
+#: sbin/woeusb:403
+msgid "%s %s Help Information"
+msgstr "Informações de ajuda do %s %s"
+
+#: sbin/woeusb:412
+msgid ""
+"%s can create a bootable Microsoft Windows(R) USB storage device from an "
+"existing Windows optical disk or an ISO disk image."
+msgstr ""
+"%s pode criar um dispositivo USB de armazenamento inicializável do Microsoft "
+"Windows(R) a partir de um existente disco óptico do Windows ou de uma imagem "
+"ISO."
+
+#: sbin/woeusb:417
+msgid "Supported installation drive preparation modes"
+msgstr "Modos suportados de preparação de unidade de instalação"
+
+#: sbin/woeusb:421
+msgid "Currently two creation methods are supported:"
+msgstr "Atualmente, há suporte a dois métodos de criação:"
+
+#: sbin/woeusb:431
+msgid ""
+"Completely WIPE the entire USB storage device, then build a bootable Windows "
+"USB device from scratch."
+msgstr ""
+"APAGA completamente todo o dispositivo de armazenamento USB e cria um "
+"dispositivo USB inicializável do Windows a partir do zero."
+
+#: sbin/woeusb:433
+msgid "WARNING: All previous data on the device will be gone!"
+msgstr "AVISO: Todos os dados anteriores do dispositivo desaparecerão!"
+
+#: sbin/woeusb:463
+msgid ""
+"Copy Windows files to an existing partition of a USB storage device and make "
+"it bootable.  This allows files to coexist as long as no filename conflict "
+"exists."
+msgstr ""
+"Copia os arquivos do Windows para uma partição existente de um dispositivo "
+"de armazenamento USB e torna-o inicializável. Isso permite que os arquivos "
+"coexistam, desde que não haja conflito de nome de arquivo."
+
+#: sbin/woeusb:465
+msgid "WARNING: All files that has the same name will be overwritten!"
+msgstr "AVISO: Todos os arquivos com o mesmo nome serão substituídos!"
+
+#: sbin/woeusb:488
+msgid "Command-line Options"
+msgstr "Opções de linha de comando"
+
+#: sbin/woeusb:500
+msgid "Verbose mode"
+msgstr "Modo verboso"
+
+#: sbin/woeusb:510
+msgid "Show this help message and exit"
+msgstr "Mostra esta mensagem de ajuda e sai"
+
+#: sbin/woeusb:520
+msgid "Print application version"
+msgstr "Imprime a versão do aplicativo"
+
+#: sbin/woeusb:530
+msgid "Show info about this application"
+msgstr "Mostra informações sobre este aplicativo"
+
+#: sbin/woeusb:540
+msgid "Disable message coloring"
+msgstr "Desativa cores de mensagens"
+
+#: sbin/woeusb:550
+msgid "Enable script debugging"
+msgstr "Ativa depuração do script"
+
+#: sbin/woeusb:560
+msgid ""
+"Specify label for the newly created file system in --device creation method"
+msgstr ""
+"Especifica um rótulo para o sistema de arquivos recém-criado no método de "
+"criação --device"
+
+#: sbin/woeusb:562
+msgid ""
+"Note that the label is not verified for validity and may be illegal for the "
+"filesystem"
+msgstr ""
+"Observe que o rótulo não é verificado quanto à validade e pode ser ilegal "
+"para o sistema de arquivos"
+
+#: sbin/woeusb:572
+msgid ""
+"Workaround BIOS bug that won't include the device in boot menu if non of the "
+"partition's boot flag is toggled"
+msgstr ""
+"Contorna bug da BIOS que não inclui o dispositivo no menu de inicialização "
+"se nenhum sinalizador de inicialização da partição estiver habilitado"
+
+#: sbin/woeusb:582
+msgid ""
+"Development option for developers to test certain function without running "
+"the entire build\\n"
+msgstr ""
+"Opção de desenvolvimento para desenvolvedores testarem determinada função "
+"sem executar a compilação inteira\\n"
+
+#: sbin/woeusb:592
+msgid "Specify the filesystem to use as the target partition's filesystem."
+msgstr ""
+"Especifica o sistema de arquivos a ser usado como o sistema de arquivos da "
+"partição de destino."
+
+#: sbin/woeusb:594
+msgid "Currently supported: FAT(default)/NTFS"
+msgstr "Atualmente suportado: FAT (padrão)/NTFS"
+
+#: sbin/woeusb:604
+msgid ""
+"No longer supported, reserved for compatibility with the wrapper programs"
+msgstr ""
+"Não é mais suportado, reservado para compatibilidade com os programas wrapper"
+
+#: sbin/woeusb:680 sbin/woeusb:697 sbin/woeusb:718 sbin/woeusb:733
+#: sbin/woeusb:746 sbin/woeusb:780 sbin/woeusb:789 sbin/woeusb:798
+#: sbin/woeusb:908
+msgid "--"
+msgstr "--"
+
+#: sbin/woeusb:759
+msgid "Unknown command-line argument \"%s\"\\n"
+msgstr "Argumento de linha de comando desconhecido \"%s\"\\n"
+
+#: sbin/woeusb:774
+msgid "No creation method specified!\\n"
+msgstr "Nenhum método de criação especificado!\\n"
+
+#: sbin/woeusb:814
+msgid "Target filesystem not supported.\\n"
+msgstr "Sistema de arquivos de destino incompatível.\\n"
+
+#: sbin/woeusb:925
+msgid "mkdosfs/mkfs.msdos/mkfs.vfat/mkfs.fat command not found!\\n"
+msgstr "Comando mkdosfs/mkfs.msdos/mkfs.vfat/mkfs.fat não encontrado!\\n"
+
+#: sbin/woeusb:927
+msgid "Please make sure that dosfstools is properly installed!\\n"
+msgstr "Certifique-se de que o dosfstools esteja instalado corretamente!\\n"
+
+#: sbin/woeusb:935
+msgid "mkntfs command not found!\\n"
+msgstr "Comando mkntfs não encontrado!\\n"
+
+#: sbin/woeusb:937
+msgid "Please make sure that ntfs-3g is properly installed!\\n"
+msgstr "Certifique-se de que o ntfs-3g esteja instalado corretamente!\\n"
+
+#: sbin/woeusb:949
+msgid "grub-install or grub2-install command not found!\\n"
+msgstr "Comando grub-install ou grub2-install não encontrado!\\n"
+
+#: sbin/woeusb:951
+msgid "Please make sure that GNU GRUB is properly installed!\\n"
+msgstr "Certifique-se de que o GNU GRUB esteja instalado corretamente!\\n"
+
+#: sbin/woeusb:968
+msgid "You are not running %s as the superuser(root)!\\n"
+msgstr "Você não está executando %s como superusuário(root)!\\n"
+
+#: sbin/woeusb:971
+msgid "This might be the reason of the following failure.\\n"
+msgstr "Este pode ser o motivo da seguinte falha.\\n"
+
+#: sbin/woeusb:985
+msgid ""
+"source media \"%s\" not found or not a regular file or a block device file!"
+"\\n"
+msgstr ""
+"Mídia de origem \"%s\" não encontrada ou não é um arquivo regular ou um "
+"arquivo de dispositivo de bloco!\\n"
+
+#: sbin/woeusb:992
+msgid "Target media \"%s\" is not a block device file!\\n"
+msgstr "A mídia de destino \"%s\" não é um arquivo de dispositivo de bloco!\\n"
+
+#: sbin/woeusb:1001
+msgid "Target media \"%s\" is not an entire storage device!\\n"
+msgstr ""
+"A mídia de destino \"%s\" não é um dispositivo de armazenamento inteiro!\\n"
+
+#: sbin/woeusb:1010
+msgid "Target media \"%s\" is not an partition!\\n"
+msgstr "A mídia de destino \"%s\" não é uma partição!\\n"
+
+#: sbin/woeusb:1050
+msgid ""
+"Unsupported target filesystem \"%s\", currently supported target "
+"filesystems: %s, %s\\n"
+msgstr ""
+"Sistema de arquivos de destino não suportado \"%s\", sistemas de arquivos de "
+"destino atualmente suportados: %s, %s\\n"
+
+#: sbin/woeusb:1065
+msgid "Target device is '%s'.\\n"
+msgstr "O dispositivo de destino é \"%s\".\\n"
+
+#: sbin/woeusb:1068
+msgid "Target partition is '%s'.\\n"
+msgstr "A partição de destino é \"%s\".\\n"
+
+#: sbin/woeusb:1072
+msgid "Target filesystem is '%s'.\\n"
+msgstr "O sistema de arquivos de destino é \"%s\".\\n"
+
+#: sbin/woeusb:1109
+msgid ""
+"Source media is currently mounted, unmount the partition then try again\\n"
+msgstr ""
+"A mídia de origem está montada no momento, desmonte a partição e tente "
+"novamente\\n"
+
+#: sbin/woeusb:1121
+msgid ""
+"Target partition is currently mounted, unmount the partition then try again"
+"\\n"
+msgstr ""
+"A partição de destino está montada no momento, desmonte a partição e tente "
+"novamente\\n"
+
+#: sbin/woeusb:1127
+msgid ""
+"Target device is currently busy, unmount all mounted partitions in target "
+"device then try again\\n"
+msgstr ""
+"O dispositivo de destino está ocupado no momento, desmonte todas as "
+"partições montadas no dispositivo de destino e tente novamente\\n"
+
+#: sbin/woeusb:1138
+msgid ""
+"Wiping all existing partition table and filesystem signatures in %s...\\n"
+msgstr ""
+"Apagando todas as tabelas de partições existentes e assinaturas do sistema "
+"de arquivos em %s...\\n"
+
+#: sbin/woeusb:1155
+msgid "Ensure that %s is really wiped...\\n"
+msgstr "Certifique-se de que %s foi realmente apagado...\\n"
+
+#: sbin/woeusb:1170
+msgid ""
+"Partition is still detected after wiping all signatures, this indicates that "
+"the drive might be locked into readonly mode due to end of lifespan.\\n"
+msgstr ""
+"A partição ainda é detectada após ter apagado todas as assinaturas, isso "
+"indica que a unidade pode estar bloqueada no modo somente leitura devido ao "
+"fim da vida útil.\\n"
+
+#: sbin/woeusb:1183
+msgid "Creating new partition table on %s...\\n"
+msgstr "Criando nova tabela de partições em %s...\\n"
+
+#: sbin/woeusb:1195
+msgid "Currently GUID partition table is not supported.\\n"
+msgstr "Atualmente, a tabela de partições GUID não é suportada.\\n"
+
+#: sbin/woeusb:1200
+msgid "Partition table not supported.\\n"
+msgstr "Tabela de partição não suportada.\\n"
+
+#: sbin/woeusb:1218
+msgid "Making system realize that partition table has changed...\\n"
+msgstr ""
+"Fazendo o sistema perceber que a tabela de partições foi alterada...\\n"
+
+#: sbin/woeusb:1225
+msgid "Wait 3 seconds for block device nodes to populate...\\n"
+msgstr ""
+"Aguarde 3 segundos para que os nós do dispositivo de bloco sejam "
+"preenchidos...\\n"
+
+#: sbin/woeusb:1253
+msgid "Filesystem not supported\\n"
+msgstr "Sistema de arquivos não suportado\\n"
+
+#: sbin/woeusb:1259
+msgid "Creating target partition...\\n"
+msgstr "Criando partição de destino...\\n"
+
+#: sbin/woeusb:1288
+msgid "Illegal parted_mkpart_fs_type, please report bug.\\n"
+msgstr "Parted_mkpart_fs_type ilegal. Por favor, relate este bug.\\n"
+
+#: sbin/woeusb:1379
+msgid ""
+"Applying workaround for buggy motherboards that will ignore disks with no "
+"partitions with the boot flag toggled\\n"
+msgstr ""
+"Aplicando solução de contorno para placas-mãe com bugs que irão ignorar "
+"discos sem partições com o sinalizador de inicialização alternado\\n"
+
+#: sbin/woeusb:1415
+msgid ""
+"Target filesystem not supported, currently supported filesystem: FAT, NTFS."
+"\\n"
+msgstr ""
+"Sistema de arquivos de destino não suportado, sistema de arquivos atualmente "
+"suportado: FAT, NTFS.\\n"
+
+#: sbin/woeusb:1441
+msgid ""
+"Your device doesn't seems to have an UEFI:NTFS partition, UEFI booting will "
+"fail if the motherboard firmware itself doesn't support NTFS filesystem!\\n"
+msgstr ""
+"Seu dispositivo não parece ter uma partição UEFI:NTFS, a inicialização UEFI "
+"falhará se o próprio firmware da placa-mãe não suportar o sistema de "
+"arquivos NTFS!\\n"
+
+#: sbin/woeusb:1443
+msgid ""
+"You may recreate disk with an UEFI:NTFS partition by using the --device "
+"creation method\\n"
+msgstr ""
+"Você pode recriar o disco com uma partição UEFI:NTFS usando o método de "
+"criação --device\\n"
+
+#: sbin/woeusb:1453
+msgid "Mounting source filesystem...\\n"
+msgstr "Montando o sistema de arquivos de origem...\\n"
+
+#: sbin/woeusb:1484
+msgid "Mounting target filesystem...\\n"
+msgstr "Montando o sistema de arquivos de destino...\\n"
+
+#: sbin/woeusb:1504
+msgid "Unsupported target_fs_type, please report bug.\\n"
+msgstr "target_fs_type não suportado. Por favor, relate este bug.\\n"
+
+#: sbin/woeusb:1560
+msgid "Not enough free space on target partition!\\n"
+msgstr "Não há espaço livre suficiente na partição de destino!\\n"
+
+#: sbin/woeusb:1562
+msgid "We required %s(%u bytes) but '%s' only has %s(%u bytes).\\n"
+msgstr "Precisamos %s(%u bytes), mas '%s' tem apenas %s(%u bytes).\\n"
+
+#: sbin/woeusb:1592
+msgid "Copying files from source media...\\n"
+msgstr "Copiando arquivos da mídia de origem...\\n"
+
+#: sbin/woeusb:1610
+msgid "Copying \"%s\"...\\n"
+msgstr "Copiando \"%s\"...\\n"
+
+#: sbin/woeusb:1622
+msgid ""
+"Unsupported oversized file \"%s\" detected, this file will NOT be "
+"transferred.\\n"
+msgstr ""
+"Arquivo superdimensionado não suportado \"%s\" detectado, este arquivo NÃO "
+"será transferido.\\n"
+
+#: sbin/woeusb:1642
+msgid "Unknown type of '%s'!\\n"
+msgstr "Tipo desconhecido de '%s'!\\n"
+
+#: sbin/woeusb:1795
+msgid ""
+"Source media seems to be Windows 7-based with EFI support, applying "
+"workaround to make it support UEFI booting\\n"
+msgstr ""
+"A mídia de origem parece ser baseada no Windows 7 com suporte EFI, aplicando "
+"uma solução de contorno para torná-la compatível com a inicialização UEFI\\n"
+
+#: sbin/woeusb:1798
+msgid "'7z' utility not found, workaround is not applied.\\n"
+msgstr "Utilitário '7z' não encontrado, solução alternativa não aplicada.\\n"
+
+#: sbin/woeusb:1822 sbin/woeusb:1847
+msgid "%s detected.\\n"
+msgstr "%s detectado.\\n"
+
+#: sbin/woeusb:1840
+msgid "Can't find efi/boot directory, use %s.\\n"
+msgstr "Não foi possível encontrar o diretório efi/boot, use %s.\\n"
+
+#: sbin/woeusb:1864
+msgid "Detected existing EFI bootloader, workaround skipped.\\n"
+msgstr ""
+"Detectado gerenciador de inicialização EFI existente, solução de contorno "
+"ignorada.\\n"
+
+#: sbin/woeusb:1888
+msgid "Installing GRUB bootloader for legacy PC booting support...\\n"
+msgstr ""
+"Instalando o gerenciador de inicialização GRUB para suporte de inicialização "
+"de PC legado...\\n"
+
+#: sbin/woeusb:1907
+msgid "Installing custom GRUB config for legacy PC booting...\\n"
+msgstr ""
+"Instalando a configuração personalizada do GRUB para inicialização legada do "
+"PC...\\n"
+
+#: sbin/woeusb:1948
+msgid "Unmounting and removing \"%s\"...\\n"
+msgstr "Desmontando e removendo \"%s\"...\\n"
+
+#: sbin/woeusb:1952
+msgid "Unable to unmount \"%s\".\\n"
+msgstr "Não foi possível desmontar \"%s\".\\n"
+
+#: sbin/woeusb:1959
+msgid "Unable to remove \"%s\".\\n"
+msgstr "Não foi possível remover \"%s\".\\n"
+
+#: sbin/woeusb:1972
+msgid ""
+"The command \"%s\" failed with exit status \"%u\", program is prematurely "
+"aborted\\n"
+msgstr ""
+"O comando \"%s\" falhou com o status de saída \"%u\", o programa foi "
+"abortado prematuramente\\n"
+
+#: sbin/woeusb:2014
+msgid ""
+"Some mountpoints are not unmount/cleaned successfully and must be done "
+"manually\\n"
+msgstr ""
+"Alguns pontos de montagem não foram desmontados/limpos com sucesso e devem "
+"ser feitos manualmente\\n"
+
+#: sbin/woeusb:2019
+msgid ""
+"We unable to unmount target filesystem for you, please make sure target "
+"filesystem is unmounted before detaching to prevent data corruption\\n"
+msgstr ""
+"Não foi possível desmontar o sistema de arquivos de destino para você, "
+"certifique-se de que o sistema de arquivos de destino esteja desmontado "
+"antes de desconectar para evitar corrupção de dados\\n"
+
+#: sbin/woeusb:2031
+msgid ""
+"Target device is busy, please make sure you unmount all filesystems on "
+"target device or shutdown the computer before detaching it.\\n"
+msgstr ""
+"O dispositivo de destino está ocupado, certifique-se de desmontar todos os "
+"sistemas de arquivos no dispositivo de destino ou desligar o computador "
+"antes de removê-lo.\\n"
+
+#: sbin/woeusb:2034
+msgid "You may now safely detach the target device\\n"
+msgstr "Agora você pode desconectar com segurança o dispositivo de destino\\n"
+
+#: sbin/woeusb:2048
+msgid "Recieved SIGINT, program is interrupted.\\n"
+msgstr "SIGINT recebido, programa interrompido.\\n"
+
+#: sbin/woeusb:2072
+msgid "returning from %s\\n"
+msgstr "retornando de %s\\n"
+
+#: sbin/woeusb:2091
+msgid "Error occurred while running command \"%s\" (exit status: %u)!\\n"
+msgstr "Ocorreu um erro ao executar o comando \"%s\" (status de saída: %u)!\\n"
+
+#: sbin/woeusb:2114
+msgid "Press ENTER to continue\\n"
+msgstr "Pressione ENTER para continuar\\n"
+
+#: sbin/woeusb:2152
+msgid "Illegal parameter, please report bug.\\n"
+msgstr "Parâmetro ilegal. Por favor, relate este bug.\\n"
+
+#: sbin/woeusb:2162
+msgid "Parameter quantity illegal, please report bug.\\n"
+msgstr "Quantidade de parâmetro ilegal. Por favor, relate este bug.\\n"
+
+#: sbin/woeusb:2188
+msgid "%s: FATAL: This function should have at least 1 argument.\\n"
+msgstr "%s: FATAL: Esta função deve ter pelo menos 1 argumento.\\n"
+
+#: sbin/woeusb:2195
+msgid "%s: FATAL: "
+msgstr "%s: FATAL: "
+
+#: sbin/woeusb:2210 sbin/woeusb:2229 sbin/woeusb:2250 sbin/woeusb:2271
+msgid "This function should have at least 1 argument.\\n"
+msgstr "Esta função deve ter pelo menos 1 argumento.\\n"
+
+#: sbin/woeusb:2216
+msgid "Info: "
+msgstr "Info: "
+
+#: sbin/woeusb:2235
+msgid "Warning: "
+msgstr "Aviso: "
+
+#: sbin/woeusb:2256
+msgid "ERROR: "
+msgstr "ERRO: "
+
+#: sbin/woeusb:2276
+msgid "%s: DEBUG: "
+msgstr "%s: DEBUG: "
+
+#: sbin/woeusb:2294
+msgid "array is empty!\\n"
+msgstr "o array está vazio!\\n"
+
+#: sbin/woeusb:2333 sbin/woeusb:2362
+msgid "Function %s requires %u parameters, but %u is given\\n"
+msgstr "A função %s requer %u parâmetros, mas %u foi fornecido\\n"
+
+#: sbin/woeusb:2397
+msgid ""
+"This program requires Bash >= 4.3 to function properly, refer <%s> for more "
+"info.\\n"
+msgstr ""
+"Este programa requer Bash >= 4.3 para funcionar corretamente, consulte <%s> "
+"para mais informações.\\n"
+
+#: sbin/woeusb:2410
+msgid "This program requires GNU Coreutils in the executable search path"
+msgstr "Este programa requer GNU Coreutils no caminho de pesquisa executável"
+
+#: sbin/woeusb:2489
+msgid "File Allocation Table(FAT)"
+msgstr "File Allocation Table(FAT)"
+
+#: sbin/woeusb:2490
+msgid "New Technology File System(NTFS)"
+msgstr "New Technology File System(NTFS)"
