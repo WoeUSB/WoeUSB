@@ -1003,7 +1003,7 @@ check_runtime_parameters(){
     fi
 
     if [ "${install_mode_ref}" = device ] \
-        && [[ "${target_media}" =~ .*[0-9] ]]
+        && [[ "${target_media}" =~ *[0-9] ]]
         then
         print_error \
             "$(gettext 'Target media "%s" is not an entire storage device!\n')" \
