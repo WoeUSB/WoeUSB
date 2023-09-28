@@ -178,11 +178,19 @@ init(){
         if [ "${target_filesystem_type}" == FS_NTFS ]; then
             create_uefi_ntfs_support_partition \
                 "${target_device}"
-            install_uefi_ntfs_support_partition \
-                "${rufus_uefi_ntfs_version}" \
-                "${target_device}2" \
-                "${temp_dir}" \
-                "${target_device}"
+            if [[ "$target_device" == *"nvme"* ]]; then
+                install_uefi_ntfs_support_partition \
+                    "${rufus_uefi_ntfs_version}" \
+                    "${target_device}p2" \
+                    "${temp_dir}" \
+                    "${target_device}"
+            else
+                install_uefi_ntfs_support_partition \
+                    "${rufus_uefi_ntfs_version}" \
+                    "${target_device}2" \
+                    "${temp_dir}" \
+                    "${target_device}"
+            fi
         fi
     fi
 
@@ -1057,7 +1065,11 @@ determine_target_parameters(){
         unset target_filesystem_type_libblkid
     else # install_mode = device
         target_device_ref="${target_media}"
-        target_partition_ref="${target_device}1"
+        if [[ "$target_device" == *"nvme"* ]]; then
+            target_partition_ref="${target_device}p1"
+        else
+            target_partition_ref="${target_device}1"
+        fi
     fi
 
     if [ "${flag_verbose}" = true ]; then
