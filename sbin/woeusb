@@ -53,6 +53,7 @@ init(){
     local target_partition
 
     local workaround_bios_boot_flag=false
+    local skip_legacy_booting_support_flag=false
 
     local \
         target_filesystem_type=FS_FAT \
@@ -66,15 +67,6 @@ init(){
         command_grubinstall \
         name_grub_prefix
 
-    if ! check_runtime_dependencies \
-        "${application_name}" \
-        command_mkdosfs \
-        command_mkntfs \
-        command_grubinstall \
-        name_grub_prefix; then
-        exit 1
-    fi
-
     if ! \
         process_commandline_parameters \
             application_name \
@@ -86,6 +78,7 @@ init(){
             target_media \
             target_fs_label \
             workaround_bios_boot_flag \
+            skip_legacy_booting_support_flag \
             target_filesystem_type; then
         print_help \
             "${application_name}" \
@@ -93,6 +86,16 @@ init(){
             "${program_name}"
         exit 1
 
+    fi
+
+    if ! check_runtime_dependencies \
+        "${application_name}" \
+        command_mkdosfs \
+        command_mkntfs \
+        command_grubinstall \
+        name_grub_prefix \
+        $skip_legacy_booting_support_flag; then
+        exit 1
     fi
 
     process_miscellaneous_requests \
@@ -219,14 +222,16 @@ init(){
         "${source_fs_mountpoint}" \
         "${target_fs_mountpoint}"
 
-    install_legacy_pc_bootloader_grub \
-        "${target_fs_mountpoint}" \
-        "${target_device}" \
-        "${command_grubinstall}"
+    if [ "${skip_legacy_booting_support_flag}" == false ]; then
+        install_legacy_pc_bootloader_grub \
+            "${target_fs_mountpoint}" \
+            "${target_device}" \
+            "${command_grubinstall}"
 
-    install_legacy_pc_bootloader_grub_config \
-        "${target_fs_mountpoint}" \
-        "${name_grub_prefix}"
+        install_legacy_pc_bootloader_grub_config \
+            "${target_fs_mountpoint}" \
+            "${name_grub_prefix}"
+    fi
 
     if [ "${workaround_bios_boot_flag}" == true ]; then
         workaround_buggy_motherboards_that_ignore_disks_without_boot_flag_toggled \
@@ -575,6 +580,16 @@ print_help(){
     # command substitution
     # shellcheck disable=SC2016
     print_markdown_heading \
+        '`--skip-legacy-booting-support-flag`' \
+        3 \
+        atx
+    print_markdown_paragraph \
+        "$(gettext "Don't install GRUB bootloader for legacy booting support")"
+
+    # The backtick pairs are Markdown's <code> markup, not a shell
+    # command substitution
+    # shellcheck disable=SC2016
+    print_markdown_heading \
         '`--debugging-internal-function-call <function name> (function_argument)...`' \
         3 \
         atx
@@ -620,7 +635,7 @@ print_application_info(){
 }
 
 process_commandline_parameters(){
-    check_function_parameters_quantity 10 "${#}"
+    check_function_parameters_quantity 11 "${#}"
     local -r application_name="${1}"; shift
     local -n flag_print_help_ref="${1}"; shift
     local -n flag_print_version_ref="${1}"; shift
@@ -630,6 +645,7 @@ process_commandline_parameters(){
     local -n target_media_ref="${1}"; shift
     local -n target_fs_label_ref="${1}"; shift
     local -n workaround_bios_boot_flag_ref="${1}"; shift
+    local -n skip_legacy_booting_support_flag_ref="${1}"; shift
     local -n target_filesystem_type_ref="${1}"; shift
 
     if [ "${#program_args[@]}" -eq 0 ]; then
@@ -723,6 +739,9 @@ process_commandline_parameters(){
             --workaround-bios-boot-flag)
                 enable_workaround_bios_boot_flag=true
                 workaround_bios_boot_flag_ref=true
+                ;;
+            --skip-legacy-booting-support-flag)
+                skip_legacy_booting_support_flag_ref=true
                 ;;
             --debugging-internal-function-call)
                 enable_debugging_internal_function_call=true
@@ -871,12 +890,13 @@ process_miscellaneous_requests(){
 }
 
 check_runtime_dependencies(){
-    check_function_parameters_quantity 5 "${#}"
+    check_function_parameters_quantity 6 "${#}"
     local -r application_name="${1}"; shift
     local -n command_mkdosfs_ref="${1}"; shift
     local -n command_mkntfs_ref="${1}"; shift
     local -n command_grubinstall_ref="${1}"; shift
     local -n name_grub_prefix_ref="${1}"; shift
+    local -r skip_legacy_booting_support_flag="${1}"; shift
 
     local result=unknown
 
@@ -938,18 +958,20 @@ check_runtime_dependencies(){
         result=failed
     fi
 
-    if command -v grub-install &> /dev/null; then
-        command_grubinstall_ref=grub-install
-        name_grub_prefix_ref=grub
-    elif command -v grub2-install &> /dev/null; then
-        command_grubinstall_ref=grub2-install
-        name_grub_prefix_ref=grub2
-    else
-        print_error \
-            "$(gettext 'grub-install or grub2-install command not found!\n')"
-        print_error \
-            "$(gettext 'Please make sure that GNU GRUB is properly installed!\n')"
-        result=failed
+    if [ "${skip_legacy_booting_support_flag}" == false ]; then
+        if command -v grub-install &> /dev/null; then
+            command_grubinstall_ref=grub-install
+            name_grub_prefix_ref=grub
+        elif command -v grub2-install &> /dev/null; then
+            command_grubinstall_ref=grub2-install
+            name_grub_prefix_ref=grub2
+        else
+            print_error \
+                "$(gettext 'grub-install or grub2-install command not found!\n')"
+            print_error \
+                "$(gettext 'Please make sure that GNU GRUB is properly installed!\n')"
+            result=failed
+        fi
     fi
 
     if [ "${result}" == failed ]; then
