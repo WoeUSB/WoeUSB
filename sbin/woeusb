@@ -1886,6 +1886,7 @@ install_legacy_pc_bootloader_grub(){
 
     print_info \
         "$(gettext 'Installing GRUB bootloader for legacy PC booting support...\n')"
+    mkdir -p "${target_fs_mountpoint}/grub/locale"
     "${command_grubinstall}" \
         --target=i386-pc \
         --boot-directory="${target_fs_mountpoint}" \
