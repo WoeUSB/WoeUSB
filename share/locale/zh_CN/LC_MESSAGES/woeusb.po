@@ -499,8 +499,8 @@ msgstr ""
 msgid "You may now safely detach the target device\\n"
 msgstr "您现在可以安全地解除连接目标设备\\n"
 
-#: sbin/woeusb:2056
-msgid "Recieved SIGINT, program is interrupted.\\n"
+#: sbin/woeusb:2069
+msgid "Received SIGINT, program is interrupted.\\n"
 msgstr "接收到 SIGINT 信号，程序被中止。\\n"
 
 #: sbin/woeusb:2080

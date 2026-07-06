@@ -40,7 +40,7 @@ steps:
   - name: Static code analysis
     depends_on:
       - Fetching Git tags
-    image: alpine:3.12
+    image: alpine:3.21
     commands:
       - ./continuous-integration/static-code-analysis.sh
 
@@ -49,7 +49,7 @@ steps:
       event: tag
     depends_on:
       - Fetching Git tags
-    image: alpine:3.12
+    image: alpine:3.21
     commands:
       - ./continuous-integration/prepare-release.sh
 

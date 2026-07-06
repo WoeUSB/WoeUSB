@@ -19,6 +19,8 @@
 # shellcheck disable=SC2059
 
 RUFUS_UEFI_NTFS_VERSION="${RUFUS_UEFI_NTFS_VERSION:-b30e3b387a3ca7a5e2fddebcc2c8f9538a89b868}"
+# Expected SHA-256 of the uefi-ntfs.img for the version above; update when RUFUS_UEFI_NTFS_VERSION changes
+RUFUS_UEFI_NTFS_SHA256="${RUFUS_UEFI_NTFS_SHA256:-e159fba61b14b20cc0c1631dcf158fb3811f084a9874d190616cb4740a0ccf9c}"
 DD_BLOCK_SIZE="${DD_BLOCK_SIZE:-$((4 * 1024 * 1024))}" # 4MiB
 
 # Entry point of the main code
@@ -182,7 +184,7 @@ init(){
                 "${rufus_uefi_ntfs_version}" \
                 "${target_device}2" \
                 "${temp_dir}" \
-                "${target_device}"
+                "${RUFUS_UEFI_NTFS_SHA256}"
         fi
     fi
 
@@ -643,7 +645,6 @@ process_commandline_parameters(){
         enable_device=false \
         enable_partition=false \
         enable_label=false \
-        enable_workaround_bios_boot_flag=false \
         enable_debugging_internal_function_call=false \
         enable_target_filesystem=false
 
@@ -721,7 +722,6 @@ process_commandline_parameters(){
                 target_fs_label_ref="${parameters[0]}"
                 ;;
             --workaround-bios-boot-flag)
-                enable_workaround_bios_boot_flag=true
                 workaround_bios_boot_flag_ref=true
                 ;;
             --debugging-internal-function-call)
@@ -810,7 +810,7 @@ process_commandline_parameters(){
                 target_filesystem_type_ref=FS_NTFS
             ;;
             *)
-                 \
+                print_error \
                     "$(gettext 'Target filesystem not supported.\n')"
                 return 1
             ;;
@@ -895,8 +895,8 @@ check_runtime_dependencies(){
         mount \
         parted \
         partprobe \
-        readlink \
         rm \
+        sha256sum \
         stat \
         stty \
         wget \
@@ -1027,8 +1027,16 @@ determine_target_parameters(){
         local target_filesystem_type_libblkid
 
         target_partition_ref="${target_media}"
-        # BASHDOC: Basic Shell Features » Shell Expansions » Shell Parameter Expansion(`${PARAMETER/PATTERN/STRING}')
-        target_device_ref="${target_media/%[0-9]/}"
+        # Determine the parent device using lsblk's PKNAME, which correctly handles
+        # NVMe (nvme0n1p1), MMC (mmcblk0p1), MD (md127p1), and multi-digit partitions
+        target_device_ref="$(
+            lsblk \
+                --nodeps \
+                --noheadings \
+                --output PKNAME \
+                "${target_partition_ref}"
+        )"
+        target_device_ref="/dev/${target_device_ref}"
 
         # Detect target filesystem
         target_filesystem_type_libblkid="$(
@@ -1057,7 +1065,7 @@ determine_target_parameters(){
         unset target_filesystem_type_libblkid
     else # install_mode = device
         target_device_ref="${target_media}"
-        target_partition_ref="${target_device}1"
+        target_partition_ref="${target_media}1"
     fi
 
     if [ "${flag_verbose}" = true ]; then
@@ -1070,7 +1078,7 @@ determine_target_parameters(){
         if [ "${install_mode}" = partition ]; then
             print_info \
                 "$(gettext "Target filesystem is '%s'.\\n")" \
-                "${ENUM_SUPPORTED_FILESYSTEMS[$target_filesystem_type]}"
+                "${ENUM_SUPPORTED_FILESYSTEMS[$target_filesystem_type_ref]}"
         fi
     fi
     return 0
@@ -1080,12 +1088,10 @@ is_target_busy(){
     check_function_parameters_quantity 1 "${#}"
     local device="${1}"; shift
 
-    if [ "$(mount \
-            | grep \
-            --count \
-            --fixed-strings\
-            "${device}"
-        )" -ne 0 ]; then
+    if mount \
+        | awk \
+            -v device="${device}" \
+            '$1 == device { found=1 } END { exit !found }'; then
         return 0
     else
         return 1
@@ -1099,24 +1105,20 @@ check_source_and_target_not_busy(){
     local target_device="${1}"; shift
     local target_partition="${1}"; shift
 
-    if [ "$(mount \
-            | grep \
-            --count \
-            --fixed-strings \
-            "${source_media}"
-        )" != 0 ]; then
+    if mount \
+        | awk \
+            -v device="${source_media}" \
+            '$1 == device { found=1 } END { exit !found }'; then
         print_error \
             "$(gettext 'Source media is currently mounted, unmount the partition then try again\n')"
         exit 1
     fi
 
     if [ "${install_mode}" = partition ]; then
-        if [ "$(mount \
-                | grep \
-                --count \
-                --fixed-strings \
-                "${target_partition}"
-            )" != 0 ]; then
+        if mount \
+            | awk \
+                -v device="${target_partition}" \
+                '$1 == device { found=1 } END { exit !found }'; then
             print_error \
                 "$(gettext 'Target partition is currently mounted, unmount the partition then try again\n')"
             exit 1
@@ -1259,7 +1261,7 @@ create_target_partition(){
         "$(gettext 'Creating target partition...\n')"
 
     # Create target partition
-    # We start at 4MiB for grub (it needs a post-mbr gap for its code) and alignment of flash memery block erase segment in general, for details see http://www.gnu.org/software/grub/manual/grub.html#BIOS-installation and http://lwn.net/Articles/428584/
+    # We start at 4MiB for grub (it needs a post-mbr gap for its code) and alignment of flash memory block erase segment in general, for details see http://www.gnu.org/software/grub/manual/grub.html#BIOS-installation and http://lwn.net/Articles/428584/
     # If NTFS filesystem is used we leave a 512KiB partition at the end for installing UEFI:NTFS partition for NTFS support
     case "${parted_mkpart_fs_type}" in
         fat32)
@@ -1319,7 +1321,7 @@ create_target_partition(){
 # https://github.com/pbatard/uefi-ntfs
 # This routine assumes that there's only one partition on the disk, and the trailing 1024KiB space is not partitioned
 # This routine should be run after create_target_partition and only on target partition's filesystem is NTFS
-# target_device: The target device's entire deice file
+# target_device: The target device's entire device file
 create_uefi_ntfs_support_partition(){
     check_function_parameters_quantity 1 "${#}"
 
@@ -1338,6 +1340,9 @@ create_uefi_ntfs_support_partition(){
         -2048s \
         -1s
 
+    workaround_make_system_realize_partition_table_changed \
+        "${target_device}"
+
     return "$?"
 }
 
@@ -1345,14 +1350,13 @@ create_uefi_ntfs_support_partition(){
 # FIXME: Currently this requires internet access to download the image from GitHub directly, it should be replaced by including the image in our datadir
 # uefi_ntfs_partition: The previously allocated partition for installing UEFI:NTFS, requires at least 512KiB
 # download_directory: The temporary directory for downloading UEFI:NTFS image from GitHub
-# target_device: For workaround_make_system_realize_partition_table_changed
 install_uefi_ntfs_support_partition(){
     check_function_parameters_quantity 4 "${#}"
 
     local -r rufus_uefi_ntfs_version="${1}"; shift
     local -r uefi_ntfs_partition="${1}"; shift
     local -r download_directory="${1}"; shift
-    local -r target_device="${1}"; shift
+    local -r expected_sha256="${1}"; shift
 
     if ! wget \
         --directory-prefix="${download_directory}" \
@@ -1360,6 +1364,22 @@ install_uefi_ntfs_support_partition(){
         print_warning \
             "Unable to download UEFI:NTFS partition image from GitHub, installation skipped.  Target device might not be bootable if the UEFI firmware doesn't support NTFS filesystem.\\n"
         return 0
+    fi
+
+    local downloaded_sha256
+    downloaded_sha256="$(
+        sha256sum \
+            "${download_directory}/uefi-ntfs.img" \
+        | cut \
+            --fields=1 \
+            --delimiter=' '
+    )"
+    if [ "${downloaded_sha256}" != "${expected_sha256}" ]; then
+        print_error \
+            "$(gettext 'SHA-256 mismatch for uefi-ntfs.img: expected %s, got %s.  Installation aborted for security.\n')" \
+            "${expected_sha256}" \
+            "${downloaded_sha256}"
+        return 1
     fi
 
     # Write partition image to partition
@@ -1421,7 +1441,7 @@ check_target_partition(){
 
 # Check if the UEFI:NTFS support partition exists
 # Currently it depends on the fact that this partition has a label of "UEFI_NTFS"
-# target_device: The UEFI:NTFS partition residing entier device file
+# target_device: The UEFI:NTFS partition residing entire device file
 check_uefi_ntfs_support_partition(){
     check_function_parameters_quantity 1 "${#}"
 
@@ -1520,6 +1540,7 @@ check_target_filesystem_free_space(){
     local -r target_fs_mountpoint="${1}"; shift
     local -r source_fs_mountpoint="${1}"; shift
 
+    local free_space
     free_space=$(
         df \
             --block-size=1 \
@@ -1529,6 +1550,7 @@ check_target_filesystem_free_space(){
             "${target_fs_mountpoint}" \
         | awk '{print $4}'
     )
+    local free_space_human_readable
     free_space_human_readable=$(
         df \
             --human-readable \
@@ -1538,6 +1560,7 @@ check_target_filesystem_free_space(){
             "${target_fs_mountpoint}" \
         | awk '{print $4}'
     )
+    local needed_space
     needed_space=$(
         du \
             --summarize \
@@ -1545,6 +1568,7 @@ check_target_filesystem_free_space(){
             "${source_fs_mountpoint}" \
         | awk '{print $1}'
     )
+    local needed_space_human_readable
     needed_space_human_readable=$(
         du \
             --summarize \
@@ -1552,7 +1576,7 @@ check_target_filesystem_free_space(){
             "${source_fs_mountpoint}" \
         | awk '{print $1}'
     )
-    additional_space_required_for_grub_installation="$((1000 * 1000 * 10))" # 10MiB
+    local -r additional_space_required_for_grub_installation="$((1000 * 1000 * 10))" # 10MiB
     ((needed_space = needed_space + additional_space_required_for_grub_installation))
 
     if [ "${needed_space}" -gt "${free_space}" ]; then
@@ -1648,7 +1672,11 @@ copy_filesystem_files(){
         # BASHDOC: Basic Shell Features » Shell Expansions » Arithmetic Expansion
         # BASHDOC: Bash Features » Shell Arithmetic
         ((copied_size = copied_size + source_file_size)) || true
-        ((percentage = (copied_size * 100) / total_size)) || true
+        if test "${total_size}" -ne 0; then
+            ((percentage = (copied_size * 100) / total_size)) || true
+        else
+            percentage=0
+        fi
         echo -en "${percentage}%\\r"
     done < <( \
         find \
@@ -1705,7 +1733,11 @@ copy_large_file(){
         # BASHDOC: Basic Shell Features » Shell Expansions » Arithmetic Expansion
         # BASHDOC: Bash Features » Shell Arithmetic
         ((copied_size_total = caller_copied_size + dd_block_size * i)) || true
-        ((percentage = (copied_size_total * 100) / caller_total_size)) || true
+        if test "${caller_total_size}" -ne 0; then
+            ((percentage = (copied_size_total * 100) / caller_total_size)) || true
+        else
+            percentage=0
+        fi
         echo -en "${percentage}%\\r"
     done; unset i copied_size_total percentage
 
@@ -1738,6 +1770,12 @@ copy_oversized_wim_file(){
         copied_size_current="${caller_copied_size}" \
         percentage_current=0
     wimlib_imagex_pid="${!}"
+    if [ -z "${wimlib_imagex_pid}" ]; then
+        print_warning \
+            "$(gettext 'Failed to start wimlib-imagex, oversized WIM file "%s" not transferred.\n')" \
+            "${source_file}"
+        return 0
+    fi
     while kill -0 "${wimlib_imagex_pid}" 2>/dev/null; do
         splitted_files_size_total=0
         splitted_file_size=0
@@ -1745,8 +1783,17 @@ copy_oversized_wim_file(){
         is_dest_file_available=false
 
         # Ensure swm file is created by wimlib before accounting sizes
+        local -i swm_wait_counter=0
         while test "${is_dest_file_available}" == false && \
                 ! test -e "${dest_file_basename}".swm; do
+            if test "${swm_wait_counter}" -ge 30; then
+                print_warning \
+                    "$(gettext 'Timed out waiting for wimlib-imagex to create split file, giving up.\n')"
+                kill -s SIGKILL "${wimlib_imagex_pid}" 2>/dev/null || true
+                wimlib_imagex_pid=
+                return 1
+            fi
+            ((swm_wait_counter = swm_wait_counter + 1))
             sleep 1
         done
         is_dest_file_available=true
@@ -1760,7 +1807,11 @@ copy_oversized_wim_file(){
             (( splitted_files_size_total += splitted_file_size ))
         done
         (( copied_size_current += splitted_files_size_total ))
-        (( percentage = (copied_size_current * 100) / caller_total_size))
+        if test "${caller_total_size}" -ne 0; then
+            (( percentage = (copied_size_current * 100) / caller_total_size)) || true
+        else
+            percentage=0
+        fi
         echo -en "${percentage}%\\r"
 
         # Use less resource during accounting sizes
@@ -2045,7 +2096,7 @@ trap_exit(){
 trap_interrupt(){
     printf '\n' # Separate message with previous output
     print_warning \
-        "$(gettext 'Recieved SIGINT, program is interrupted.\n')"
+        "$(gettext 'Received SIGINT, program is interrupted.\n')"
     return 1
 }
 
