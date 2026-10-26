@@ -979,6 +979,12 @@ check_runtime_parameters(){
     local -n source_media_ref="${1}"; shift
     local -n target_media_ref="${1}"; shift
 
+    # Resolve symlinks (e.g. /dev/disk/by-id/... entries) to their
+    # canonical device node so that device/partition detection works.
+    if [ -L "${target_media_ref}" ]; then
+        target_media_ref="$(readlink -f "${target_media_ref}")"
+    fi
+
     if [ ! -f "${source_media_ref}" ] \
         && [ ! -b "${source_media_ref}" ]; then
         print_error \
@@ -995,7 +1001,7 @@ check_runtime_parameters(){
     fi
 
     if [ "${install_mode_ref}" = device ] \
-        && [[ "${target_media}" =~ .*[0-9] ]]
+        && [[ "${target_media_ref}" =~ .*[0-9] ]]
         then
         print_error \
             "$(gettext 'Target media "%s" is not an entire storage device!\n')" \
@@ -1004,7 +1010,7 @@ check_runtime_parameters(){
     fi
 
     if [ "${install_mode_ref}" = partition ] \
-        && ! [[ "${target_media}" =~ .*[0-9] ]]
+        && ! [[ "${target_media_ref}" =~ .*[0-9] ]]
         then
         print_error \
             "$(gettext 'Target media "%s" is not an partition!\n')" \
@@ -1057,7 +1063,7 @@ determine_target_parameters(){
         unset target_filesystem_type_libblkid
     else # install_mode = device
         target_device_ref="${target_media}"
-        target_partition_ref="${target_device}1"
+        target_partition_ref="${target_device_ref}1"
     fi
 
     if [ "${flag_verbose}" = true ]; then
